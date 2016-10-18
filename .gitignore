@@ -23,5 +23,5 @@ _testmain.go
 *.test
 *.prof
 vendor
-drone-jenkins
+drone-sftp
 coverage.txt

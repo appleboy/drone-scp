@@ -1,8 +1,8 @@
-# drone-jenkins
+# drone-sftp
 
-[![Build Status](https://travis-ci.org/appleboy/drone-jenkins.svg?branch=master)](https://travis-ci.org/appleboy/drone-jenkins) [![codecov](https://codecov.io/gh/appleboy/drone-jenkins/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/drone-jenkins) [![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/drone-jenkins)](https://goreportcard.com/report/github.com/appleboy/drone-jenkins)
+[![Build Status](https://travis-ci.org/appleboy/drone-sftp.svg?branch=master)](https://travis-ci.org/appleboy/drone-sftp) [![codecov](https://codecov.io/gh/appleboy/drone-sftp/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/drone-sftp) [![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/drone-sftp)](https://goreportcard.com/report/github.com/appleboy/drone-sftp)
 
-[Drone](https://github.com/drone/drone) plugin for trigger [Jenkins](https://jenkins.io/) jobs.
+[Drone](https://github.com/drone/drone) plugin to publish files and artifacts via SFTP. 
 
 ## Build
 
@@ -33,7 +33,7 @@ GCO disabled will result in an error when running the Docker image:
 
 ```
 docker: Error response from daemon: Container command
-'/bin/drone-jenkins' not found or does not exist..
+'/bin/drone-sftp' not found or does not exist..
 ```
 
 ## Usage
@@ -56,5 +56,5 @@ docker run --rm \
   -e DRONE_BUILD_LINK=http://github.com/appleboy/go-hello \
   -v $(pwd):$(pwd) \
   -w $(pwd) \
-  appleboy/drone-jenkins
+  appleboy/drone-sftp
 ```
