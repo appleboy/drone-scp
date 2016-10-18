@@ -27,10 +27,12 @@ type (
 
 	// Config for the plugin.
 	Config struct {
-		BaseURL  string
+		Host     string
+		Port     string
 		Username string
-		Token    string
-		Job      []string
+		Password string
+		Path     string
+		File     []string
 	}
 
 	// Plugin values.
@@ -58,20 +60,10 @@ func trimElement(keys []string) []string {
 // Exec executes the plugin.
 func (p Plugin) Exec() error {
 
-	if len(p.Config.BaseURL) == 0 || len(p.Config.Username) == 0 || len(p.Config.Token) == 0 {
-		log.Println("missing jenkins config")
+	if len(p.Config.Host) == 0 || len(p.Config.Username) == 0 || len(p.Config.Password) == 0 {
+		log.Println("missing sftp config")
 
-		return errors.New("missing jenkins config")
-	}
-
-	auth := &Auth{
-		Username: p.Config.Username,
-		Token:    p.Config.Token,
-	}
-	jenkins := NewJenkins(auth, p.Config.BaseURL)
-
-	for _, value := range trimElement(p.Config.Job) {
-		jenkins.trigger(value, nil)
+		return errors.New("missing sftp config")
 	}
 
 	return nil

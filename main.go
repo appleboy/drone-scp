@@ -18,30 +18,36 @@ func main() {
 	app.Version = Version
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
-			Name:   "base.url",
-			Usage:  "jenkins base url",
-			EnvVar: "PLUGIN_BASE_URL,JENKINS_BASE_URL",
+			Name:   "host",
+			Usage:  "Server host",
+			EnvVar: "PLUGIN_HOST,SFTP_HOST",
+		},
+		cli.StringFlag{
+			Name:   "port",
+			Value:  "22",
+			Usage:  "Server port, default to 22",
+			EnvVar: "PLUGIN_PORT,SFTP_PORT",
 		},
 		cli.StringFlag{
 			Name:   "username",
-			Usage:  "jenkins username",
-			EnvVar: "PLUGIN_USERNAME,JENKINS_USERNAME",
+			Usage:  "Server username",
+			EnvVar: "PLUGIN_USERNAME,SFTP_USERNAME",
 		},
 		cli.StringFlag{
-			Name:   "token",
-			Usage:  "jenkins token",
-			EnvVar: "PLUGIN_TOKEN,JENKINS_TOKEN",
+			Name:   "password",
+			Usage:  "Password for password-based authentication",
+			EnvVar: "PLUGIN_PASSWORD,SFTP_PASSWORD",
+		},
+		cli.StringFlag{
+			Name:   "path",
+			Value:  "/",
+			Usage:  "Target path on the server, default to '/'",
+			EnvVar: "PLUGIN_DESTINATION",
 		},
 		cli.StringSliceFlag{
-			Name:   "job",
-			Usage:  "jenkins job",
-			EnvVar: "PLUGIN_JOB",
-		},
-		cli.StringFlag{
-			Name:   "format",
-			Value:  "markdown",
-			Usage:  "telegram message format",
-			EnvVar: "PLUGIN_FORMAT",
+			Name:   "files",
+			Usage:  "sftp files list",
+			EnvVar: "PLUGIN_FILE",
 		},
 		cli.StringFlag{
 			Name:   "repo.owner",
@@ -117,10 +123,12 @@ func run(c *cli.Context) error {
 			Link:    c.String("build.link"),
 		},
 		Config: Config{
-			BaseURL:  c.String("base.url"),
+			Host:     c.String("host"),
+			Port:     c.String("port"),
 			Username: c.String("username"),
-			Token:    c.String("token"),
-			Job:      c.StringSlice("job"),
+			Password: c.String("password"),
+			Path:     c.String("path"),
+			File:     c.StringSlice("files"),
 		},
 	}
 
