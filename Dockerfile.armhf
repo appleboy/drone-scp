@@ -1,0 +1,8 @@
+FROM armhfbuild/alpine:3.4
+
+RUN apk update && \
+  apk add ca-certificates && \
+  rm -rf /var/cache/apk/*
+
+ADD drone-telegram /bin/
+ENTRYPOINT ["/bin/drone-telegram"]

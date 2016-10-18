@@ -1,0 +1,53 @@
+sudo: required
+language: go
+
+services:
+  - docker
+
+go:
+  - 1.5.4
+  - 1.6.3
+  - 1.7.1
+  - tip
+
+env:
+  global:
+    - DOCKER_CACHE_FILE=${HOME}/docker/cache.tar.gz
+
+cache:
+  directories:
+    - vendor
+    - ${HOME}/.glide
+    - ${HOME}/docker
+
+before_install:
+  - mkdir -p $GOPATH/bin
+  - curl https://glide.sh/get | sh
+  - if [ -f ${DOCKER_CACHE_FILE} ]; then gunzip -c ${DOCKER_CACHE_FILE} | docker load; fi
+
+install:
+  - export GO15VENDOREXPERIMENT=1
+  - make install
+
+script:
+  - make test
+  - make docker
+  - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+    mkdir -p $(dirname ${DOCKER_CACHE_FILE});
+    docker save $(docker history -q $TRAVIS_REPO_SLUG:latest | grep -v '<missing>') | gzip > ${DOCKER_CACHE_FILE};
+    fi
+
+after_success:
+  # ignore main.go coverage
+  - sed -i '/main.go/d' coverage.txt
+  - bash <(curl -s https://codecov.io/bash) -f coverage.txt
+  # deploy from master
+  - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_GO_VERSION" == "1.7.1" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+    make docker_deploy tag=latest;
+    fi
+  # deploy from tag
+  - if [ "$TRAVIS_GO_VERSION" == "1.7.1" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_TAG" != "" ]; then
+    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+    make docker_deploy tag=$TRAVIS_TAG;
+    fi
