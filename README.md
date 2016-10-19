@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/appleboy/drone-scp.svg?branch=master)](https://travis-ci.org/appleboy/drone-scp) [![codecov](https://codecov.io/gh/appleboy/drone-scp/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/drone-scp) [![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/drone-scp)](https://goreportcard.com/report/github.com/appleboy/drone-scp)
 
-[Drone](https://github.com/drone/drone) plugin to publish files and artifacts via SFTP. 
+[Drone](https://github.com/drone/drone) plugin to copy files and artifacts via SSH. 
 
 ## Build
 
