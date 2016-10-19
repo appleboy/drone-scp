@@ -39,6 +39,11 @@ func main() {
 			EnvVar: "PLUGIN_PASSWORD,SCP_PASSWORD",
 		},
 		cli.StringFlag{
+			Name:   "key",
+			Usage:  "ssh private key",
+			EnvVar: "PLUGIN_KEY,SCP_KEY,",
+		},
+		cli.StringFlag{
 			Name:   "path",
 			Value:  "/",
 			Usage:  "Target path on the server, default to '/'",
@@ -127,6 +132,7 @@ func run(c *cli.Context) error {
 			Port:     c.String("port"),
 			Username: c.String("username"),
 			Password: c.String("password"),
+			Key:      c.String("key"),
 			Path:     c.String("path"),
 			File:     c.StringSlice("files"),
 		},

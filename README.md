@@ -42,10 +42,12 @@ Execute from the working directory:
 
 ```
 docker run --rm \
-  -e PLUGIN_BASE_URL=http://example.com \
+  -e PLUGIN_HOST=http://example.com \
   -e PLUGIN_USERNAME=xxxxxxx \
-  -e PLUGIN_TOKEN=xxxxxxx \
-  -e PLUGIN_JOB=xxxxxxx \
+  -e PLUGIN_PASSWORD=xxxxxxx \
+  -e PLUGIN_PORT=xxxxxxx \
+  -e PLUGIN_KEY="$(cat ${HOME}/.ssh/id_rsa)"
+  -e PLUGIN_FILE=xxxxxxx \
   -e DRONE_REPO_OWNER=appleboy \
   -e DRONE_REPO_NAME=go-hello \
   -e DRONE_COMMIT_SHA=e5e82b5eb3737205c25955dcc3dcacc839b7be52 \

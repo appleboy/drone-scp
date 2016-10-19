@@ -8,10 +8,8 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net"
 	"os"
-	"os/user"
 	"path/filepath"
 
 	"golang.org/x/crypto/ssh"
@@ -33,28 +31,6 @@ type MakeConfig struct {
 	Password string
 }
 
-// returns ssh.Signer from user you running app home path + cutted key path.
-// (ex. pubkey,err := getKeyFile("/.ssh/id_rsa") )
-func getKeyFile(keypath string) (ssh.Signer, error) {
-	usr, err := user.Current()
-	if err != nil {
-		return nil, err
-	}
-
-	file := usr.HomeDir + keypath
-	buf, err := ioutil.ReadFile(file)
-	if err != nil {
-		return nil, err
-	}
-
-	pubkey, err := ssh.ParsePrivateKey(buf)
-	if err != nil {
-		return nil, err
-	}
-
-	return pubkey, nil
-}
-
 // connects to remote server using MakeConfig struct and returns *ssh.Session
 func (ssh_conf *MakeConfig) connect() (*ssh.Session, error) {
 	// auths holds the detected ssh auth methods
@@ -70,8 +46,9 @@ func (ssh_conf *MakeConfig) connect() (*ssh.Session, error) {
 		defer sshAgent.Close()
 	}
 
-	if pubkey, err := getKeyFile(ssh_conf.Key); err == nil {
-		auths = append(auths, ssh.PublicKeys(pubkey))
+	if ssh_conf.Key != "" {
+		signer, _ := ssh.ParsePrivateKey([]byte(ssh_conf.Key))
+		auths = append(auths, ssh.PublicKeys(signer))
 	}
 
 	config := &ssh.ClientConfig{
