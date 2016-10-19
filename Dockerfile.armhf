@@ -4,5 +4,5 @@ RUN apk update && \
   apk add ca-certificates && \
   rm -rf /var/cache/apk/*
 
-ADD drone-sftp /bin/
-ENTRYPOINT ["/bin/drone-sftp"]
+ADD drone-scp /bin/
+ENTRYPOINT ["/bin/drone-scp"]

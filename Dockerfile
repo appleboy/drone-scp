@@ -1,5 +1,5 @@
 FROM centurylink/ca-certs
 
-ADD drone-sftp /
+ADD drone-scp /
 
-ENTRYPOINT ["/drone-sftp"]
+ENTRYPOINT ["/drone-scp"]

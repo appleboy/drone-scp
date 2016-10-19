@@ -2,7 +2,7 @@
 
 VERSION := $(shell git describe --tags || git rev-parse --short HEAD)
 DEPLOY_ACCOUNT := "appleboy"
-DEPLOY_IMAGE := "drone-sftp"
+DEPLOY_IMAGE := "drone-scp"
 
 ifneq ($(shell uname), Darwin)
 	EXTLDFLAGS = -extldflags "-static" $(null)

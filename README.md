@@ -1,6 +1,6 @@
-# drone-sftp
+# drone-scp
 
-[![Build Status](https://travis-ci.org/appleboy/drone-sftp.svg?branch=master)](https://travis-ci.org/appleboy/drone-sftp) [![codecov](https://codecov.io/gh/appleboy/drone-sftp/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/drone-sftp) [![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/drone-sftp)](https://goreportcard.com/report/github.com/appleboy/drone-sftp)
+[![Build Status](https://travis-ci.org/appleboy/drone-scp.svg?branch=master)](https://travis-ci.org/appleboy/drone-scp) [![codecov](https://codecov.io/gh/appleboy/drone-scp/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/drone-scp) [![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/drone-scp)](https://goreportcard.com/report/github.com/appleboy/drone-scp)
 
 [Drone](https://github.com/drone/drone) plugin to publish files and artifacts via SFTP. 
 
@@ -33,7 +33,7 @@ GCO disabled will result in an error when running the Docker image:
 
 ```
 docker: Error response from daemon: Container command
-'/bin/drone-sftp' not found or does not exist..
+'/bin/drone-scp' not found or does not exist..
 ```
 
 ## Usage
@@ -56,5 +56,5 @@ docker run --rm \
   -e DRONE_BUILD_LINK=http://github.com/appleboy/go-hello \
   -v $(pwd):$(pwd) \
   -w $(pwd) \
-  appleboy/drone-sftp
+  appleboy/drone-scp
 ```

@@ -20,23 +20,23 @@ func main() {
 		cli.StringFlag{
 			Name:   "host",
 			Usage:  "Server host",
-			EnvVar: "PLUGIN_HOST,SFTP_HOST",
+			EnvVar: "PLUGIN_HOST,SCP_HOST",
 		},
 		cli.StringFlag{
 			Name:   "port",
 			Value:  "22",
 			Usage:  "Server port, default to 22",
-			EnvVar: "PLUGIN_PORT,SFTP_PORT",
+			EnvVar: "PLUGIN_PORT,SCP_PORT",
 		},
 		cli.StringFlag{
 			Name:   "username",
 			Usage:  "Server username",
-			EnvVar: "PLUGIN_USERNAME,SFTP_USERNAME",
+			EnvVar: "PLUGIN_USERNAME,SCP_USERNAME",
 		},
 		cli.StringFlag{
 			Name:   "password",
 			Usage:  "Password for password-based authentication",
-			EnvVar: "PLUGIN_PASSWORD,SFTP_PASSWORD",
+			EnvVar: "PLUGIN_PASSWORD,SCP_PASSWORD",
 		},
 		cli.StringFlag{
 			Name:   "path",
@@ -46,7 +46,7 @@ func main() {
 		},
 		cli.StringSliceFlag{
 			Name:   "files",
-			Usage:  "sftp files list",
+			Usage:  "scp file list",
 			EnvVar: "PLUGIN_FILE",
 		},
 		cli.StringFlag{

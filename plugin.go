@@ -61,9 +61,9 @@ func trimElement(keys []string) []string {
 func (p Plugin) Exec() error {
 
 	if len(p.Config.Host) == 0 || len(p.Config.Username) == 0 || len(p.Config.Password) == 0 {
-		log.Println("missing sftp config")
+		log.Println("missing ssh config")
 
-		return errors.New("missing sftp config")
+		return errors.New("missing ssh config")
 	}
 
 	return nil
