@@ -1,0 +1,30 @@
+hash: d4830515599820a37217ef2806e6f9a3e7be66a417c46bb515fdae02b2e3b830
+updated: 2016-10-19T16:23:55.991113936+08:00
+imports:
+- name: github.com/joho/godotenv
+  version: 4ed13390c0acd2ff4e371e64d8b97c8954138243
+  subpackages:
+  - autoload
+- name: github.com/urfave/cli
+  version: 55f715e28c46073d0e217e2ce8eb46b0b45e3db6
+- name: golang.org/x/crypto
+  version: c367d6eeb7c6158125f2f47e049f7eb7e251c09a
+  subpackages:
+  - ssh
+  - ssh/agent
+  - curve25519
+  - ed25519
+  - ed25519/internal/edwards25519
+testImports:
+- name: github.com/davecgh/go-spew
+  version: 6d212800a42e8ab5c146b8ace3490ee17e5225f9
+  subpackages:
+  - spew
+- name: github.com/pmezard/go-difflib
+  version: d8ed2627bdf02c080bf22230dbb337003b7aba2d
+  subpackages:
+  - difflib
+- name: github.com/stretchr/testify
+  version: 976c720a22c8eb4eb6a0b4348ad85ad12491a506
+  subpackages:
+  - assert

@@ -1,0 +1,14 @@
+package: github.com/appleboy/drone-scp
+import:
+- package: github.com/joho/godotenv
+  subpackages:
+  - autoload
+- package: github.com/urfave/cli
+- package: golang.org/x/crypto
+  subpackages:
+  - ssh
+  - ssh/agent
+testImport:
+- package: github.com/stretchr/testify
+  subpackages:
+  - assert
