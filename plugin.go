@@ -41,6 +41,7 @@ type (
 		Key      string
 		Target   string
 		Source   []string
+		Debug    bool
 	}
 
 	// Plugin values.
@@ -122,7 +123,11 @@ func (p Plugin) Exec() error {
 
 	// mkdir path
 	log.Println("create remote folder " + p.Config.Target)
-	_, err = ssh.Run(fmt.Sprintf("mkdir -p %s", p.Config.Target))
+	response, err := ssh.Run(fmt.Sprintf("mkdir -p %s", p.Config.Target))
+
+	if p.Config.Debug {
+		log.Println(response)
+	}
 
 	if err != nil {
 		log.Println(err.Error())
@@ -131,7 +136,11 @@ func (p Plugin) Exec() error {
 
 	// untar file
 	log.Println("untar remote file " + dest)
-	_, err = ssh.Run(fmt.Sprintf("tar -xf %s -C %s", dest, p.Config.Target))
+	response, err = ssh.Run(fmt.Sprintf("tar -xf %s -C %s", dest, p.Config.Target))
+
+	if p.Config.Debug {
+		log.Println(response)
+	}
 
 	if err != nil {
 		log.Println(err.Error())
@@ -140,7 +149,11 @@ func (p Plugin) Exec() error {
 
 	// remove tar file
 	log.Println("remove remote file " + dest)
-	_, err = ssh.Run(fmt.Sprintf("rm -rf %s", dest))
+	response, err = ssh.Run(fmt.Sprintf("rm -rf %s", dest))
+
+	if p.Config.Debug {
+		log.Println(response)
+	}
 
 	if err != nil {
 		log.Println(err.Error())

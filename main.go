@@ -54,6 +54,11 @@ func main() {
 			Usage:  "scp file list",
 			EnvVar: "PLUGIN_SOURCE",
 		},
+		cli.BoolFlag{
+			Name:   "debug",
+			Usage:  "display message from command",
+			EnvVar: "PLUGIN_DEBUG",
+		},
 		cli.StringFlag{
 			Name:   "repo.owner",
 			Usage:  "repository owner",
@@ -135,6 +140,7 @@ func run(c *cli.Context) error {
 			Key:      c.String("key"),
 			Target:   c.String("target"),
 			Source:   c.StringSlice("source"),
+			Debug:    c.Bool("debug"),
 		},
 	}
 
