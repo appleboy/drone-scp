@@ -70,9 +70,15 @@ func trimPath(keys []string) []string {
 func (p Plugin) Exec() error {
 
 	if len(p.Config.Host) == 0 || len(p.Config.Username) == 0 || (len(p.Config.Password) == 0 && len(p.Config.Key) == 0) {
-		log.Println("missing ssh config")
+		log.Println("missing ssh config (Host, Username, Password or Key)")
 
-		return errors.New("missing ssh config")
+		return errors.New("missing ssh config (Host, Username, Password or Key)")
+	}
+
+	if len(p.Config.Source) == 0 {
+		log.Println("missing source file list config")
+
+		return errors.New("missing source file list config")
 	}
 
 	files := trimPath(p.Config.Source)

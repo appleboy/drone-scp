@@ -27,6 +27,21 @@ func TestMissingSSHConfig(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
+func TestMissingSourceConfig(t *testing.T) {
+	plugin := Plugin{
+		Config: Config{
+			Host:     "example.com",
+			Username: "ubuntu",
+			Port:     "443",
+			Password: "1234",
+		},
+	}
+
+	err := plugin.Exec()
+
+	assert.NotNil(t, err)
+}
+
 func TestTrimElement(t *testing.T) {
 	var input, result []string
 
