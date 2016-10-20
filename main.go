@@ -41,18 +41,18 @@ func main() {
 		cli.StringFlag{
 			Name:   "key",
 			Usage:  "ssh private key",
-			EnvVar: "PLUGIN_KEY,SCP_KEY,",
+			EnvVar: "PLUGIN_KEY,SCP_KEY",
 		},
 		cli.StringFlag{
-			Name:   "path",
+			Name:   "target",
 			Value:  "/",
 			Usage:  "Target path on the server, default to '/'",
-			EnvVar: "PLUGIN_DESTINATION",
+			EnvVar: "PLUGIN_TARGET",
 		},
 		cli.StringSliceFlag{
-			Name:   "files",
+			Name:   "source",
 			Usage:  "scp file list",
-			EnvVar: "PLUGIN_FILE",
+			EnvVar: "PLUGIN_SOURCE",
 		},
 		cli.StringFlag{
 			Name:   "repo.owner",
@@ -133,8 +133,8 @@ func run(c *cli.Context) error {
 			Username: c.String("username"),
 			Password: c.String("password"),
 			Key:      c.String("key"),
-			Path:     c.String("path"),
-			File:     c.StringSlice("files"),
+			Target:   c.String("target"),
+			Source:   c.StringSlice("source"),
 		},
 	}
 

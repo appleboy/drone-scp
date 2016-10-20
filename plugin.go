@@ -39,8 +39,8 @@ type (
 		Username string
 		Password string
 		Key      string
-		Path     string
-		File     []string
+		Target   string
+		Source   []string
 	}
 
 	// Plugin values.
@@ -75,7 +75,7 @@ func (p Plugin) Exec() error {
 		return errors.New("missing ssh config")
 	}
 
-	files := trimPath(p.Config.File)
+	files := trimPath(p.Config.Source)
 	src := strings.Join(files, " ")
 	dest := fmt.Sprintf("%s-%s.tar", p.Repo.Name, p.Build.Commit[:7])
 
@@ -115,8 +115,8 @@ func (p Plugin) Exec() error {
 	}
 
 	// mkdir path
-	log.Println("create remote folder " + p.Config.Path)
-	_, err = ssh.Run(fmt.Sprintf("mkdir -p %s", p.Config.Path))
+	log.Println("create remote folder " + p.Config.Target)
+	_, err = ssh.Run(fmt.Sprintf("mkdir -p %s", p.Config.Target))
 
 	if err != nil {
 		log.Println(err.Error())
@@ -125,7 +125,7 @@ func (p Plugin) Exec() error {
 
 	// untar file
 	log.Println("untar remote file " + dest)
-	_, err = ssh.Run(fmt.Sprintf("tar -xf %s -C %s", dest, p.Config.Path))
+	_, err = ssh.Run(fmt.Sprintf("tar -xf %s -C %s", dest, p.Config.Target))
 
 	if err != nil {
 		log.Println(err.Error())
