@@ -1,6 +1,6 @@
 .PHONY: install build test html update docker_build docker_image docker docker_deploy clean
 
-VERSION := $(shell git describe --tags || git rev-parse --short HEAD)
+VERSION := $(shell git describe --tags --always || git rev-parse --short HEAD)
 DEPLOY_ACCOUNT := "appleboy"
 DEPLOY_IMAGE := "drone-scp"
 
@@ -42,4 +42,7 @@ endif
 	docker push $(DEPLOY_ACCOUNT)/$(DEPLOY_IMAGE):$(tag)
 
 clean:
-	rm -rf coverage.txt ${DEPLOY_IMAGE}
+	rm -rf coverage.txt $(DEPLOY_IMAGE)
+
+version:
+	@echo $(VERSION)
