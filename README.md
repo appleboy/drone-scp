@@ -61,3 +61,14 @@ docker run --rm \
   -w $(pwd) \
   appleboy/drone-scp
 ```
+
+Load all environments from file.
+
+```bash
+docker run --rm \
+  -e ENV_FILE=your_env_file_path \
+  -e PLUGIN_KEY="$(cat ${HOME}/.ssh/id_rsa)"
+  -v $(pwd):$(pwd) \
+  -w $(pwd) \
+  appleboy/drone-scp
+```

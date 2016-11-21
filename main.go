@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 
+	"github.com/joho/godotenv"
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/urfave/cli"
 )
@@ -112,11 +113,20 @@ func main() {
 			Usage:  "build link",
 			EnvVar: "DRONE_BUILD_LINK",
 		},
+		cli.StringFlag{
+			Name:   "env-file",
+			Usage:  "source env file",
+			EnvVar: "ENV_FILE",
+		},
 	}
 	app.Run(os.Args)
 }
 
 func run(c *cli.Context) error {
+	if c.String("env-file") != "" {
+		_ = godotenv.Load(c.String("env-file"))
+	}
+
 	plugin := Plugin{
 		Repo: Repo{
 			Owner: c.String("repo.owner"),

@@ -25,3 +25,4 @@ _testmain.go
 vendor
 drone-scp
 coverage.txt
+.env
