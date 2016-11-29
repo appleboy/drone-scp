@@ -83,7 +83,6 @@ func (p Plugin) Exec() error {
 	}
 
 	files := trimPath(p.Config.Source)
-	src := strings.Join(files, " ")
 	dest := fmt.Sprintf("%s-%s.tar", p.Repo.Name, p.Build.Commit[:7])
 
 	// create a temporary file for the archive
@@ -95,7 +94,8 @@ func (p Plugin) Exec() error {
 
 	// run archive command
 	log.Println("tar all files into " + tar)
-	cmd := exec.Command("tar", "-cf", tar, src)
+	args := append(append([]string{}, "-cf", tar), files...)
+	cmd := exec.Command("tar", args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
