@@ -42,6 +42,7 @@ type (
 		Target   string
 		Source   []string
 		Debug    bool
+		Remove   bool
 	}
 
 	// Plugin values.
@@ -119,6 +120,22 @@ func (p Plugin) Exec() error {
 	if err != nil {
 		log.Println(err.Error())
 		return err
+	}
+
+	// remove target before upload data
+	if p.Config.Remove {
+		log.Println("Remove target folder: " + p.Config.Target)
+
+		response, err := ssh.Run(fmt.Sprintf("rm -rf %s", p.Config.Target))
+
+		if p.Config.Debug {
+			log.Println(response)
+		}
+
+		if err != nil {
+			log.Println(err.Error())
+			return err
+		}
 	}
 
 	// mkdir path
