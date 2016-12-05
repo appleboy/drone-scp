@@ -40,7 +40,7 @@ docker: Error response from daemon: Container command
 
 Execute from the working directory:
 
-```
+```bash
 docker run --rm \
   -e PLUGIN_HOST=http://example.com \
   -e PLUGIN_USERNAME=xxxxxxx \
