@@ -60,6 +60,11 @@ func main() {
 			Usage:  "display message from command",
 			EnvVar: "PLUGIN_DEBUG",
 		},
+		cli.BoolFlag{
+			Name:   "rm",
+			Usage:  "remove target folder before upload data",
+			EnvVar: "PLUGIN_RM",
+		},
 		cli.StringFlag{
 			Name:   "repo.owner",
 			Usage:  "repository owner",
@@ -151,6 +156,7 @@ func run(c *cli.Context) error {
 			Target:   c.String("target"),
 			Source:   c.StringSlice("source"),
 			Debug:    c.Bool("debug"),
+			Remove:   c.Bool("rm"),
 		},
 	}
 
