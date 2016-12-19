@@ -9,16 +9,16 @@ import (
 )
 
 // Version set at compile-time
-var Version string
+var Version = "v1.0.0-dev"
 
 func main() {
 	app := cli.NewApp()
-	app.Name = "telegram plugin"
-	app.Usage = "telegram plugin"
+	app.Name = "scp plugin"
+	app.Usage = "scp plugin"
 	app.Action = run
 	app.Version = Version
 	app.Flags = []cli.Flag{
-		cli.StringFlag{
+		cli.StringSliceFlag{
 			Name:   "host",
 			Usage:  "Server host",
 			EnvVar: "PLUGIN_HOST,SCP_HOST",
@@ -148,7 +148,7 @@ func run(c *cli.Context) error {
 			Link:    c.String("build.link"),
 		},
 		Config: Config{
-			Host:     c.String("host"),
+			Host:     c.StringSlice("host"),
 			Port:     c.String("port"),
 			Username: c.String("username"),
 			Password: c.String("password"),

@@ -34,7 +34,7 @@ type (
 
 	// Config for the plugin.
 	Config struct {
-		Host     string
+		Host     []string
 		Port     string
 		Username string
 		Password string
@@ -103,30 +103,45 @@ func (p Plugin) Exec() error {
 		return err
 	}
 
-	// Create MakeConfig instance with remote username, server address and path to private key.
-	ssh := &easyssh.MakeConfig{
-		Server:   p.Config.Host,
-		User:     p.Config.Username,
-		Password: p.Config.Password,
-		Port:     p.Config.Port,
-		Key:      p.Config.Key,
-	}
+	for _, host := range p.Config.Host {
+		// Create MakeConfig instance with remote username, server address and path to private key.
+		ssh := &easyssh.MakeConfig{
+			Server:   host,
+			User:     p.Config.Username,
+			Password: p.Config.Password,
+			Port:     p.Config.Port,
+			Key:      p.Config.Key,
+		}
 
-	// Call Scp method with file you want to upload to remote server.
-	log.Println("scp file to remote server remote server.")
-	err = ssh.Scp(tar)
+		// Call Scp method with file you want to upload to remote server.
+		log.Println("scp file to remote server remote server.")
+		err = ssh.Scp(tar)
 
-	// Handle errors
-	if err != nil {
-		log.Println(err.Error())
-		return err
-	}
+		// Handle errors
+		if err != nil {
+			log.Println(err.Error())
+			return err
+		}
 
-	// remove target before upload data
-	if p.Config.Remove {
-		log.Println("Remove target folder: " + p.Config.Target)
+		// remove target before upload data
+		if p.Config.Remove {
+			log.Println("Remove target folder: " + p.Config.Target)
 
-		response, err := ssh.Run(fmt.Sprintf("rm -rf %s", p.Config.Target))
+			response, err := ssh.Run(fmt.Sprintf("rm -rf %s", p.Config.Target))
+
+			if p.Config.Debug {
+				log.Println(response)
+			}
+
+			if err != nil {
+				log.Println(err.Error())
+				return err
+			}
+		}
+
+		// mkdir path
+		log.Println("create remote folder " + p.Config.Target)
+		response, err := ssh.Run(fmt.Sprintf("mkdir -p %s", p.Config.Target))
 
 		if p.Config.Debug {
 			log.Println(response)
@@ -136,45 +151,32 @@ func (p Plugin) Exec() error {
 			log.Println(err.Error())
 			return err
 		}
-	}
 
-	// mkdir path
-	log.Println("create remote folder " + p.Config.Target)
-	response, err := ssh.Run(fmt.Sprintf("mkdir -p %s", p.Config.Target))
+		// untar file
+		log.Println("untar remote file " + dest)
+		response, err = ssh.Run(fmt.Sprintf("tar -xf %s -C %s", dest, p.Config.Target))
 
-	if p.Config.Debug {
-		log.Println(response)
-	}
+		if p.Config.Debug {
+			log.Println(response)
+		}
 
-	if err != nil {
-		log.Println(err.Error())
-		return err
-	}
+		if err != nil {
+			log.Println(err.Error())
+			return err
+		}
 
-	// untar file
-	log.Println("untar remote file " + dest)
-	response, err = ssh.Run(fmt.Sprintf("tar -xf %s -C %s", dest, p.Config.Target))
+		// remove tar file
+		log.Println("remove remote file " + dest)
+		response, err = ssh.Run(fmt.Sprintf("rm -rf %s", dest))
 
-	if p.Config.Debug {
-		log.Println(response)
-	}
+		if p.Config.Debug {
+			log.Println(response)
+		}
 
-	if err != nil {
-		log.Println(err.Error())
-		return err
-	}
-
-	// remove tar file
-	log.Println("remove remote file " + dest)
-	response, err = ssh.Run(fmt.Sprintf("rm -rf %s", dest))
-
-	if p.Config.Debug {
-		log.Println(response)
-	}
-
-	if err != nil {
-		log.Println(err.Error())
-		return err
+		if err != nil {
+			log.Println(err.Error())
+			return err
+		}
 	}
 
 	return nil
