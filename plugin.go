@@ -39,7 +39,7 @@ type (
 		Username string
 		Password string
 		Key      string
-		Target   string
+		Target   []string
 		Source   []string
 		Debug    bool
 		Remove   bool
@@ -77,10 +77,10 @@ func (p Plugin) Exec() error {
 		return errors.New("missing ssh config (Host, Username, Password or Key)")
 	}
 
-	if len(p.Config.Source) == 0 {
-		log.Println("missing source file list config")
+	if len(p.Config.Source) == 0 || len(p.Config.Target) == 0 {
+		log.Println("missing source or target config")
 
-		return errors.New("missing source file list config")
+		return errors.New("missing source or target config")
 	}
 
 	files := trimPath(p.Config.Source)
@@ -123,11 +123,39 @@ func (p Plugin) Exec() error {
 			return err
 		}
 
-		// remove target before upload data
-		if p.Config.Remove {
-			log.Println("Remove target folder: " + p.Config.Target)
+		for _, target := range p.Config.Target {
+			// remove target before upload data
+			if p.Config.Remove {
+				log.Println("Remove target folder: " + target)
 
-			response, err := ssh.Run(fmt.Sprintf("rm -rf %s", p.Config.Target))
+				response, err := ssh.Run(fmt.Sprintf("rm -rf %s", target))
+
+				if p.Config.Debug {
+					log.Println(response)
+				}
+
+				if err != nil {
+					log.Println(err.Error())
+					return err
+				}
+			}
+
+			// mkdir path
+			log.Println("create remote folder " + target)
+			response, err := ssh.Run(fmt.Sprintf("mkdir -p %s", target))
+
+			if p.Config.Debug {
+				log.Println(response)
+			}
+
+			if err != nil {
+				log.Println(err.Error())
+				return err
+			}
+
+			// untar file
+			log.Println("untar remote file " + dest)
+			response, err = ssh.Run(fmt.Sprintf("tar -xf %s -C %s", dest, target))
 
 			if p.Config.Debug {
 				log.Println(response)
@@ -139,35 +167,9 @@ func (p Plugin) Exec() error {
 			}
 		}
 
-		// mkdir path
-		log.Println("create remote folder " + p.Config.Target)
-		response, err := ssh.Run(fmt.Sprintf("mkdir -p %s", p.Config.Target))
-
-		if p.Config.Debug {
-			log.Println(response)
-		}
-
-		if err != nil {
-			log.Println(err.Error())
-			return err
-		}
-
-		// untar file
-		log.Println("untar remote file " + dest)
-		response, err = ssh.Run(fmt.Sprintf("tar -xf %s -C %s", dest, p.Config.Target))
-
-		if p.Config.Debug {
-			log.Println(response)
-		}
-
-		if err != nil {
-			log.Println(err.Error())
-			return err
-		}
-
 		// remove tar file
 		log.Println("remove remote file " + dest)
-		response, err = ssh.Run(fmt.Sprintf("rm -rf %s", dest))
+		response, err := ssh.Run(fmt.Sprintf("rm -rf %s", dest))
 
 		if p.Config.Debug {
 			log.Println(response)
