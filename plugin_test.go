@@ -17,7 +17,7 @@ func TestMissingConfig(t *testing.T) {
 func TestMissingSSHConfig(t *testing.T) {
 	plugin := Plugin{
 		Config: Config{
-			Host:     "example.com",
+			Host:     []string{"example.com"},
 			Username: "ubuntu",
 		},
 	}
@@ -30,7 +30,7 @@ func TestMissingSSHConfig(t *testing.T) {
 func TestMissingSourceConfig(t *testing.T) {
 	plugin := Plugin{
 		Config: Config{
-			Host:     "example.com",
+			Host:     []string{"example.com"},
 			Username: "ubuntu",
 			Port:     "443",
 			Password: "1234",

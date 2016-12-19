@@ -4,6 +4,10 @@
 
 [Drone](https://github.com/drone/drone) plugin to copy files and artifacts via SSH. 
 
+## Feature
+
+* [x] Support send files to multiple host.
+
 ## Build
 
 Build the binary with the following commands:
