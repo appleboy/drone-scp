@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"sync"
 
 	"github.com/appleboy/drone-scp/easyssh"
 )
@@ -53,6 +54,8 @@ type (
 	}
 )
 
+var wg sync.WaitGroup
+
 func trimPath(keys []string) []string {
 	var newKeys []string
 
@@ -66,6 +69,10 @@ func trimPath(keys []string) []string {
 	}
 
 	return newKeys
+}
+
+func (p Plugin) log(host string, message ...interface{}) {
+	log.Printf("%s: %s", host, fmt.Sprintln(message...))
 }
 
 // Exec executes the plugin.
@@ -103,83 +110,102 @@ func (p Plugin) Exec() error {
 		return err
 	}
 
+	wg.Add(len(p.Config.Host))
+	errChannel := make(chan error, 1)
+	finished := make(chan bool, 1)
 	for _, host := range p.Config.Host {
-		// Create MakeConfig instance with remote username, server address and path to private key.
-		ssh := &easyssh.MakeConfig{
-			Server:   host,
-			User:     p.Config.Username,
-			Password: p.Config.Password,
-			Port:     p.Config.Port,
-			Key:      p.Config.Key,
-		}
+		go func(host string) {
+			// Create MakeConfig instance with remote username, server address and path to private key.
+			ssh := &easyssh.MakeConfig{
+				Server:   host,
+				User:     p.Config.Username,
+				Password: p.Config.Password,
+				Port:     p.Config.Port,
+				Key:      p.Config.Key,
+			}
 
-		// Call Scp method with file you want to upload to remote server.
-		log.Println("scp file to remote server remote server.")
-		err = ssh.Scp(tar)
+			// Call Scp method with file you want to upload to remote server.
+			p.log(host, "scp file to server.")
+			err = ssh.Scp(tar)
 
-		// Handle errors
-		if err != nil {
-			log.Println(err.Error())
-			return err
-		}
+			// Handle errors
+			if err != nil {
+				errChannel <- err
+			}
 
-		for _, target := range p.Config.Target {
-			// remove target before upload data
-			if p.Config.Remove {
-				log.Println("Remove target folder: " + target)
+			for _, target := range p.Config.Target {
+				// remove target before upload data
+				if p.Config.Remove {
+					p.log(host, "Remove target folder:", target)
 
-				response, err := ssh.Run(fmt.Sprintf("rm -rf %s", target))
+					response, err := ssh.Run(fmt.Sprintf("rm -rf %s", target))
+
+					if p.Config.Debug {
+						log.Println(response)
+					}
+
+					if err != nil {
+						errChannel <- err
+					}
+				}
+
+				// mkdir path
+				p.log(host, "create folder", target)
+				response, err := ssh.Run(fmt.Sprintf("mkdir -p %s", target))
 
 				if p.Config.Debug {
 					log.Println(response)
 				}
 
 				if err != nil {
-					log.Println(err.Error())
-					return err
+					errChannel <- err
+				}
+
+				// untar file
+				p.log(host, "untar file", dest)
+				response, err = ssh.Run(fmt.Sprintf("tar -xf %s -C %s", dest, target))
+
+				if p.Config.Debug {
+					log.Println(response)
+				}
+
+				if err != nil {
+					errChannel <- err
 				}
 			}
 
-			// mkdir path
-			log.Println("create remote folder " + target)
-			response, err := ssh.Run(fmt.Sprintf("mkdir -p %s", target))
+			// remove tar file
+			p.log(host, "remove file", dest)
+			response, err := ssh.Run(fmt.Sprintf("rm -rf %s", dest))
 
 			if p.Config.Debug {
 				log.Println(response)
 			}
 
 			if err != nil {
-				log.Println(err.Error())
-				return err
+				errChannel <- err
 			}
 
-			// untar file
-			log.Println("untar remote file " + dest)
-			response, err = ssh.Run(fmt.Sprintf("tar -xf %s -C %s", dest, target))
+			wg.Done()
 
-			if p.Config.Debug {
-				log.Println(response)
-			}
+		}(host)
+	}
 
-			if err != nil {
-				log.Println(err.Error())
-				return err
-			}
-		}
+	go func() {
+		wg.Wait()
+		close(finished)
+	}()
 
-		// remove tar file
-		log.Println("remove remote file " + dest)
-		response, err := ssh.Run(fmt.Sprintf("rm -rf %s", dest))
-
-		if p.Config.Debug {
-			log.Println(response)
-		}
-
+	select {
+	case <-finished:
+	case err := <-errChannel:
 		if err != nil {
-			log.Println(err.Error())
+			fmt.Println("drone-scp error: ", err)
 			return err
 		}
 	}
+
+	fmt.Println("Successfully executed transfer data to all host.")
 
 	return nil
 }
