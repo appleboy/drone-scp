@@ -123,9 +123,8 @@ func main() {
 			EnvVar: "DRONE_BUILD_LINK",
 		},
 		cli.StringFlag{
-			Name:   "env-file",
-			Usage:  "source env file",
-			EnvVar: "ENV_FILE",
+			Name:  "env-file",
+			Usage: "source env file",
 		},
 	}
 	app.Run(os.Args)
