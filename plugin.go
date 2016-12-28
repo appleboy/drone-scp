@@ -41,6 +41,7 @@ type (
 		Username string
 		Password string
 		Key      string
+		KeyPath  string
 		Target   []string
 		Source   []string
 		Debug    bool
@@ -79,7 +80,7 @@ func (p Plugin) log(host string, message ...interface{}) {
 // Exec executes the plugin.
 func (p Plugin) Exec() error {
 
-	if len(p.Config.Host) == 0 || len(p.Config.Username) == 0 || (len(p.Config.Password) == 0 && len(p.Config.Key) == 0) {
+	if len(p.Config.Host) == 0 || len(p.Config.Username) == 0 || (len(p.Config.Password) == 0 && len(p.Config.Key) == 0 && len(p.Config.KeyPath) == 0) {
 		return errors.New("missing ssh config (Host, Username, Password or Key)")
 	}
 
@@ -119,6 +120,7 @@ func (p Plugin) Exec() error {
 				Password: p.Config.Password,
 				Port:     p.Config.Port,
 				Key:      p.Config.Key,
+				KeyPath:  p.Config.KeyPath,
 			}
 
 			// Call Scp method with file you want to upload to remote server.

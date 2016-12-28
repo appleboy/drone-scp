@@ -8,12 +8,11 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"net"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 
 	"golang.org/x/crypto/ssh"
-	"golang.org/x/crypto/ssh/agent"
 )
 
 // MakeConfig Contains main authority information.
@@ -27,8 +26,25 @@ type MakeConfig struct {
 	User     string
 	Server   string
 	Key      string
+	KeyPath  string
 	Port     string
 	Password string
+}
+
+// returns ssh.Signer from user you running app home path + cutted key path.
+// (ex. pubkey,err := getKeyFile("/.ssh/id_rsa") )
+func getKeyFile(keypath string) (ssh.Signer, error) {
+	buf, err := ioutil.ReadFile(keypath)
+	if err != nil {
+		return nil, err
+	}
+
+	pubkey, err := ssh.ParsePrivateKey(buf)
+	if err != nil {
+		return nil, err
+	}
+
+	return pubkey, nil
 }
 
 // connects to remote server using MakeConfig struct and returns *ssh.Session
@@ -41,9 +57,10 @@ func (ssh_conf *MakeConfig) connect() (*ssh.Session, error) {
 		auths = append(auths, ssh.Password(ssh_conf.Password))
 	}
 
-	if sshAgent, err := net.Dial("unix", os.Getenv("SSH_AUTH_SOCK")); err == nil {
-		auths = append(auths, ssh.PublicKeysCallback(agent.NewClient(sshAgent).Signers))
-		defer sshAgent.Close()
+	if ssh_conf.KeyPath != "" {
+		if pubkey, err := getKeyFile(ssh_conf.KeyPath); err == nil {
+			auths = append(auths, ssh.PublicKeys(pubkey))
+		}
 	}
 
 	if ssh_conf.Key != "" {

@@ -49,6 +49,11 @@ func main() {
 			Usage:  "ssh private key",
 			EnvVar: "PLUGIN_KEY,SCP_KEY",
 		},
+		cli.StringFlag{
+			Name:   "key-path",
+			Usage:  "ssh private key path",
+			EnvVar: "PLUGIN_KEY_PATH,SCP_KEY_PATH",
+		},
 		cli.StringSliceFlag{
 			Name:   "target",
 			Usage:  "Target path on the server",
@@ -156,6 +161,7 @@ func run(c *cli.Context) error {
 			Username: c.String("username"),
 			Password: c.String("password"),
 			Key:      c.String("key"),
+			KeyPath:  c.String("key-path"),
 			Target:   c.StringSlice("target"),
 			Source:   c.StringSlice("source"),
 			Debug:    c.Bool("debug"),
