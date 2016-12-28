@@ -2,8 +2,8 @@ sudo: required
 language: go
 
 go:
-  - 1.6.4
-  - 1.7.4
+  - 1.6.x
+  - 1.7.x
   - tip
 
 cache:
