@@ -52,22 +52,22 @@ func main() {
 		cli.StringSliceFlag{
 			Name:   "target",
 			Usage:  "Target path on the server",
-			EnvVar: "PLUGIN_TARGET",
+			EnvVar: "PLUGIN_TARGET,SCP_TARGET",
 		},
 		cli.StringSliceFlag{
 			Name:   "source",
 			Usage:  "scp file list",
-			EnvVar: "PLUGIN_SOURCE",
+			EnvVar: "PLUGIN_SOURCE,SCP_SOURCE",
 		},
 		cli.BoolFlag{
 			Name:   "debug",
 			Usage:  "display message from command",
-			EnvVar: "PLUGIN_DEBUG",
+			EnvVar: "PLUGIN_DEBUG,SCP_DEBUG",
 		},
 		cli.BoolFlag{
 			Name:   "rm",
 			Usage:  "remove target folder before upload data",
-			EnvVar: "PLUGIN_RM",
+			EnvVar: "PLUGIN_RM,SCP_RM",
 		},
 		cli.StringFlag{
 			Name:   "repo.owner",
