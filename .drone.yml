@@ -35,7 +35,7 @@ pipeline:
 
   docker:
     image: plugins/docker
-    repo: appleboy/drone-line
+    repo: appleboy/${DRONE_REPO}
     tags: [ '${DRONE_TAG}' ]
     when:
       event: [ tag ]
@@ -43,7 +43,7 @@ pipeline:
 
   docker:
     image: plugins/docker
-    repo: appleboy/drone-line
+    repo: appleboy/${DRONE_REPO}
     tags: [ 'latest' ]
     when:
       event: [ push ]
