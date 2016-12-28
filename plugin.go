@@ -11,6 +11,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/appleboy/com/random"
 	"github.com/appleboy/drone-scp/easyssh"
 )
 
@@ -79,19 +80,15 @@ func (p Plugin) log(host string, message ...interface{}) {
 func (p Plugin) Exec() error {
 
 	if len(p.Config.Host) == 0 || len(p.Config.Username) == 0 || (len(p.Config.Password) == 0 && len(p.Config.Key) == 0) {
-		log.Println("missing ssh config (Host, Username, Password or Key)")
-
 		return errors.New("missing ssh config (Host, Username, Password or Key)")
 	}
 
 	if len(p.Config.Source) == 0 || len(p.Config.Target) == 0 {
-		log.Println("missing source or target config")
-
 		return errors.New("missing source or target config")
 	}
 
 	files := trimPath(p.Config.Source)
-	dest := fmt.Sprintf("%s-%s.tar", p.Repo.Name, p.Build.Commit[:7])
+	dest := fmt.Sprintf("%s.tar", random.String(10))
 
 	// create a temporary file for the archive
 	dir, err := ioutil.TempDir("", "")

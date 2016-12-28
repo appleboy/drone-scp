@@ -1,6 +1,10 @@
-hash: 5e81eac084616ea98e685364cb3bc81054c8098980b087671777d5a378fbca42
-updated: 2016-12-28T11:09:15.754250988+08:00
+hash: 324c76f4ece1989f584ec84aab8252020da4dcbc20e38990465a9a0b7400f8ec
+updated: 2016-12-28T15:52:54.896825557+08:00
 imports:
+- name: github.com/appleboy/com
+  version: c2e1fea1b771a26cb55774843ebd8955d723ee4e
+  subpackages:
+  - random
 - name: github.com/joho/godotenv
   version: a01a834e1654b4c9ca5b3ad05159445cc9c7ad08
   subpackages:
