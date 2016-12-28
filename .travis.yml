@@ -23,8 +23,3 @@ script:
   - make lint
   - make test
   - make build
-
-after_success:
-  # ignore main.go coverage
-  - sed -i '/main.go/d' coverage.txt
-  - bash <(curl -s https://codecov.io/bash) -f coverage.txt

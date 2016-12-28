@@ -14,6 +14,7 @@ pipeline:
       - make vet
       - make lint
       - make test
+      - make coverage
       - make build
       # build binary for docker image
       - make static_build

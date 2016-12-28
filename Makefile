@@ -102,6 +102,12 @@ endif
 	docker tag $(DEPLOY_ACCOUNT)/$(DEPLOY_IMAGE):latest $(DEPLOY_ACCOUNT)/$(DEPLOY_IMAGE):$(tag)
 	docker push $(DEPLOY_ACCOUNT)/$(DEPLOY_IMAGE):$(tag)
 
+coverage:
+	sed -i '/main.go/d' coverage.txt
+	curl -s https://codecov.io/bash > .codecov && \
+	chmod +x .codecov && \
+	./.codecov -t ${CODECOV_TOKEN} -f coverage.txt
+
 clean:
 	go clean -x -i ./...
 	rm -rf coverage.txt $(EXECUTABLE) $(DIST) vendor
