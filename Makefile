@@ -104,7 +104,7 @@ coverage:
 	sed -i '/main.go/d' coverage.txt
 	curl -s https://codecov.io/bash > .codecov && \
 	chmod +x .codecov && \
-	./.codecov -t ${CODECOV_TOKEN} -f coverage.txt
+	./.codecov -f coverage.txt
 
 clean:
 	go clean -x -i ./...
