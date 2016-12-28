@@ -9,6 +9,7 @@
 * [x] Support routines.
 * [x] Support send files to multiple host.
 * [x] Support send files to multiple target folder on host.
+* [x] Support load ssh key from absolute path or raw body.
 
 ## Build
 
