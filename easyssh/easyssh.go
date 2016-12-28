@@ -16,7 +16,7 @@ import (
 	"golang.org/x/crypto/ssh/agent"
 )
 
-// Contains main authority information.
+// MakeConfig Contains main authority information.
 // User field should be a name of user on remote server (ex. john in ssh john@example.com).
 // Server field should be a remote machine address (ex. example.com in ssh john@example.com)
 // Key is a path to private key on your local machine.
@@ -107,7 +107,7 @@ func (ssh_conf *MakeConfig) Stream(command string) (output chan string, done cha
 	return outputChan, done, err
 }
 
-// Runs command on remote machine and returns its stdout as a string
+// Run command on remote machine and returns its stdout as a string
 func (ssh_conf *MakeConfig) Run(command string) (outStr string, err error) {
 	outChan, doneChan, err := ssh_conf.Stream(command)
 	if err != nil {

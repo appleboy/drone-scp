@@ -1,0 +1,58 @@
+workspace:
+  base: /srv/app
+  path: src/github.com/appleboy/drone-scp
+
+pipeline:
+  test:
+    image: appleboy/golang-testing
+    pull: true
+    environment:
+      TAGS: netgo
+      GOPATH: /srv/app
+    commands:
+      - make dep_install
+      - make vet
+      - make lint
+      - make test
+      - make coverage
+      - make build
+      # build binary for docker image
+      - make static_build
+    when:
+      event: [ push, tag, pull_request ]
+
+  release:
+    image: appleboy/golang-testing
+    pull: true
+    environment:
+      TAGS: netgo
+      GOPATH: /srv/app
+    commands:
+      - make release
+    when:
+      event: [ tag ]
+      branch: [ refs/tags/* ]
+
+  docker:
+    image: plugins/docker
+    repo: appleboy/drone-line
+    tags: [ '${DRONE_TAG}' ]
+    when:
+      event: [ tag ]
+      branch: [ refs/tags/* ]
+
+  docker:
+    image: plugins/docker
+    repo: appleboy/drone-line
+    tags: [ 'latest' ]
+    when:
+      event: [ push ]
+      branch: [ master ]
+
+  github:
+    image: plugins/github-release
+    files:
+      - dist/release/*
+    when:
+      event: [ tag ]
+      branch: [ refs/tags/* ]
