@@ -44,7 +44,6 @@ type (
 		KeyPath  string
 		Target   []string
 		Source   []string
-		Debug    bool
 		Remove   bool
 	}
 
@@ -137,11 +136,7 @@ func (p Plugin) Exec() error {
 				if p.Config.Remove {
 					p.log(host, "Remove target folder:", target)
 
-					response, err := ssh.Run(fmt.Sprintf("rm -rf %s", target))
-
-					if p.Config.Debug {
-						log.Println(response)
-					}
+					_, err := ssh.Run(fmt.Sprintf("rm -rf %s", target))
 
 					if err != nil {
 						errChannel <- err
@@ -150,23 +145,15 @@ func (p Plugin) Exec() error {
 
 				// mkdir path
 				p.log(host, "create folder", target)
-				response, err := ssh.Run(fmt.Sprintf("mkdir -p %s", target))
+				response, _ := ssh.Run(fmt.Sprintf("mkdir -p %s", target))
 
-				if p.Config.Debug {
-					log.Println(response)
-				}
-
-				if err != nil {
-					errChannel <- err
+				if response != "" {
+					errChannel <- errors.New(response)
 				}
 
 				// untar file
 				p.log(host, "untar file", dest)
-				response, err = ssh.Run(fmt.Sprintf("tar -xf %s -C %s", dest, target))
-
-				if p.Config.Debug {
-					log.Println(response)
-				}
+				_, err = ssh.Run(fmt.Sprintf("tar -xf %s -C %s", dest, target))
 
 				if err != nil {
 					errChannel <- err
@@ -175,11 +162,7 @@ func (p Plugin) Exec() error {
 
 			// remove tar file
 			p.log(host, "remove file", dest)
-			response, err := ssh.Run(fmt.Sprintf("rm -rf %s", dest))
-
-			if p.Config.Debug {
-				log.Println(response)
-			}
+			_, err = ssh.Run(fmt.Sprintf("rm -rf %s", dest))
 
 			if err != nil {
 				errChannel <- err

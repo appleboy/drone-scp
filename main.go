@@ -65,11 +65,6 @@ func main() {
 			EnvVar: "PLUGIN_SOURCE,SCP_SOURCE",
 		},
 		cli.BoolFlag{
-			Name:   "debug",
-			Usage:  "display message from command",
-			EnvVar: "PLUGIN_DEBUG,SCP_DEBUG",
-		},
-		cli.BoolFlag{
 			Name:   "rm",
 			Usage:  "remove target folder before upload data",
 			EnvVar: "PLUGIN_RM,SCP_RM",
@@ -164,7 +159,6 @@ func run(c *cli.Context) error {
 			KeyPath:  c.String("key-path"),
 			Target:   c.StringSlice("target"),
 			Source:   c.StringSlice("source"),
-			Debug:    c.Bool("debug"),
 			Remove:   c.Bool("rm"),
 		},
 	}
