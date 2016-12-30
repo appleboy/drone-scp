@@ -4,6 +4,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"os"
+	"os/exec"
 	"os/user"
 	"testing"
 )
@@ -58,7 +59,11 @@ func TestTrimElement(t *testing.T) {
 	assert.Equal(t, result, trimPath(input))
 }
 
-func TestSCPFile(t *testing.T) {
+func TestSCPFileFromPublicKey(t *testing.T) {
+	if os.Getenv("SSH_AUTH_SOCK") != "" {
+		exec.Command("eval", "`ssh-agent -k`").Run()
+	}
+
 	u, err := user.Lookup("drone-scp")
 	if err != nil {
 		t.Fatalf("Lookup: %v", err)
@@ -100,13 +105,59 @@ func TestSCPFile(t *testing.T) {
 	}
 }
 
+// func TestSCPFileFromSSHAgent(t *testing.T) {
+// 	if os.Getenv("SSH_AUTH_SOCK") == "" {
+// 		exec.Command("eval", "`ssh-agent -s`").Run()
+// 		exec.Command("ssh-add", "tests/.ssh/id_rsa").Run()
+// 	}
+
+// 	u, err := user.Lookup("drone-scp")
+// 	if err != nil {
+// 		t.Fatalf("Lookup: %v", err)
+// 	}
+
+// 	plugin := Plugin{
+// 		Config: Config{
+// 			Host:     []string{"localhost"},
+// 			Username: "drone-scp",
+// 			Port:     "22",
+// 			Source:   []string{"tests/a.txt", "tests/b.txt"},
+// 			Target:   []string{u.HomeDir + "/test"},
+// 		},
+// 	}
+
+// 	err = plugin.Exec()
+// 	assert.Nil(t, err)
+// }
+
+// func TestSCPFileFromPassword(t *testing.T) {
+// 	u, err := user.Lookup("drone-scp")
+// 	if err != nil {
+// 		t.Fatalf("Lookup: %v", err)
+// 	}
+
+// 	plugin := Plugin{
+// 		Config: Config{
+// 			Host:     []string{"localhost"},
+// 			Username: "drone-scp",
+// 			Port:     "22",
+// 			Password: "1234",
+// 			Source:   []string{"tests/a.txt", "tests/b.txt"},
+// 			Target:   []string{u.HomeDir + "/test"},
+// 		},
+// 	}
+
+// 	err = plugin.Exec()
+// 	assert.Nil(t, err)
+// }
+
 func TestIncorrectPassword(t *testing.T) {
 	plugin := Plugin{
 		Config: Config{
 			Host:     []string{"localhost"},
 			Username: "drone-scp",
 			Port:     "22",
-			Password: "1234",
+			Password: "123456",
 			Source:   []string{"tests/a.txt", "tests/b.txt"},
 			Target:   []string{"/home"},
 		},

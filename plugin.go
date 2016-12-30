@@ -79,8 +79,8 @@ func (p Plugin) log(host string, message ...interface{}) {
 // Exec executes the plugin.
 func (p Plugin) Exec() error {
 
-	if len(p.Config.Host) == 0 || len(p.Config.Username) == 0 || (len(p.Config.Password) == 0 && len(p.Config.Key) == 0 && len(p.Config.KeyPath) == 0) {
-		return errors.New("missing ssh config (Host, Username, Password or Key)")
+	if len(p.Config.Host) == 0 || len(p.Config.Username) == 0 {
+		return errors.New("missing ssh config (Host, Username)")
 	}
 
 	if len(p.Config.Source) == 0 || len(p.Config.Target) == 0 {

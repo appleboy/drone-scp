@@ -9,10 +9,12 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"net"
 	"os"
 	"path/filepath"
 
 	"golang.org/x/crypto/ssh"
+	"golang.org/x/crypto/ssh/agent"
 )
 
 // MakeConfig Contains main authority information.
@@ -55,6 +57,11 @@ func (ssh_conf *MakeConfig) connect() (*ssh.Session, error) {
 	// figure out what auths are requested, what is supported
 	if ssh_conf.Password != "" {
 		auths = append(auths, ssh.Password(ssh_conf.Password))
+	}
+
+	if sshAgent, err := net.Dial("unix", os.Getenv("SSH_AUTH_SOCK")); err == nil {
+		auths = append(auths, ssh.PublicKeysCallback(agent.NewClient(sshAgent).Signers))
+		defer sshAgent.Close()
 	}
 
 	if ssh_conf.KeyPath != "" {
