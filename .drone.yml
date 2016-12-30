@@ -23,9 +23,6 @@ pipeline:
       - chmod 700 /home/drone-scp/.ssh
       - cp tests/.ssh/id_rsa.pub /home/drone-scp/.ssh/authorized_keys
       - chown -R drone-scp /home/drone-scp/.ssh
-      - mkdir -p ${HOME}/.ssh
-      - chmod 700 ${HOME}/.ssh
-      - cp -r tests/.ssh/id_rsa.pub tests/.ssh/id_rsa ${HOME}/.ssh/
       # install ssh and start server
       - apk update && apk add openssh openrc
       - rm -rf /etc/ssh/ssh_host_rsa_key /etc/ssh/ssh_host_dsa_key
