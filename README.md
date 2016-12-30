@@ -1,6 +1,6 @@
 # drone-scp
 
-[![Build Status](http://drone.wu-boy.com/api/badges/appleboy/drone-scp/status.svg)](http://drone.wu-boy.com/appleboy/drone-scp) [![codecov](https://codecov.io/gh/appleboy/drone-scp/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/drone-scp) [![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/drone-scp)](https://goreportcard.com/report/github.com/appleboy/drone-scp)
+[![GoDoc](https://godoc.org/github.com/appleboy/drone-scp?status.svg)](https://godoc.org/github.com/appleboy/drone-scp) [![Build Status](http://drone.wu-boy.com/api/badges/appleboy/drone-scp/status.svg)](http://drone.wu-boy.com/appleboy/drone-scp) [![codecov](https://codecov.io/gh/appleboy/drone-scp/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/drone-scp) [![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/drone-scp)](https://goreportcard.com/report/github.com/appleboy/drone-scp) [![Docker Pulls](https://img.shields.io/docker/pulls/appleboy/drone-scp.svg)](https://hub.docker.com/r/appleboy/drone-scp/)
 
 [Drone](https://github.com/drone/drone) plugin to copy files and artifacts via SSH. 
 
