@@ -7,7 +7,7 @@ EXECUTABLE := drone-scp
 DEPLOY_ACCOUNT := appleboy
 DEPLOY_IMAGE := $(EXECUTABLE)
 
-TARGETS ?= linux darwin windows
+TARGETS ?= linux darwin
 PACKAGES ?= $(shell go list ./... | grep -v /vendor/)
 SOURCES ?= $(shell find . -name "*.go" -type f)
 TAGS ?=
