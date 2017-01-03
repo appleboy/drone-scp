@@ -8,7 +8,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"runtime"
 	"strings"
 	"sync"
 
@@ -100,13 +99,7 @@ func (p Plugin) Exec() error {
 
 	// run archive command
 	log.Println("tar all files into " + tar)
-	var args []string
-	if runtime.GOOS == "windows" {
-		newTar := "/" + strings.Replace(strings.Replace(tar, ":", "", -1), "\\", "/", -1)
-		args = append(append([]string{}, "-cf", newTar), files...)
-	} else {
-		args = append(append([]string{}, "-cf", tar), files...)
-	}
+	args := append(append([]string{}, "-cf", getRealPath(tar)), files...)
 
 	cmd := exec.Command("tar", args...)
 	cmd.Stdout = os.Stdout
