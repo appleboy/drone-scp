@@ -136,7 +136,7 @@ func main() {
 		},
 	}
 
-	// EXAMPLE: Override a template
+	// Override a template
 	cli.AppHelpTemplate = `
 ________                                         ____________________________
 \______ \_______  ____   ____   ____            /   _____/\_   ___ \______   \
