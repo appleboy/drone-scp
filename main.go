@@ -17,55 +17,63 @@ func init() {
 }
 
 func main() {
+
 	app := cli.NewApp()
-	app.Name = "scp plugin"
-	app.Usage = "scp plugin"
+	app.Name = "Drone SCP"
+	app.Usage = "Copy files and artifacts via SSH."
+	app.Copyright = "Copyright (c) 2017 Bo-Yi Wu"
+	app.Authors = []cli.Author{
+		cli.Author{
+			Name:  "Bo-Yi Wu",
+			Email: "appleboy.tw@gmail.com",
+		},
+	}
 	app.Action = run
 	app.Version = Version
 	app.Flags = []cli.Flag{
 		cli.StringSliceFlag{
-			Name:   "host",
+			Name:   "host, H",
 			Usage:  "Server host",
 			EnvVar: "PLUGIN_HOST,SCP_HOST",
 		},
 		cli.StringFlag{
-			Name:   "port",
+			Name:   "port, P",
 			Value:  "22",
 			Usage:  "Server port, default to 22",
 			EnvVar: "PLUGIN_PORT,SCP_PORT",
 		},
 		cli.StringFlag{
-			Name:   "username",
+			Name:   "username, u",
 			Usage:  "Server username",
 			EnvVar: "PLUGIN_USERNAME,SCP_USERNAME",
 		},
 		cli.StringFlag{
-			Name:   "password",
+			Name:   "password, p",
 			Usage:  "Password for password-based authentication",
 			EnvVar: "PLUGIN_PASSWORD,SCP_PASSWORD",
 		},
 		cli.StringFlag{
-			Name:   "key",
+			Name:   "key, k",
 			Usage:  "ssh private key",
 			EnvVar: "PLUGIN_KEY,SCP_KEY",
 		},
 		cli.StringFlag{
-			Name:   "key-path",
+			Name:   "key-path, i",
 			Usage:  "ssh private key path",
 			EnvVar: "PLUGIN_KEY_PATH,SCP_KEY_PATH",
 		},
 		cli.StringSliceFlag{
-			Name:   "target",
+			Name:   "target, t",
 			Usage:  "Target path on the server",
 			EnvVar: "PLUGIN_TARGET,SCP_TARGET",
 		},
 		cli.StringSliceFlag{
-			Name:   "source",
+			Name:   "source, s",
 			Usage:  "scp file list",
 			EnvVar: "PLUGIN_SOURCE,SCP_SOURCE",
 		},
 		cli.BoolFlag{
-			Name:   "rm",
+			Name:   "rm, r",
 			Usage:  "remove target folder before upload data",
 			EnvVar: "PLUGIN_RM,SCP_RM",
 		},
@@ -127,6 +135,39 @@ func main() {
 			Usage: "source env file",
 		},
 	}
+
+	// EXAMPLE: Override a template
+	cli.AppHelpTemplate = `
+________                                         ____________________________
+\______ \_______  ____   ____   ____            /   _____/\_   ___ \______   \
+ |    |  \_  __ \/  _ \ /    \_/ __ \   ______  \_____  \ /    \  \/|     ___/
+ |    |   \  | \(  <_> )   |  \  ___/  /_____/  /        \\     \___|    |
+/_______  /__|   \____/|___|  /\___  >         /_______  / \______  /____|
+        \/                  \/     \/                  \/         \/
+                                                            version: {{.Version}}
+NAME:
+   {{.Name}} - {{.Usage}}
+
+USAGE:
+   {{.HelpName}} {{if .VisibleFlags}}[global options]{{end}}{{if .Commands}} command [command options]{{end}} {{if .ArgsUsage}}{{.ArgsUsage}}{{else}}[arguments...]{{end}}
+   {{if len .Authors}}
+AUTHOR:
+   {{range .Authors}}{{ . }}{{end}}
+   {{end}}{{if .Commands}}
+COMMANDS:
+{{range .Commands}}{{if not .HideHelp}}   {{join .Names ", "}}{{ "\t"}}{{.Usage}}{{ "\n" }}{{end}}{{end}}{{end}}{{if .VisibleFlags}}
+GLOBAL OPTIONS:
+   {{range .VisibleFlags}}{{.}}
+   {{end}}{{end}}{{if .Copyright }}
+COPYRIGHT:
+   {{.Copyright}}
+   {{end}}{{if .Version}}
+VERSION:
+   {{.Version}}
+   {{end}}
+REPOSITORY:
+    Github: https://github.com/appleboy/drone-scp
+`
 	app.Run(os.Args)
 }
 
