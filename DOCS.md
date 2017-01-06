@@ -4,11 +4,11 @@ title: SCP
 author: appleboy
 tags: [ publish, ssh, scp ]
 repo: appleboy/drone-scp
-logo: scp.svg
+logo: term.svg
 image: appleboy/drone-scp
 ---
 
-The Scp plugin copy files and artifacts to target host machine via SSH. The below pipeline configuration demonstrates simple usage:
+The SCP plugin copy files and artifacts to target host machine via SSH. The below pipeline configuration demonstrates simple usage:
 
 ```yaml
 pipeline:
@@ -116,24 +116,13 @@ pipeline:
     source: release.tar.gz
 ```
 
-The above webhook Yaml attribute can be replaced with the `SCP_PASSWORD` secret environment variable. Please see the Drone documentation to learn more about secrets.
+The `password` or `key` attributes can be replaced with the below secret environment variables. Please see the Drone documentation to learn more about secrets.
 
-It is highly recommended to put the `SCP_PASSWORD` or `SCP_KEY` into a secret so it is not exposed to users. This can be done using the drone-cli.
+SCP_PASSWORD
+: password of target host user
 
-```bash
-drone secret add --image=appleboy/drone-scp \
-  appleboy/hello-world SCP_PASSWORD 12345678
-drone secret add --image=appleboy/drone-scp \
-  appleboy/hello-world SSH_KEY @path/to/.ssh/id_rsa
-```
-
-Then sign the YAML file after all secrets are added.
-
-```bash
-drone sign appleboy/hello-world
-```
-
-See [secrets](http://readme.drone.io/0.5/usage/secrets/) for additional information on secrets
+SCP_KEY
+: plain text of user private key
 
 # Parameter Reference
 
@@ -150,7 +139,7 @@ password
 : password for target host user
 
 key
-: plain text of user public key
+: plain text of user private key
 
 target
 : folder path of target host
