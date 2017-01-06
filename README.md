@@ -223,6 +223,8 @@ docker run --rm \
   appleboy/drone-scp
 ```
 
+You can get more [information](DOCS.md) about how to use scp in drone.
+
 ## Testing
 
 Test the package with the following command:

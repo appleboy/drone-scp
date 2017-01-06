@@ -2,7 +2,7 @@
 date: 2017-01-06T00:00:00+00:00
 title: SCP
 author: appleboy
-tags: [ ssh, scp ]
+tags: [ publish, ssh, scp ]
 repo: appleboy/drone-scp
 logo: scp.svg
 image: appleboy/drone-scp
