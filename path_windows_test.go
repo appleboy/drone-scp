@@ -14,8 +14,8 @@ func TestGetRealPath(t *testing.T) {
 		{
 			"Test Windows Path",
 			"C:\\Users\\appleboy\\test.txt",
-			"/C/Users/appleboy/test.txt"
-		}
+			"/C/Users/appleboy/test.txt",
+		},
 	}
 	for _, tt := range tests {
 		if got := getRealPath(tt.args.path); got != tt.want {

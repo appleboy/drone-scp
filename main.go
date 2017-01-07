@@ -18,7 +18,7 @@ func main() {
 	app.Usage = "Copy files and artifacts via SSH."
 	app.Copyright = "Copyright (c) 2017 Bo-Yi Wu"
 	app.Authors = []cli.Author{
-		cli.Author{
+		{
 			Name:  "Bo-Yi Wu",
 			Email: "appleboy.tw@gmail.com",
 		},
