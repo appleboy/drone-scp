@@ -3,6 +3,10 @@ workspace:
   path: src/github.com/appleboy/drone-scp
 
 pipeline:
+  clone:
+    image: plugins/git
+    tags: true
+
   # restore the cache from an sftp server
   restore_cache:
     image: appleboy/drone-sftp-cache
