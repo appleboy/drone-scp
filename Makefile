@@ -11,7 +11,7 @@ TARGETS ?= linux darwin windows
 PACKAGES ?= $(shell go list ./... | grep -v /vendor/)
 SOURCES ?= $(shell find . -name "*.go" -type f)
 TAGS ?=
-LDFLAGS += -X 'main.Version=$(VERSION)'
+LDFLAGS ?= -X 'main.Version=$(VERSION)'
 
 ifneq ($(shell uname), Darwin)
 	EXTLDFLAGS = -extldflags "-static" $(null)
