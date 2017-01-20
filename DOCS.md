@@ -100,30 +100,6 @@ pipeline:
 +     event: tag
 ```
 
-# Secrets
-
-The SCP plugin supports reading credentials from the Drone secret store. This is strongly recommended instead of storing credentials in the pipeline configuration in plain text.
-
-```diff
-pipeline:
-  scp:
-    image: appleboy/drone-scp
-    host: example.com
-    username: appleboy
--   password: 12345678
-    port: 4430
-    target: /home/deploy/web
-    source: release.tar.gz
-```
-
-The `password` or `key` attributes can be replaced with the below secret environment variables. Please see the Drone documentation to learn more about secrets.
-
-SCP_PASSWORD
-: password of target host user
-
-SCP_KEY
-: plain text of user private key
-
 # Parameter Reference
 
 host
