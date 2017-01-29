@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/appleboy/com/random"
 	"github.com/appleboy/drone-scp/easyssh"
@@ -42,6 +43,7 @@ type (
 		Password string
 		Key      string
 		KeyPath  string
+		Timeout  time.Duration
 		Target   []string
 		Source   []string
 		Remove   bool
@@ -121,6 +123,7 @@ func (p Plugin) Exec() error {
 				Port:     p.Config.Port,
 				Key:      p.Config.Key,
 				KeyPath:  p.Config.KeyPath,
+				Timeout:  p.Config.Timeout,
 			}
 
 			// Call Scp method with file you want to upload to remote server.
