@@ -47,6 +47,11 @@ func main() {
 			Usage:  "Password for password-based authentication",
 			EnvVar: "PLUGIN_PASSWORD,SCP_PASSWORD",
 		},
+		cli.DurationFlag{
+			Name:   "timeout,t",
+			Usage:  "connection timeout",
+			EnvVar: "PLUGIN_TIMEOUT,SCP_TIMEOUT",
+		},
 		cli.StringFlag{
 			Name:   "key, k",
 			Usage:  "ssh private key",
@@ -191,6 +196,7 @@ func run(c *cli.Context) error {
 			Port:     c.String("port"),
 			Username: c.String("username"),
 			Password: c.String("password"),
+			Timeout:  c.Duration("timeout"),
 			Key:      c.String("key"),
 			KeyPath:  c.String("key-path"),
 			Target:   c.StringSlice("target"),

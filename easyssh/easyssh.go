@@ -12,6 +12,7 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"time"
 
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/agent"
@@ -31,6 +32,7 @@ type MakeConfig struct {
 	KeyPath  string
 	Port     string
 	Password string
+	Timeout  time.Duration
 }
 
 // returns ssh.Signer from user you running app home path + cutted key path.
@@ -76,8 +78,9 @@ func (ssh_conf *MakeConfig) connect() (*ssh.Session, error) {
 	}
 
 	config := &ssh.ClientConfig{
-		User: ssh_conf.User,
-		Auth: auths,
+		Timeout: ssh_conf.Timeout,
+		User:    ssh_conf.User,
+		Auth:    auths,
 	}
 
 	client, err := ssh.Dial("tcp", ssh_conf.Server+":"+ssh_conf.Port, config)
