@@ -83,7 +83,7 @@ func (ssh_conf *MakeConfig) connect() (*ssh.Session, error) {
 		Auth:    auths,
 	}
 
-	client, err := ssh.Dial("tcp", ssh_conf.Server+":"+ssh_conf.Port, config)
+	client, err := ssh.Dial("tcp", net.JoinHostPort(ssh_conf.Server, ssh_conf.Port), config)
 	if err != nil {
 		return nil, err
 	}
