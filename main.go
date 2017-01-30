@@ -48,7 +48,7 @@ func main() {
 			EnvVar: "PLUGIN_PASSWORD,SCP_PASSWORD",
 		},
 		cli.DurationFlag{
-			Name:   "timeout,t",
+			Name:   "timeout",
 			Usage:  "connection timeout",
 			EnvVar: "PLUGIN_TIMEOUT,SCP_TIMEOUT",
 		},
