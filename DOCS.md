@@ -126,6 +126,9 @@ source
 rm
 : remove target folder before copy files and artifacts
 
+timeout
+: Timeout is the maximum amount of time for the TCP connection to establish.
+
 # Template Reference
 
 repo.owner
