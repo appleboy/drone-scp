@@ -27,3 +27,4 @@ drone-scp
 coverage.txt
 .env
 dist
+.cover
