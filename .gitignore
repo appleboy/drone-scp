@@ -22,7 +22,6 @@ _testmain.go
 *.exe
 *.test
 *.prof
-vendor
 drone-scp
 coverage.txt
 .env
