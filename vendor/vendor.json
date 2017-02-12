@@ -25,6 +25,12 @@
 			"versionExact": "v1.1"
 		},
 		{
+			"checksumSHA1": "UE4lhbPYYWEhqHXQk24OA73m5+8=",
+			"path": "github.com/joho/godotenv/autoload",
+			"revision": "726cc8b906e3d31c70a9671c90a13716a8d3f50d",
+			"revisionTime": "2016-12-16T23:05:37Z"
+		},
+		{
 			"checksumSHA1": "LuFv4/jlrmFNnDb/5SCSEPAM9vU=",
 			"path": "github.com/pmezard/go-difflib/difflib",
 			"revision": "792786c7400a136282c1664665ae0a8db921c6c2",
