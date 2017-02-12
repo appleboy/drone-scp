@@ -6,22 +6,12 @@ go:
   - 1.7.x
   - tip
 
-cache:
-  directories:
-    - vendor
-    - ${HOME}/.glide
-
 before_install:
-  - mkdir -p $GOPATH/bin
-  - curl https://glide.sh/get | sh
   - sudo useradd -m -d /home/drone-scp -s /bin/bash drone-scp
   - sudo mkdir -p /home/drone-scp/.ssh
   - sudo chmod 700 /home/drone-scp/.ssh
   - sudo cp tests/.ssh/id_rsa.pub /home/drone-scp/.ssh/authorized_keys
   - sudo chown -R drone-scp /home/drone-scp/.ssh
-
-install:
-  - make dep_install
 
 script:
   - make vet
