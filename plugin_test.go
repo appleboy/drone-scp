@@ -1,12 +1,13 @@
 package main
 
 import (
-	"github.com/stretchr/testify/assert"
-
 	"os"
 	"os/exec"
 	"os/user"
+	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestMissingAllConfig(t *testing.T) {
@@ -105,6 +106,40 @@ func TestSCPFileFromPublicKey(t *testing.T) {
 	}
 }
 
+func TestSCPWildcardFileList(t *testing.T) {
+	if os.Getenv("SSH_AUTH_SOCK") != "" {
+		exec.Command("eval", "`ssh-agent -k`").Run()
+	}
+
+	u, err := user.Lookup("drone-scp")
+	if err != nil {
+		t.Fatalf("Lookup: %v", err)
+	}
+
+	plugin := Plugin{
+		Config: Config{
+			Host:     []string{"localhost"},
+			Username: "drone-scp",
+			Port:     "22",
+			KeyPath:  "tests/.ssh/id_rsa",
+			Source:   []string{"tests/global/*"},
+			Target:   []string{u.HomeDir + "/abc"},
+		},
+	}
+
+	err = plugin.Exec()
+	assert.Nil(t, err)
+
+	// check file exist
+	if _, err := os.Stat(u.HomeDir + "/abc/tests/global/c.txt"); os.IsNotExist(err) {
+		t.Fatalf("SCP-error: %v", err)
+	}
+
+	if _, err := os.Stat(u.HomeDir + "/abc/tests/global/d.txt"); os.IsNotExist(err) {
+		t.Fatalf("SCP-error: %v", err)
+	}
+}
+
 // func TestSCPFileFromSSHAgent(t *testing.T) {
 // 	if os.Getenv("SSH_AUTH_SOCK") == "" {
 // 		exec.Command("eval", "`ssh-agent -s`").Run()
@@ -197,4 +232,35 @@ func TestSourceNotFound(t *testing.T) {
 
 	err := plugin.Exec()
 	assert.NotNil(t, err)
+}
+
+func TestGlobList(t *testing.T) {
+	type args struct {
+		paths []string
+	}
+	tests := []struct {
+		name string
+		args args
+		want []string
+	}{
+		{
+			"test * parten",
+			args{
+				[]string{"tests/*.txt", "tests/.ssh/*", "abc*"},
+			},
+			[]string{"tests/a.txt", "tests/b.txt", "tests/.ssh/id_rsa", "tests/.ssh/id_rsa.pub"},
+		},
+		{
+			"test ? parten",
+			args{
+				[]string{"tests/?.txt"},
+			},
+			[]string{"tests/a.txt", "tests/b.txt"},
+		},
+	}
+	for _, tt := range tests {
+		if got := globList(tt.args.paths); !reflect.DeepEqual(got, tt.want) {
+			t.Errorf("%q. globList() = %v, want %v", tt.name, got, tt.want)
+		}
+	}
 }
