@@ -76,7 +76,7 @@ drone-scp --host example.com \
 drone-scp --host example.com \
   --port 22 \
   --username appleboy \
-+  --password xxxxxxx \
++ --password xxxxxxx \
   --target /home/appleboy/test \
   --source your_local_folder_path
 ```
@@ -109,14 +109,14 @@ drone-scp --host example.com \
 
 ```diff
 drone-scp --host example1.com \
-+  --host example2.com \
++ --host example2.com \
   --port 22 \
   --username appleboy \
   --password  xxxxxxx
   --target /home/appleboy/test1 \
-+  --target /home/appleboy/test2 \
++ --target /home/appleboy/test2 \
   --source your_local_folder_path_1
-+  --source your_local_folder_path_2
++ --source your_local_folder_path_2
 ```
 
 <a name="usage-from-docker"></a>
@@ -144,7 +144,7 @@ docker run --rm \
   -e SCP_HOST example.com \
   -e SCP_USERNAME xxxxxxx \
   -e SCP_PORT 22 \
-+  -e SCP_PASSWORD "xxxxxxx"
++ -e SCP_PASSWORD "xxxxxxx"
   -e SCP_SOURCE SOURCE_FILE_LIST \
   -e SCP_TARGET TARGET_FOLDER_PATH \
   -v $(pwd):$(pwd) \
