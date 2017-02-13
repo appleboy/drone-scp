@@ -4,7 +4,6 @@ import (
 	"os"
 	"os/exec"
 	"os/user"
-	"reflect"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -235,32 +234,16 @@ func TestSourceNotFound(t *testing.T) {
 }
 
 func TestGlobList(t *testing.T) {
-	type args struct {
-		paths []string
-	}
-	tests := []struct {
-		name string
-		args args
-		want []string
-	}{
-		{
-			"test * parten",
-			args{
-				[]string{"tests/*.txt", "tests/.ssh/*", "abc*"},
-			},
-			[]string{"tests/a.txt", "tests/b.txt", "tests/.ssh/id_rsa", "tests/.ssh/id_rsa.pub"},
-		},
-		{
-			"test ? parten",
-			args{
-				[]string{"tests/?.txt"},
-			},
-			[]string{"tests/a.txt", "tests/b.txt"},
-		},
-	}
-	for _, tt := range tests {
-		if got := globList(tt.args.paths); !reflect.DeepEqual(got, tt.want) {
-			t.Errorf("%q. globList() = %v, want %v", tt.name, got, tt.want)
-		}
-	}
+	// wrong patern
+	paterns := []string{"[]a]", "tests/?.txt"}
+	expects := []string{"tests/a.txt", "tests/b.txt"}
+	assert.Equal(t, expects, globList(paterns))
+
+	paterns = []string{"tests/*.txt", "tests/.ssh/*", "abc*"}
+	expects = []string{"tests/a.txt", "tests/b.txt", "tests/.ssh/id_rsa", "tests/.ssh/id_rsa.pub"}
+	assert.Equal(t, expects, globList(paterns))
+
+	paterns = []string{"tests/?.txt"}
+	expects = []string{"tests/a.txt", "tests/b.txt"}
+	assert.Equal(t, expects, globList(paterns))
 }
