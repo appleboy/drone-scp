@@ -74,6 +74,23 @@ func trimPath(keys []string) []string {
 	return newKeys
 }
 
+func globList(paths []string) []string {
+	var newPaths []string
+
+	for _, pattern := range paths {
+		pattern = strings.Trim(pattern, " ")
+		matches, err := filepath.Glob(pattern)
+		if err != nil {
+			log.Printf("Glob error for %q: %s\n", pattern, err)
+			continue
+		}
+
+		newPaths = append(newPaths, matches...)
+	}
+
+	return newPaths
+}
+
 func (p Plugin) log(host string, message ...interface{}) {
 	log.Printf("%s: %s", host, fmt.Sprintln(message...))
 }
@@ -89,7 +106,7 @@ func (p Plugin) Exec() error {
 		return errors.New("missing source or target config")
 	}
 
-	files := trimPath(p.Config.Source)
+	files := globList(trimPath(p.Config.Source))
 	dest := fmt.Sprintf("%s.tar", random.String(10))
 
 	// create a temporary file for the archive
