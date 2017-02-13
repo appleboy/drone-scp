@@ -7,6 +7,7 @@ Copy files and artifacts via SSH using a binary, docker or [Drone CI](http://rea
 ## Feature
 
 * [x] Support routines.
+* [x] Support wildcard pattern on source list.
 * [x] Support send files to multiple host.
 * [x] Support send files to multiple target folder on host.
 * [x] Support load ssh key from absolute path or raw body.

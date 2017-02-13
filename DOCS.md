@@ -62,6 +62,22 @@ pipeline:
     source: release.tar.gz
 ```
 
+Example configuration with wildcard pattern of source list:
+
+```diff
+pipeline:
+  scp:
+    image: appleboy/drone-scp
+    host:
+      - example1.com
+      - example2.com
+    target: /home/deploy/web
+    source:
+-     - release/backend.tar.gz
+-     - release/images.tar.gz
++     - release/*.tar.gz
+```
+
 Remove target folder before copy files and artifacts to target:
 
 ```diff
