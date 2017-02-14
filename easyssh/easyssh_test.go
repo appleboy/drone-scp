@@ -128,3 +128,29 @@ func TestSCPCommandWithPassword(t *testing.T) {
 		t.Fatalf("SCP-error: %v", err)
 	}
 }
+
+func TestSCPFileFromSSHAgent(t *testing.T) {
+	if os.Getenv("SSH_AUTH_SOCK") == "" {
+		exec.Command("eval", "`ssh-agent -s`").Run()
+		exec.Command("ssh-add", "../tests/.ssh/id_rsa").Run()
+	}
+
+	ssh := &MakeConfig{
+		Server: "localhost",
+		User:   "drone-scp",
+		Port:   "22",
+	}
+
+	err := ssh.Scp("../tests/b.txt")
+	assert.NoError(t, err)
+
+	u, err := user.Lookup("drone-scp")
+	if err != nil {
+		t.Fatalf("Lookup: %v", err)
+	}
+
+	// check file exist
+	if _, err := os.Stat(u.HomeDir + "/b.txt"); os.IsNotExist(err) {
+		t.Fatalf("SCP-error: %v", err)
+	}
+}
