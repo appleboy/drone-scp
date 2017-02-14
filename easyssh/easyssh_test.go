@@ -2,6 +2,7 @@ package easyssh
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"os/user"
