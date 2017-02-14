@@ -149,7 +149,7 @@ func TestSCPFileFromSSHAgent(t *testing.T) {
 	}
 	fmt.Printf("The date is %s\n", out1)
 
-	out2, err2 = exec.Command("ssh-add ../tests/.ssh/id_rsa").Output()
+	out2, err2 := exec.Command("ssh-add ../tests/.ssh/id_rsa").Output()
 	if err2 != nil {
 		log.Fatal(err2)
 	}
