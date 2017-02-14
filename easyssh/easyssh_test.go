@@ -135,12 +135,12 @@ func TestSCPFileFromSSHAgent(t *testing.T) {
 	fmt.Println("============")
 	fmt.Println(os.Getenv("SSH_AUTH_SOCK"))
 	fmt.Println("============")
-	if os.Getenv("SSH_AUTH_SOCK") == "" {
-		exec.Command("eval", "`ssh-agent -s`").Run()
-		exec.Command("ssh-add", "../tests/.ssh/id_rsa").Run()
-	} else {
-		exec.Command("ssh-add", "../tests/.ssh/id_rsa").Run()
-	}
+	// if os.Getenv("SSH_AUTH_SOCK") == "" {
+	exec.Command("eval", "`ssh-agent -s`").Run()
+	exec.Command("ssh-add", "../tests/.ssh/id_rsa").Run()
+	// } else {
+	// 	exec.Command("ssh-add", "../tests/.ssh/id_rsa").Run()
+	// }
 
 	ssh := &MakeConfig{
 		Server: "localhost",
