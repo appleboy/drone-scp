@@ -2,6 +2,7 @@ package easyssh
 
 import (
 	"os"
+	"os/exec"
 	"os/user"
 	"testing"
 
