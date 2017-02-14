@@ -115,7 +115,7 @@ func TestSCPCommandWithPassword(t *testing.T) {
 		Password: "1234",
 	}
 
-	err := ssh.Scp("../tests/a.txt")
+	err := ssh.Scp("../tests/b.txt")
 	assert.NoError(t, err)
 
 	u, err := user.Lookup("drone-scp")
@@ -124,7 +124,7 @@ func TestSCPCommandWithPassword(t *testing.T) {
 	}
 
 	// check file exist
-	if _, err := os.Stat(u.HomeDir + "/a.txt"); os.IsNotExist(err) {
+	if _, err := os.Stat(u.HomeDir + "/b.txt"); os.IsNotExist(err) {
 		t.Fatalf("SCP-error: %v", err)
 	}
 }
