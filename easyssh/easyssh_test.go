@@ -143,17 +143,17 @@ func TestSCPFileFromSSHAgent(t *testing.T) {
 	// 	exec.Command("ssh-add", "../tests/.ssh/id_rsa").Run()
 	// }
 
-	out, err := exec.Command("eval `ssh-agent -s`").Output()
-	if err != nil {
-		log.Fatal(err)
+	out1, err1 := exec.Command("eval `ssh-agent -s`").Output()
+	if err1 != nil {
+		log.Fatal(err1)
 	}
-	fmt.Printf("The date is %s\n", out)
+	fmt.Printf("The date is %s\n", out1)
 
-	out, err = exec.Command("ssh-add ../tests/.ssh/id_rsa").Output()
-	if err != nil {
-		log.Fatal(err)
+	out2, err2 = exec.Command("ssh-add ../tests/.ssh/id_rsa").Output()
+	if err2 != nil {
+		log.Fatal(err2)
 	}
-	fmt.Printf("The date is %s\n", out)
+	fmt.Printf("The date is %s\n", out2)
 
 	ssh := &MakeConfig{
 		Server: "localhost",
