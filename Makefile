@@ -114,7 +114,7 @@ ssh-server:
 	cp tests/.ssh/id_rsa.pub /home/drone-scp/.ssh/authorized_keys
 	chown -R drone-scp /home/drone-scp/.ssh
 	# install ssh and start server
-	apk update && apk add --update openssh openrc
+	apk add --update openssh openrc
 	rm -rf /etc/ssh/ssh_host_rsa_key /etc/ssh/ssh_host_dsa_key
 	./tests/entrypoint.sh /usr/sbin/sshd -D &
 

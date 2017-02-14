@@ -1,10 +1,7 @@
 package easyssh
 
 import (
-	"fmt"
-	"log"
 	"os"
-	"os/exec"
 	"os/user"
 	"testing"
 
@@ -116,49 +113,6 @@ func TestSCPCommandWithPassword(t *testing.T) {
 		User:     "drone-scp",
 		Port:     "22",
 		Password: "1234",
-	}
-
-	err := ssh.Scp("../tests/b.txt")
-	assert.NoError(t, err)
-
-	u, err := user.Lookup("drone-scp")
-	if err != nil {
-		t.Fatalf("Lookup: %v", err)
-	}
-
-	// check file exist
-	if _, err := os.Stat(u.HomeDir + "/b.txt"); os.IsNotExist(err) {
-		t.Fatalf("SCP-error: %v", err)
-	}
-}
-
-func TestSCPFileFromSSHAgent(t *testing.T) {
-	fmt.Println("============")
-	fmt.Println(os.Getenv("SSH_AUTH_SOCK"))
-	fmt.Println("============")
-	// if os.Getenv("SSH_AUTH_SOCK") == "" {
-	// exec.Command("eval", "`ssh-agent -s`").Run()
-	// exec.Command("ssh-add", "../tests/.ssh/id_rsa").Run()
-	// } else {
-	// 	exec.Command("ssh-add", "../tests/.ssh/id_rsa").Run()
-	// }
-
-	out1, err1 := exec.Command("eval `ssh-agent -s`").Output()
-	if err1 != nil {
-		log.Fatal(err1)
-	}
-	fmt.Printf("The date is %s\n", out1)
-
-	out2, err2 := exec.Command("ssh-add ../tests/.ssh/id_rsa").Output()
-	if err2 != nil {
-		log.Fatal(err2)
-	}
-	fmt.Printf("The date is %s\n", out2)
-
-	ssh := &MakeConfig{
-		Server: "localhost",
-		User:   "drone-scp",
-		Port:   "22",
 	}
 
 	err := ssh.Scp("../tests/b.txt")

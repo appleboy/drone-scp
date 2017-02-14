@@ -77,7 +77,6 @@ func (ssh_conf *MakeConfig) connect() (*ssh.Session, error) {
 		auths = append(auths, ssh.PublicKeys(signer))
 	}
 
-	fmt.Printf("%+v\n", auths)
 	config := &ssh.ClientConfig{
 		Timeout: ssh_conf.Timeout,
 		User:    ssh_conf.User,
