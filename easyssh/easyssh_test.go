@@ -106,3 +106,25 @@ ib4KbP5ovZlrjL++akMQ7V2fHzuQIFWnCkDA5c2ZAqzlM+ZN+HRG7gWur7Bt4XH1
 		t.Fatalf("SCP-error: %v", err)
 	}
 }
+
+func TestSCPCommandWithPassword(t *testing.T) {
+	ssh := &MakeConfig{
+		Server:   "localhost",
+		User:     "drone-scp",
+		Port:     "22",
+		Password: "1234",
+	}
+
+	err := ssh.Scp("../tests/a.txt")
+	assert.NoError(t, err)
+
+	u, err := user.Lookup("drone-scp")
+	if err != nil {
+		t.Fatalf("Lookup: %v", err)
+	}
+
+	// check file exist
+	if _, err := os.Stat(u.HomeDir + "/a.txt"); os.IsNotExist(err) {
+		t.Fatalf("SCP-error: %v", err)
+	}
+}

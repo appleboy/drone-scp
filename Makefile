@@ -108,7 +108,7 @@ coverage:
 
 ssh-server:
 	adduser -h /home/drone-scp -s /bin/bash -D -S drone-scp
-	passwd -d drone-scp
+	echo drone-scp:1234 | chpasswd
 	mkdir -p /home/drone-scp/.ssh
 	chmod 700 /home/drone-scp/.ssh
 	cp tests/.ssh/id_rsa.pub /home/drone-scp/.ssh/authorized_keys
