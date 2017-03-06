@@ -16,10 +16,6 @@ import (
 	"github.com/appleboy/easyssh-proxy"
 )
 
-const (
-	commandTimeOut = "Error: command timeout"
-)
-
 type (
 	// Repo information.
 	Repo struct {
@@ -150,7 +146,7 @@ func (p Plugin) Exec() error {
 
 			// Call Scp method with file you want to upload to remote server.
 			p.log(host, "scp file to server.")
-			err := ssh.Scp(tar, tar)
+			err := ssh.Scp(tar, dest)
 
 			if err != nil {
 				errChannel <- err
@@ -170,17 +166,13 @@ func (p Plugin) Exec() error {
 
 				// mkdir path
 				p.log(host, "create folder", target)
-				outStr, errStr, isTimeOut, err := ssh.Run(fmt.Sprintf("mkdir -p %s", target), p.Config.CommandTimeout)
-				p.log(host, "outStr:", outStr)
-				p.log(host, "errStr:", errStr)
-				p.log(host, "isTimeOut:", isTimeOut)
-				p.log(host, "err:", err)
-				if len(errStr) != 0 {
-					p.log(host, "errors:", errStr)
-				}
-
+				_, errStr, _, err := ssh.Run(fmt.Sprintf("mkdir -p %s", target), p.Config.CommandTimeout)
 				if err != nil {
 					errChannel <- err
+				}
+
+				if len(errStr) != 0 {
+					errChannel <- fmt.Errorf(errStr)
 				}
 
 				// untar file

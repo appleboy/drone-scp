@@ -221,23 +221,6 @@ func TestNoPermissionCreateFolder(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
-func TestSourceNotFound(t *testing.T) {
-	plugin := Plugin{
-		Config: Config{
-			Host:           []string{"localhost"},
-			Username:       "drone-scp",
-			Port:           "22",
-			KeyPath:        "tests/.ssh/id_rsa",
-			Source:         []string{"tests/aa.txt", "tests/b.txt"},
-			Target:         []string{"/test"},
-			CommandTimeout: 60,
-		},
-	}
-
-	err := plugin.Exec()
-	assert.NotNil(t, err)
-}
-
 func TestGlobList(t *testing.T) {
 	// wrong patern
 	paterns := []string{"[]a]", "tests/?.txt"}
@@ -250,5 +233,9 @@ func TestGlobList(t *testing.T) {
 
 	paterns = []string{"tests/?.txt"}
 	expects = []string{"tests/a.txt", "tests/b.txt"}
+	assert.Equal(t, expects, globList(paterns))
+
+	paterns = []string{"tests/aa.txt", "tests/b.txt"}
+	expects = []string{"tests/b.txt"}
 	assert.Equal(t, expects, globList(paterns))
 }
