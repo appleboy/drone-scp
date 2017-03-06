@@ -170,8 +170,11 @@ func (p Plugin) Exec() error {
 
 				// mkdir path
 				p.log(host, "create folder", target)
-				_, errStr, _, err := ssh.Run(fmt.Sprintf("mkdir -p %s", target), p.Config.CommandTimeout)
-
+				outStr, errStr, isTimeOut, err := ssh.Run(fmt.Sprintf("mkdir -p %s", target), p.Config.CommandTimeout)
+				p.log(host, "outStr:", outStr)
+				p.log(host, "errStr:", errStr)
+				p.log(host, "isTimeOut:", isTimeOut)
+				p.log(host, "err:", err)
 				if len(errStr) != 0 {
 					p.log(host, "errors:", errStr)
 				}
