@@ -71,12 +71,13 @@ func TestSCPFileFromPublicKey(t *testing.T) {
 
 	plugin := Plugin{
 		Config: Config{
-			Host:     []string{"localhost"},
-			Username: "drone-scp",
-			Port:     "22",
-			KeyPath:  "tests/.ssh/id_rsa",
-			Source:   []string{"tests/a.txt", "tests/b.txt"},
-			Target:   []string{u.HomeDir + "/test"},
+			Host:           []string{"localhost"},
+			Username:       "drone-scp",
+			Port:           "22",
+			KeyPath:        "tests/.ssh/id_rsa",
+			Source:         []string{"tests/a.txt", "tests/b.txt"},
+			Target:         []string{u.HomeDir + "/test"},
+			CommandTimeout: 60,
 		},
 	}
 
@@ -117,12 +118,13 @@ func TestSCPWildcardFileList(t *testing.T) {
 
 	plugin := Plugin{
 		Config: Config{
-			Host:     []string{"localhost"},
-			Username: "drone-scp",
-			Port:     "22",
-			KeyPath:  "tests/.ssh/id_rsa",
-			Source:   []string{"tests/global/*"},
-			Target:   []string{u.HomeDir + "/abc"},
+			Host:           []string{"localhost"},
+			Username:       "drone-scp",
+			Port:           "22",
+			KeyPath:        "tests/.ssh/id_rsa",
+			Source:         []string{"tests/global/*"},
+			Target:         []string{u.HomeDir + "/abc"},
+			CommandTimeout: 60,
 		},
 	}
 
@@ -188,12 +190,13 @@ func TestSCPWildcardFileList(t *testing.T) {
 func TestIncorrectPassword(t *testing.T) {
 	plugin := Plugin{
 		Config: Config{
-			Host:     []string{"localhost"},
-			Username: "drone-scp",
-			Port:     "22",
-			Password: "123456",
-			Source:   []string{"tests/a.txt", "tests/b.txt"},
-			Target:   []string{"/home"},
+			Host:           []string{"localhost"},
+			Username:       "drone-scp",
+			Port:           "22",
+			Password:       "123456",
+			Source:         []string{"tests/a.txt", "tests/b.txt"},
+			Target:         []string{"/home"},
+			CommandTimeout: 60,
 		},
 	}
 
@@ -204,28 +207,13 @@ func TestIncorrectPassword(t *testing.T) {
 func TestNoPermissionCreateFolder(t *testing.T) {
 	plugin := Plugin{
 		Config: Config{
-			Host:     []string{"localhost"},
-			Username: "drone-scp",
-			Port:     "22",
-			KeyPath:  "tests/.ssh/id_rsa",
-			Source:   []string{"tests/a.txt", "tests/b.txt"},
-			Target:   []string{"/etc/test"},
-		},
-	}
-
-	err := plugin.Exec()
-	assert.NotNil(t, err)
-}
-
-func TestSourceNotFound(t *testing.T) {
-	plugin := Plugin{
-		Config: Config{
-			Host:     []string{"localhost"},
-			Username: "drone-scp",
-			Port:     "22",
-			KeyPath:  "tests/.ssh/id_rsa",
-			Source:   []string{"tests/aa.txt", "tests/b.txt"},
-			Target:   []string{"/test"},
+			Host:           []string{"localhost"},
+			Username:       "drone-scp",
+			Port:           "22",
+			KeyPath:        "tests/.ssh/id_rsa",
+			Source:         []string{"tests/a.txt", "tests/b.txt"},
+			Target:         []string{"/etc/test"},
+			CommandTimeout: 60,
 		},
 	}
 
@@ -245,5 +233,9 @@ func TestGlobList(t *testing.T) {
 
 	paterns = []string{"tests/?.txt"}
 	expects = []string{"tests/a.txt", "tests/b.txt"}
+	assert.Equal(t, expects, globList(paterns))
+
+	paterns = []string{"tests/aa.txt", "tests/b.txt"}
+	expects = []string{"tests/b.txt"}
 	assert.Equal(t, expects, globList(paterns))
 }
