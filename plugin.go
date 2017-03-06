@@ -13,7 +13,11 @@ import (
 	"time"
 
 	"github.com/appleboy/com/random"
-	"github.com/appleboy/drone-scp/easyssh"
+	"github.com/appleboy/easyssh-proxy"
+)
+
+const (
+	commandTimeOut = "Error: command timeout"
 )
 
 type (
@@ -37,16 +41,17 @@ type (
 
 	// Config for the plugin.
 	Config struct {
-		Host     []string
-		Port     string
-		Username string
-		Password string
-		Key      string
-		KeyPath  string
-		Timeout  time.Duration
-		Target   []string
-		Source   []string
-		Remove   bool
+		Host           []string
+		Port           string
+		Username       string
+		Password       string
+		Key            string
+		KeyPath        string
+		Timeout        time.Duration
+		CommandTimeout int
+		Target         []string
+		Source         []string
+		Remove         bool
 	}
 
 	// Plugin values.
@@ -145,9 +150,8 @@ func (p Plugin) Exec() error {
 
 			// Call Scp method with file you want to upload to remote server.
 			p.log(host, "scp file to server.")
-			err = ssh.Scp(tar)
+			err := ssh.Scp(tar, tar)
 
-			// Handle errors
 			if err != nil {
 				errChannel <- err
 			}
@@ -157,7 +161,7 @@ func (p Plugin) Exec() error {
 				if p.Config.Remove {
 					p.log(host, "Remove target folder:", target)
 
-					_, err := ssh.Run(fmt.Sprintf("rm -rf %s", target))
+					_, _, _, err := ssh.Run(fmt.Sprintf("rm -rf %s", target), p.Config.CommandTimeout)
 
 					if err != nil {
 						errChannel <- err
@@ -166,15 +170,19 @@ func (p Plugin) Exec() error {
 
 				// mkdir path
 				p.log(host, "create folder", target)
-				response, _ := ssh.Run(fmt.Sprintf("mkdir -p %s", target))
+				_, errStr, _, err := ssh.Run(fmt.Sprintf("mkdir -p %s", target), p.Config.CommandTimeout)
 
-				if response != "" {
-					errChannel <- errors.New(response)
+				if len(errStr) != 0 {
+					p.log(host, "errors:", errStr)
+				}
+
+				if err != nil {
+					errChannel <- err
 				}
 
 				// untar file
 				p.log(host, "untar file", dest)
-				_, err = ssh.Run(fmt.Sprintf("tar -xf %s -C %s", dest, target))
+				_, _, _, err = ssh.Run(fmt.Sprintf("tar -xf %s -C %s", dest, target), p.Config.CommandTimeout)
 
 				if err != nil {
 					errChannel <- err
@@ -183,7 +191,7 @@ func (p Plugin) Exec() error {
 
 			// remove tar file
 			p.log(host, "remove file", dest)
-			_, err = ssh.Run(fmt.Sprintf("rm -rf %s", dest))
+			_, _, _, err = ssh.Run(fmt.Sprintf("rm -rf %s", dest), p.Config.CommandTimeout)
 
 			if err != nil {
 				errChannel <- err
