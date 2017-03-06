@@ -17,6 +17,16 @@ import (
 )
 
 type (
+	defaultConfig struct {
+		User     string
+		Server   string
+		Key      string
+		KeyPath  string
+		Port     string
+		Password string
+		Timeout  time.Duration
+	}
+
 	// Repo information.
 	Repo struct {
 		Owner string
@@ -48,6 +58,7 @@ type (
 		Target         []string
 		Source         []string
 		Remove         bool
+		Proxy          defaultConfig
 	}
 
 	// Plugin values.
@@ -142,6 +153,15 @@ func (p Plugin) Exec() error {
 				Key:      p.Config.Key,
 				KeyPath:  p.Config.KeyPath,
 				Timeout:  p.Config.Timeout,
+				Proxy: defaultConfig{
+					Server:   p.Config.Proxy.Server,
+					User:     p.Config.Proxy.User,
+					Password: p.Config.Proxy.Password,
+					Port:     p.Config.Proxy.Port,
+					Key:      p.Config.Proxy.Key,
+					KeyPath:  p.Config.Proxy.KeyPath,
+					Timeout:  p.Config.Proxy.Timeout,
+				},
 			}
 
 			// Call Scp method with file you want to upload to remote server.

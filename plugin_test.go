@@ -235,7 +235,45 @@ func TestGlobList(t *testing.T) {
 	expects = []string{"tests/a.txt", "tests/b.txt"}
 	assert.Equal(t, expects, globList(paterns))
 
+	// remove item which file not found.
 	paterns = []string{"tests/aa.txt", "tests/b.txt"}
 	expects = []string{"tests/b.txt"}
 	assert.Equal(t, expects, globList(paterns))
+}
+
+func TestSCPFromProxySetting(t *testing.T) {
+	u, err := user.Lookup("drone-scp")
+	if err != nil {
+		t.Fatalf("Lookup: %v", err)
+	}
+
+	plugin := Plugin{
+		Config: Config{
+			Host:           []string{"localhost"},
+			Username:       "drone-scp",
+			Port:           "22",
+			KeyPath:        "tests/.ssh/id_rsa",
+			Source:         []string{"tests/global/*"},
+			Target:         []string{u.HomeDir + "/def"},
+			CommandTimeout: 60,
+			Proxy: defaultConfig{
+				Server:  "localhost",
+				User:    "drone-scp",
+				Port:    "22",
+				KeyPath: "./tests/.ssh/id_rsa",
+			},
+		},
+	}
+
+	err = plugin.Exec()
+	assert.Nil(t, err)
+
+	// check file exist
+	if _, err := os.Stat(u.HomeDir + "/def/tests/global/c.txt"); os.IsNotExist(err) {
+		t.Fatalf("SCP-error: %v", err)
+	}
+
+	if _, err := os.Stat(u.HomeDir + "/def/tests/global/d.txt"); os.IsNotExist(err) {
+		t.Fatalf("SCP-error: %v", err)
+	}
 }
