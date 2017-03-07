@@ -18,7 +18,7 @@ Copy files and artifacts via SSH using a binary, docker or [Drone CI](http://rea
      | Laptop| <---> | Jumphost | <--> | FooServer |
      +-------+       +----------+      +-----------+
 
-               OR
+                         OR
 
      +-------+       +----------+      +-----------+
      | Laptop| <---> | Firewall | <--> | FooServer |
