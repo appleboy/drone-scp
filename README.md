@@ -15,13 +15,13 @@ Copy files and artifacts via SSH using a binary, docker or [Drone CI](http://rea
 
 ```
      +-------+       +----------+      +-----------+
-     | Laptop| <---> | Jumphost | <--> | FooServer |
+     | Laptop| <--> | Jumphost | <--> | FooServer |
      +-------+       +----------+      +-----------+
 
                          OR
 
      +-------+       +----------+      +-----------+
-     | Laptop| <---> | Firewall | <--> | FooServer |
+     | Laptop| <--> | Firewall | <--> | FooServer |
      +-------+       +----------+      +-----------+
     192.168.1.5       121.1.2.3         10.10.29.68
 ```
