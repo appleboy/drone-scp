@@ -289,3 +289,30 @@ func TestGlobList(t *testing.T) {
 	expects = []string{"tests/b.txt"}
 	assert.Equal(t, expects, globList(paterns))
 }
+
+func TestRemoveDestFile(t *testing.T) {
+	ssh := &easyssh.MakeConfig{
+		Server:  "localhost",
+		User:    "drone-scp",
+		Port:    "22",
+		KeyPath: "tests/.ssh/id_rsa",
+		// io timeout
+		Timeout: 1,
+	}
+	plugin := Plugin{
+		Config: Config{
+			CommandTimeout: 60,
+		},
+		DestFile: "/etc/resolv.conf",
+	}
+
+	// ssh io timeout
+	err := plugin.removeDestFile(ssh)
+	assert.Error(t, err)
+
+	ssh.Timeout = 0
+
+	// permission denied
+	err = plugin.removeDestFile(ssh)
+	assert.Error(t, err)
+}
