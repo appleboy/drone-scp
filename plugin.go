@@ -276,7 +276,7 @@ func (p *Plugin) Exec() error {
 	case err := <-errChannel:
 		if err != nil {
 			fmt.Println("drone-scp error: ", err)
-			if _, ok := err.(copyError); ok {
+			if _, ok := err.(copyError); !ok {
 				p.removeAllDestFile()
 			}
 			return err
