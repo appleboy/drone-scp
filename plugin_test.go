@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/appleboy/easyssh-proxy"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -157,7 +158,7 @@ func TestSCPFromProxySetting(t *testing.T) {
 			Source:         []string{"tests/global/*"},
 			Target:         []string{filepath.Join(u.HomeDir, "def")},
 			CommandTimeout: 60,
-			Proxy: defaultConfig{
+			Proxy: easyssh.DefaultConfig{
 				Server:  "localhost",
 				User:    "drone-scp",
 				Port:    "22",
