@@ -25,6 +25,12 @@
 			"revisionTime": "2016-10-29T20:57:26Z"
 		},
 		{
+			"checksumSHA1": "16fWSep+3jUx8wADdbiTxSHjW14=",
+			"path": "github.com/fatih/color",
+			"revision": "9131ab34cf20d2f6d83fdc67168a5430d1c7dc23",
+			"revisionTime": "2017-03-07T19:28:53Z"
+		},
+		{
 			"checksumSHA1": "h9EtLdks5ODcJVIA+j4qmrW2/mw=",
 			"path": "github.com/joho/godotenv",
 			"revision": "726cc8b906e3d31c70a9671c90a13716a8d3f50d",
