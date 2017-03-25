@@ -4,6 +4,7 @@ import (
 	"os"
 	"os/exec"
 	"os/user"
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -76,7 +77,7 @@ func TestSCPFileFromPublicKey(t *testing.T) {
 			Port:           "22",
 			KeyPath:        "tests/.ssh/id_rsa",
 			Source:         []string{"tests/a.txt", "tests/b.txt"},
-			Target:         []string{u.HomeDir + "/test"},
+			Target:         []string{filepath.Join(u.HomeDir, "/test")},
 			CommandTimeout: 60,
 		},
 	}
@@ -85,11 +86,11 @@ func TestSCPFileFromPublicKey(t *testing.T) {
 	assert.Nil(t, err)
 
 	// check file exist
-	if _, err := os.Stat(u.HomeDir + "/test/tests/a.txt"); os.IsNotExist(err) {
+	if _, err := os.Stat(filepath.Join(u.HomeDir, "/test/tests/a.txt")); os.IsNotExist(err) {
 		t.Fatalf("SCP-error: %v", err)
 	}
 
-	if _, err := os.Stat(u.HomeDir + "/test/tests/b.txt"); os.IsNotExist(err) {
+	if _, err := os.Stat(filepath.Join(u.HomeDir, "/test/tests/b.txt")); os.IsNotExist(err) {
 		t.Fatalf("SCP-error: %v", err)
 	}
 
@@ -101,7 +102,7 @@ func TestSCPFileFromPublicKey(t *testing.T) {
 	assert.Nil(t, err)
 
 	// check file exist
-	if _, err := os.Stat(u.HomeDir + "/test/tests/b.txt"); os.IsExist(err) {
+	if _, err := os.Stat(filepath.Join(u.HomeDir, "/test/tests/b.txt")); os.IsExist(err) {
 		t.Fatalf("SCP-error: %v", err)
 	}
 }
@@ -123,7 +124,7 @@ func TestSCPWildcardFileList(t *testing.T) {
 			Port:           "22",
 			KeyPath:        "tests/.ssh/id_rsa",
 			Source:         []string{"tests/global/*"},
-			Target:         []string{u.HomeDir + "/abc"},
+			Target:         []string{filepath.Join(u.HomeDir, "abc")},
 			CommandTimeout: 60,
 		},
 	}
@@ -132,11 +133,11 @@ func TestSCPWildcardFileList(t *testing.T) {
 	assert.Nil(t, err)
 
 	// check file exist
-	if _, err := os.Stat(u.HomeDir + "/abc/tests/global/c.txt"); os.IsNotExist(err) {
+	if _, err := os.Stat(filepath.Join(u.HomeDir, "abc/tests/global/c.txt")); os.IsNotExist(err) {
 		t.Fatalf("SCP-error: %v", err)
 	}
 
-	if _, err := os.Stat(u.HomeDir + "/abc/tests/global/d.txt"); os.IsNotExist(err) {
+	if _, err := os.Stat(filepath.Join(u.HomeDir, "abc/tests/global/d.txt")); os.IsNotExist(err) {
 		t.Fatalf("SCP-error: %v", err)
 	}
 }
@@ -154,7 +155,7 @@ func TestSCPFromProxySetting(t *testing.T) {
 			Port:           "22",
 			KeyPath:        "tests/.ssh/id_rsa",
 			Source:         []string{"tests/global/*"},
-			Target:         []string{u.HomeDir + "/def"},
+			Target:         []string{filepath.Join(u.HomeDir, "def")},
 			CommandTimeout: 60,
 			Proxy: defaultConfig{
 				Server:  "localhost",
@@ -169,11 +170,11 @@ func TestSCPFromProxySetting(t *testing.T) {
 	assert.Nil(t, err)
 
 	// check file exist
-	if _, err := os.Stat(u.HomeDir + "/def/tests/global/c.txt"); os.IsNotExist(err) {
+	if _, err := os.Stat(filepath.Join(u.HomeDir, "def/tests/global/c.txt")); os.IsNotExist(err) {
 		t.Fatalf("SCP-error: %v", err)
 	}
 
-	if _, err := os.Stat(u.HomeDir + "/def/tests/global/d.txt"); os.IsNotExist(err) {
+	if _, err := os.Stat(filepath.Join(u.HomeDir, "def/tests/global/d.txt")); os.IsNotExist(err) {
 		t.Fatalf("SCP-error: %v", err)
 	}
 }
@@ -242,6 +243,11 @@ func TestIncorrectPassword(t *testing.T) {
 }
 
 func TestNoPermissionCreateFolder(t *testing.T) {
+	u, err := user.Lookup("drone-scp")
+	if err != nil {
+		t.Fatalf("Lookup: %v", err)
+	}
+
 	plugin := Plugin{
 		Config: Config{
 			Host:           []string{"localhost"},
@@ -254,8 +260,13 @@ func TestNoPermissionCreateFolder(t *testing.T) {
 		},
 	}
 
-	err := plugin.Exec()
+	err = plugin.Exec()
 	assert.NotNil(t, err)
+
+	// check tmp file exist
+	if _, err = os.Stat(filepath.Join(u.HomeDir, plugin.DestFile)); os.IsExist(err) {
+		t.Fatalf("SCP-error: %v", err)
+	}
 }
 
 func TestGlobList(t *testing.T) {

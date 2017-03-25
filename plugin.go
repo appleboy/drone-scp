@@ -68,7 +68,15 @@ type (
 		Config   Config
 		DestFile string
 	}
+
+	copyError struct {
+		host string
+	}
 )
+
+func (e copyError) Error() string {
+	return fmt.Sprintf("error copy file to dest: %s\n", e.host)
+}
 
 var wg sync.WaitGroup
 
@@ -212,7 +220,8 @@ func (p *Plugin) Exec() error {
 			err := ssh.Scp(tar, p.DestFile)
 
 			if err != nil {
-				errChannel <- err
+				errChannel <- copyError{host}
+				return
 			}
 
 			for _, target := range p.Config.Target {
@@ -224,6 +233,7 @@ func (p *Plugin) Exec() error {
 
 					if err != nil {
 						errChannel <- err
+						return
 					}
 				}
 
@@ -232,10 +242,12 @@ func (p *Plugin) Exec() error {
 				_, errStr, _, err := ssh.Run(fmt.Sprintf("mkdir -p %s", target), p.Config.CommandTimeout)
 				if err != nil {
 					errChannel <- err
+					return
 				}
 
 				if len(errStr) != 0 {
 					errChannel <- fmt.Errorf(errStr)
+					return
 				}
 
 				// untar file
@@ -244,6 +256,7 @@ func (p *Plugin) Exec() error {
 
 				if err != nil {
 					errChannel <- err
+					return
 				}
 			}
 
@@ -251,6 +264,7 @@ func (p *Plugin) Exec() error {
 			err = p.removeDestFile(ssh)
 			if err != nil {
 				errChannel <- err
+				return
 			}
 
 			wg.Done()
@@ -268,7 +282,10 @@ func (p *Plugin) Exec() error {
 	case err := <-errChannel:
 		if err != nil {
 			fmt.Println("drone-scp error: ", err)
-			p.removeAllDestFile()
+			if _, ok := err.(copyError); !ok {
+				fmt.Println("drone-scp rollback: remove all target tmp file")
+				p.removeAllDestFile()
+			}
 			return err
 		}
 	}
