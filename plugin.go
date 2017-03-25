@@ -18,16 +18,6 @@ import (
 )
 
 type (
-	defaultConfig struct {
-		User     string
-		Server   string
-		Key      string
-		KeyPath  string
-		Port     string
-		Password string
-		Timeout  time.Duration
-	}
-
 	// Repo information.
 	Repo struct {
 		Owner string
@@ -59,7 +49,7 @@ type (
 		Target         []string
 		Source         []string
 		Remove         bool
-		Proxy          defaultConfig
+		Proxy          easyssh.DefaultConfig
 	}
 
 	// Plugin values.
@@ -138,7 +128,7 @@ func (p *Plugin) removeAllDestFile() error {
 			Key:      p.Config.Key,
 			KeyPath:  p.Config.KeyPath,
 			Timeout:  p.Config.Timeout,
-			Proxy: defaultConfig{
+			Proxy: easyssh.DefaultConfig{
 				Server:   p.Config.Proxy.Server,
 				User:     p.Config.Proxy.User,
 				Password: p.Config.Proxy.Password,
@@ -205,7 +195,7 @@ func (p *Plugin) Exec() error {
 				Key:      p.Config.Key,
 				KeyPath:  p.Config.KeyPath,
 				Timeout:  p.Config.Timeout,
-				Proxy: defaultConfig{
+				Proxy: easyssh.DefaultConfig{
 					Server:   p.Config.Proxy.Server,
 					User:     p.Config.Proxy.User,
 					Password: p.Config.Proxy.Password,

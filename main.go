@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 
+	"github.com/appleboy/easyssh-proxy"
 	"github.com/joho/godotenv"
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/urfave/cli"
@@ -246,7 +247,7 @@ func run(c *cli.Context) error {
 			Target:         c.StringSlice("target"),
 			Source:         c.StringSlice("source"),
 			Remove:         c.Bool("rm"),
-			Proxy: defaultConfig{
+			Proxy: easyssh.DefaultConfig{
 				Key:      c.String("proxy.ssh-key"),
 				KeyPath:  c.String("proxy.key-path"),
 				User:     c.String("proxy.username"),
