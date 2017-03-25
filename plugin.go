@@ -68,7 +68,15 @@ type (
 		Config   Config
 		DestFile string
 	}
+
+	copyError struct {
+		host string
+	}
 )
+
+func (e copyError) Error() string {
+	return fmt.Sprintf("error copy file to dest: %s\n", e.host)
+}
 
 var wg sync.WaitGroup
 
@@ -212,7 +220,7 @@ func (p *Plugin) Exec() error {
 			err := ssh.Scp(tar, p.DestFile)
 
 			if err != nil {
-				errChannel <- err
+				errChannel <- copyError{host}
 			}
 
 			for _, target := range p.Config.Target {
@@ -268,7 +276,9 @@ func (p *Plugin) Exec() error {
 	case err := <-errChannel:
 		if err != nil {
 			fmt.Println("drone-scp error: ", err)
-			p.removeAllDestFile()
+			if _, ok := err.(copyError); ok {
+				p.removeAllDestFile()
+			}
 			return err
 		}
 	}
