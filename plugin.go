@@ -63,9 +63,10 @@ type (
 
 	// Plugin values.
 	Plugin struct {
-		Repo   Repo
-		Build  Build
-		Config Config
+		Repo     Repo
+		Build    Build
+		Config   Config
+		DestFile string
 	}
 )
 
@@ -107,8 +108,50 @@ func (p Plugin) log(host string, message ...interface{}) {
 	log.Printf("%s: %s", host, fmt.Sprintln(message...))
 }
 
+func (p *Plugin) removeDestFile(ssh *easyssh.MakeConfig) error {
+	p.log(ssh.Server, "remove file", p.DestFile)
+	_, _, _, err := ssh.Run(fmt.Sprintf("rm -rf %s", p.DestFile), p.Config.CommandTimeout)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (p *Plugin) removeAllDestFile() error {
+	for _, host := range p.Config.Host {
+		ssh := &easyssh.MakeConfig{
+			Server:   host,
+			User:     p.Config.Username,
+			Password: p.Config.Password,
+			Port:     p.Config.Port,
+			Key:      p.Config.Key,
+			KeyPath:  p.Config.KeyPath,
+			Timeout:  p.Config.Timeout,
+			Proxy: defaultConfig{
+				Server:   p.Config.Proxy.Server,
+				User:     p.Config.Proxy.User,
+				Password: p.Config.Proxy.Password,
+				Port:     p.Config.Proxy.Port,
+				Key:      p.Config.Proxy.Key,
+				KeyPath:  p.Config.Proxy.KeyPath,
+				Timeout:  p.Config.Proxy.Timeout,
+			},
+		}
+
+		// remove tar file
+		err := p.removeDestFile(ssh)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 // Exec executes the plugin.
-func (p Plugin) Exec() error {
+func (p *Plugin) Exec() error {
 
 	if len(p.Config.Host) == 0 || len(p.Config.Username) == 0 {
 		return errors.New("missing ssh config (Host, Username)")
@@ -119,14 +162,14 @@ func (p Plugin) Exec() error {
 	}
 
 	files := globList(trimPath(p.Config.Source))
-	dest := fmt.Sprintf("%s.tar", random.String(10))
+	p.DestFile = fmt.Sprintf("%s.tar", random.String(10))
 
 	// create a temporary file for the archive
 	dir, err := ioutil.TempDir("", "")
 	if err != nil {
 		return err
 	}
-	tar := filepath.Join(dir, dest)
+	tar := filepath.Join(dir, p.DestFile)
 
 	// run archive command
 	log.Println("tar all files into " + tar)
@@ -166,7 +209,7 @@ func (p Plugin) Exec() error {
 
 			// Call Scp method with file you want to upload to remote server.
 			p.log(host, "scp file to server.")
-			err := ssh.Scp(tar, dest)
+			err := ssh.Scp(tar, p.DestFile)
 
 			if err != nil {
 				errChannel <- err
@@ -196,8 +239,8 @@ func (p Plugin) Exec() error {
 				}
 
 				// untar file
-				p.log(host, "untar file", dest)
-				_, _, _, err = ssh.Run(fmt.Sprintf("tar -xf %s -C %s", dest, target), p.Config.CommandTimeout)
+				p.log(host, "untar file", p.DestFile)
+				_, _, _, err = ssh.Run(fmt.Sprintf("tar -xf %s -C %s", p.DestFile, target), p.Config.CommandTimeout)
 
 				if err != nil {
 					errChannel <- err
@@ -205,9 +248,7 @@ func (p Plugin) Exec() error {
 			}
 
 			// remove tar file
-			p.log(host, "remove file", dest)
-			_, _, _, err = ssh.Run(fmt.Sprintf("rm -rf %s", dest), p.Config.CommandTimeout)
-
+			err = p.removeDestFile(ssh)
 			if err != nil {
 				errChannel <- err
 			}
@@ -227,6 +268,7 @@ func (p Plugin) Exec() error {
 	case err := <-errChannel:
 		if err != nil {
 			fmt.Println("drone-scp error: ", err)
+			p.removeAllDestFile()
 			return err
 		}
 	}
