@@ -14,6 +14,7 @@ import (
 
 	"github.com/appleboy/com/random"
 	"github.com/appleboy/easyssh-proxy"
+	"github.com/fatih/color"
 )
 
 type (
@@ -281,7 +282,8 @@ func (p *Plugin) Exec() error {
 	case <-finished:
 	case err := <-errChannel:
 		if err != nil {
-			fmt.Println("drone-scp error: ", err)
+			c := color.New(color.FgRed)
+			c.Println("drone-scp error: ", err)
 			if _, ok := err.(copyError); !ok {
 				fmt.Println("drone-scp rollback: remove all target tmp file")
 				p.removeAllDestFile()
