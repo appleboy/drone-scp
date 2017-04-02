@@ -18,6 +18,7 @@ pipeline:
       - make vet
       - make lint
       # - make test
+      - make fmt-check
       - coverage all
       - make coverage
       - make build

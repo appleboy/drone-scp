@@ -2,12 +2,14 @@
 
 DIST := dist
 EXECUTABLE := drone-scp
+GOFMT ?= gofmt -s
 
 # for dockerhub
 DEPLOY_ACCOUNT := appleboy
 DEPLOY_IMAGE := $(EXECUTABLE)
 
 TARGETS ?= linux darwin windows
+GOFILES := find . -name "*.go" -type f -not -path "./vendor/*"
 PACKAGES ?= $(shell go list ./... | grep -v /vendor/)
 SOURCES ?= $(shell find . -name "*.go" -type f)
 TAGS ?=
@@ -28,7 +30,7 @@ endif
 all: build
 
 fmt:
-	find . -name "*.go" -type f -not -path "./vendor/*" | xargs gofmt -s -w
+	$(GOFILES) | xargs $(GOFMT) -w
 
 vet:
 	go vet $(PACKAGES)
@@ -51,7 +53,16 @@ unconvert:
 	fi
 	for PKG in $(PACKAGES); do unconvert -v $$PKG || exit 1; done;
 
-test:
+.PHONY: fmt-check
+fmt-check:
+	# get all go files and run go fmt on them
+	@files=$$($(GOFILES) | xargs $(GOFMT) -l); if [ -n "$$files" ]; then \
+		echo "Please run 'make fmt' and commit the result:"; \
+		echo "$${files}"; \
+		exit 1; \
+		fi;
+
+test: fmt-check
 	for PKG in $(PACKAGES); do go test -v -cover -coverprofile $$GOPATH/src/$$PKG/coverage.txt $$PKG || exit 1; done;
 
 html:
