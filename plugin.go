@@ -61,12 +61,13 @@ type (
 	}
 
 	copyError struct {
-		host string
+		host    string
+		message string
 	}
 )
 
 func (e copyError) Error() string {
-	return fmt.Sprintf("error copy file to dest: %s\n", e.host)
+	return fmt.Sprintf("error copy file to dest: %s, error message: %s\n", e.host, e.message)
 }
 
 var wg sync.WaitGroup
@@ -215,7 +216,7 @@ func (p *Plugin) Exec() error {
 			err := ssh.Scp(tar, p.DestFile)
 
 			if err != nil {
-				errChannel <- copyError{host}
+				errChannel <- copyError{host, err.Error()}
 				return
 			}
 
