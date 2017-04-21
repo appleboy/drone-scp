@@ -47,6 +47,23 @@ func TestMissingSourceConfig(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
+func TestSetPasswordAndKey(t *testing.T) {
+	plugin := Plugin{
+		Config: Config{
+			Host:     []string{"example.com"},
+			Username: "ubuntu",
+			Port:     "443",
+			Password: "1234",
+			Key:      "test",
+		},
+	}
+
+	err := plugin.Exec()
+
+	assert.NotNil(t, err)
+	assert.Equal(t, "can't set password and key at the same time", err.Error())
+}
+
 func TestTrimElement(t *testing.T) {
 	var input, result []string
 
