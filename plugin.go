@@ -161,6 +161,10 @@ func (p *Plugin) Exec() error {
 		return errors.New("missing ssh config (Host, Username)")
 	}
 
+	if len(p.Config.Password) != 0 || len(p.Config.Key) != 0 {
+		return errors.New("can't set password and key at the same time")
+	}
+
 	if len(p.Config.Source) == 0 || len(p.Config.Target) == 0 {
 		return errors.New("missing source or target config")
 	}
