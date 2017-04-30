@@ -38,18 +38,19 @@ type (
 
 	// Config for the plugin.
 	Config struct {
-		Host           []string
-		Port           string
-		Username       string
-		Password       string
-		Key            string
-		KeyPath        string
-		Timeout        time.Duration
-		CommandTimeout int
-		Target         []string
-		Source         []string
-		Remove         bool
-		Proxy          easyssh.DefaultConfig
+		Host            []string
+		Port            string
+		Username        string
+		Password        string
+		Key             string
+		KeyPath         string
+		Timeout         time.Duration
+		CommandTimeout  int
+		Target          []string
+		Source          []string
+		Remove          bool
+		StripComponents int
+		Proxy           easyssh.DefaultConfig
 	}
 
 	// Plugin values.
@@ -252,7 +253,11 @@ func (p *Plugin) Exec() error {
 
 				// untar file
 				p.log(host, "untar file", p.DestFile)
-				_, _, _, err = ssh.Run(fmt.Sprintf("tar -xf %s -C %s", p.DestFile, target), p.Config.CommandTimeout)
+				if p.Config.StripComponents > 0 {
+					_, _, _, err = ssh.Run(fmt.Sprintf("tar -xf %s --strip-components=%d -C %s", p.DestFile, p.Config.StripComponents, target), p.Config.CommandTimeout)
+				} else {
+					_, _, _, err = ssh.Run(fmt.Sprintf("tar -xf %s -C %s", p.DestFile, target), p.Config.CommandTimeout)
+				}
 
 				if err != nil {
 					errChannel <- err
