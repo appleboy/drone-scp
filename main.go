@@ -178,6 +178,11 @@ func main() {
 			Usage:  "proxy connection timeout",
 			EnvVar: "PLUGIN_PROXY_TIMEOUT,PROXY_SSH_TIMEOUT",
 		},
+		cli.IntFlag{
+			Name:   "strip.components",
+			Usage:  "Remove the specified number of leading path elements.",
+			EnvVar: "PLUGIN_STRIP_COMPONENTS,TAR_STRIP_COMPONENTS",
+		},
 	}
 
 	// Override a template
@@ -236,17 +241,18 @@ func run(c *cli.Context) error {
 			Link:    c.String("build.link"),
 		},
 		Config: Config{
-			Host:           c.StringSlice("host"),
-			Port:           c.String("port"),
-			Username:       c.String("username"),
-			Password:       c.String("password"),
-			Timeout:        c.Duration("timeout"),
-			CommandTimeout: c.Int("command.timeout"),
-			Key:            c.String("key"),
-			KeyPath:        c.String("key-path"),
-			Target:         c.StringSlice("target"),
-			Source:         c.StringSlice("source"),
-			Remove:         c.Bool("rm"),
+			Host:            c.StringSlice("host"),
+			Port:            c.String("port"),
+			Username:        c.String("username"),
+			Password:        c.String("password"),
+			Timeout:         c.Duration("timeout"),
+			CommandTimeout:  c.Int("command.timeout"),
+			Key:             c.String("key"),
+			KeyPath:         c.String("key-path"),
+			Target:          c.StringSlice("target"),
+			Source:          c.StringSlice("source"),
+			Remove:          c.Bool("rm"),
+			StripComponents: c.Int("strip.components"),
 			Proxy: easyssh.DefaultConfig{
 				Key:      c.String("proxy.ssh-key"),
 				KeyPath:  c.String("proxy.key-path"),
