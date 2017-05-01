@@ -89,6 +89,17 @@ Remove target folder before copy files and artifacts to target:
 +   rm: true
 ```
 
+Example for remove the specified number of leading path elements:
+
+```diff
+  scp:
+    image: appleboy/drone-scp
+    host: example.com
+    target: /home/deploy/web
+    source: dist/release.tar.gz
++   strip_components: 1
+```
+
 Example configuration using ｀SSHProxyCommand｀:
 
 ```diff
