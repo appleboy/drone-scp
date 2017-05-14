@@ -11,12 +11,12 @@
 			"versionExact": "master"
 		},
 		{
-			"checksumSHA1": "L3PugNJJOEpRmRbD+27LgTZC2E4=",
+			"checksumSHA1": "YgrgNVNBf7Ro0f3KuiHewOCHrwo=",
 			"path": "github.com/appleboy/easyssh-proxy",
-			"revision": "a13ed86767b8e8a24d8147a4909a702e7cf6b465",
-			"revisionTime": "2017-04-14T13:46:38Z",
-			"version": "1.1.2",
-			"versionExact": "1.1.2"
+			"revision": "14882d1d04ac6a85700586997695fcd936470e86",
+			"revisionTime": "2017-05-11T07:07:30Z",
+			"version": "1.1.5",
+			"versionExact": "1.1.5"
 		},
 		{
 			"checksumSHA1": "dvabztWVQX8f6oMLRyv4dLH+TGY=",
