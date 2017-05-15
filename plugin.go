@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -71,8 +70,6 @@ func (e copyError) Error() string {
 	return fmt.Sprintf("error copy file to dest: %s, error message: %s\n", e.host, e.message)
 }
 
-var wg sync.WaitGroup
-
 func trimPath(keys []string) []string {
 	var newKeys []string
 
@@ -95,7 +92,7 @@ func globList(paths []string) []string {
 		pattern = strings.Trim(pattern, " ")
 		matches, err := filepath.Glob(pattern)
 		if err != nil {
-			log.Printf("Glob error for %q: %s\n", pattern, err)
+			fmt.Printf("Glob error for %q: %s\n", pattern, err)
 			continue
 		}
 
@@ -106,7 +103,7 @@ func globList(paths []string) []string {
 }
 
 func (p Plugin) log(host string, message ...interface{}) {
-	log.Printf("%s: %s", host, fmt.Sprintln(message...))
+	fmt.Printf("%s: %s", host, fmt.Sprintln(message...))
 }
 
 func (p *Plugin) removeDestFile(ssh *easyssh.MakeConfig) error {
@@ -181,7 +178,7 @@ func (p *Plugin) Exec() error {
 	tar := filepath.Join(dir, p.DestFile)
 
 	// run archive command
-	log.Println("tar all files into " + tar)
+	fmt.Println("tar all files into " + tar)
 	args := append(append([]string{}, "-cf", getRealPath(tar)), files...)
 
 	cmd := exec.Command("tar", args...)
@@ -191,6 +188,7 @@ func (p *Plugin) Exec() error {
 		return err
 	}
 
+	wg := sync.WaitGroup{}
 	wg.Add(len(p.Config.Host))
 	errChannel := make(chan error, 1)
 	finished := make(chan bool, 1)
