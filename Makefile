@@ -9,7 +9,7 @@ DEPLOY_ACCOUNT := appleboy
 DEPLOY_IMAGE := $(EXECUTABLE)
 
 TARGETS ?= linux darwin windows
-GOFILES := find . -name "*.go" -type f -not -path "./vendor/*"
+GOFILES := $(shell find . -name "*.go" -type f -not -path "./vendor/*")
 PACKAGES ?= $(shell go list ./... | grep -v /vendor/)
 SOURCES ?= $(shell find . -name "*.go" -type f)
 TAGS ?=
@@ -30,7 +30,7 @@ endif
 all: build
 
 fmt:
-	$(GOFILES) | xargs $(GOFMT) -w
+	$(GOFMT) -w $(GOFILES)
 
 vet:
 	go vet $(PACKAGES)
@@ -56,11 +56,12 @@ unconvert:
 .PHONY: fmt-check
 fmt-check:
 	# get all go files and run go fmt on them
-	@files=$$($(GOFILES) | xargs $(GOFMT) -l); if [ -n "$$files" ]; then \
+	@diff=$$($(GOFMT) -d $(GOFILES)); \
+	if [ -n "$$diff" ]; then \
 		echo "Please run 'make fmt' and commit the result:"; \
-		echo "$${files}"; \
+		echo "$${diff}"; \
 		exit 1; \
-		fi;
+	fi;
 
 test: fmt-check
 	for PKG in $(PACKAGES); do go test -v -cover -coverprofile $$GOPATH/src/$$PKG/coverage.txt $$PKG || exit 1; done;
