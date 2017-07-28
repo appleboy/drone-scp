@@ -30,23 +30,23 @@ func main() {
 		cli.StringSliceFlag{
 			Name:   "host, H",
 			Usage:  "Server host",
-			EnvVar: "PLUGIN_HOST,SCP_HOST",
+			EnvVar: "PLUGIN_HOST,SCP_HOST,SSH_HOST",
 		},
 		cli.StringFlag{
 			Name:   "port, P",
 			Value:  "22",
 			Usage:  "Server port, default to 22",
-			EnvVar: "PLUGIN_PORT,SCP_PORT",
+			EnvVar: "PLUGIN_PORT,SCP_PORT,SSH_PORT",
 		},
 		cli.StringFlag{
 			Name:   "username, u",
 			Usage:  "Server username",
-			EnvVar: "PLUGIN_USERNAME,SCP_USERNAME",
+			EnvVar: "PLUGIN_USERNAME,SCP_USERNAME,SSH_USERNAME",
 		},
 		cli.StringFlag{
 			Name:   "password, p",
 			Usage:  "Password for password-based authentication",
-			EnvVar: "PLUGIN_PASSWORD,SCP_PASSWORD",
+			EnvVar: "PLUGIN_PASSWORD,SCP_PASSWORD,SSH_PASSWORD",
 		},
 		cli.DurationFlag{
 			Name:   "timeout",
@@ -62,12 +62,12 @@ func main() {
 		cli.StringFlag{
 			Name:   "key, k",
 			Usage:  "ssh private key",
-			EnvVar: "PLUGIN_KEY,SCP_KEY",
+			EnvVar: "PLUGIN_KEY,SCP_KEY,SSH_KEY",
 		},
 		cli.StringFlag{
 			Name:   "key-path, i",
 			Usage:  "ssh private key path",
-			EnvVar: "PLUGIN_KEY_PATH,SCP_KEY_PATH",
+			EnvVar: "PLUGIN_KEY_PATH,SCP_KEY_PATH,SSH_KEY_PATH",
 		},
 		cli.StringSliceFlag{
 			Name:   "target, t",
