@@ -115,35 +115,46 @@ pipeline:
 +   proxy_host: 10.130.33.145
 +   proxy_user: ubuntu
 +   proxy_port: 22
-+   proxy_key: ${PROXY_KEY}
++   proxy_password: 1234
 ```
 
-Example configuration for success build:
+Example configuration using password from secrets:
 
 ```diff
 pipeline:
   scp:
     image: appleboy/drone-scp
-    host: example.com
+    host:
+      - example1.com
+      - example2.com
+    user: ubuntu
+    port: 22
+-   password: 1234
++   secrets: [ ssh_password ]
     target: /home/deploy/web
-    source: release.tar.gz
-+   when:
-+     status: success
+    source:
+      - release/*.tar.gz
 ```
 
-Example configuration for tag event:
+# Secret Reference
 
-```diff
-pipeline:
-  scp:
-    image: appleboy/drone-scp
-    host: example.com
-    target: /home/deploy/web
-    source: release.tar.gz
-+   when:
-+     status: success
-+     event: tag
-```
+ssh_username
+: account for target host user
+
+ssh_password
+: password for target host user
+
+ssh_key
+: plain text of user private key
+
+proxy_ssh_username
+: account for user of proxy server
+
+proxy_ssh_password
+: password for user of proxy server
+
+proxy_ssh_key
+: plain text of user private key for proxy server
 
 # Parameter Reference
 
@@ -172,7 +183,28 @@ rm
 : remove target folder before copy files and artifacts
 
 timeout
-: timeout is the maximum amount of time for the TCP connection to establish.
+: timeout is the maximum amount of time for the TCP connection to establish
+
+strip_components
+: remove the specified number of leading path elements
+
+proxy_host
+: proxy hostname or IP
+
+proxy_port
+: ssh port of proxy host
+
+proxy_username
+: account for proxy host user
+
+proxy_password
+: password for proxy host user
+
+proxy_key
+: plain text of proxy private key
+
+proxy_key_path
+: key path of proxy private key
 
 # Template Reference
 
@@ -208,21 +240,3 @@ build.author
 
 build.link
 : link the the build results in drone
-
-proxy_host
-: proxy hostname or IP
-
-proxy_port
-: ssh port of proxy host
-
-proxy_username
-: account for proxy host user
-
-proxy_password
-: password for proxy host user
-
-proxy_key
-: plain text of proxy private key
-
-proxy_key_path
-: key path of proxy private key
