@@ -1,6 +1,6 @@
 workspace:
-  base: /srv/app
-  path: src/github.com/appleboy/drone-scp
+  base: /go/src
+  path: github.com/appleboy/drone-scp
 
 clone:
   git:
@@ -10,57 +10,117 @@ clone:
 
 pipeline:
   test:
-    image: appleboy/golang-testing
+    image: appleboy/golang-testing:1.9.2
     pull: true
+    group: build
     secrets: [ codecov_token ]
-    environment:
-      TAGS: netgo
-      GOPATH: /srv/app
     commands:
       - make ssh-server
       - make vet
       - make lint
-      # - make test
       - make fmt-check
       - coverage all
       - make coverage
-      - make build
-      # build binary for docker image
-      - make static_build
-    when:
-      event: [ push, tag, pull_request ]
+
+  build_linux_amd64:
+    image: appleboy/golang-testing:1.9.2
+    pull: true
+    group: build
+    commands:
+      - make build_linux_amd64
+
+  build_linux_i386:
+    image: appleboy/golang-testing:1.9.2
+    pull: true
+    group: build
+    commands:
+      - make build_linux_i386
+
+  build_linux_arm64:
+    image: appleboy/golang-testing:1.9.2
+    pull: true
+    group: build
+    commands:
+      - make build_linux_arm64
+
+  build_linux_arm:
+    image: appleboy/golang-testing:1.9.2
+    pull: true
+    group: build
+    commands:
+      - make build_linux_arm
 
   release:
-    image: appleboy/golang-testing
+    image: appleboy/golang-testing:1.9.2
     pull: true
-    environment:
-      TAGS: netgo
-      GOPATH: /srv/app
     commands:
       - make release
     when:
       event: [ tag ]
-      branch: [ refs/tags/* ]
-
-  publish_latest:
-    image: plugins/docker
-    repo: ${DRONE_REPO}
-    tags: [ 'latest' ]
-    secrets: [ docker_username, docker_password ]
-    when:
-      event: [ push ]
-      branch: [ master ]
       local: false
 
-  publish_tag:
+  publish_alpine:
     image: plugins/docker
+    group: release
+    pull: true
+    dockerfile: Dockerfile.alpine
+    secrets: [ docker_username, docker_password ]
+    default_tags: true
+    default_suffix: alpine
     repo: ${DRONE_REPO}
-    tags: [ '${DRONE_TAG}' ]
+    when:
+      event: [ push, tag ]
+      local: false
+
+  publish_linux_amd64:
+    image: plugins/docker:17.05
+    pull: true
     secrets: [ docker_username, docker_password ]
     group: release
+    repo: ${DRONE_REPO}
+    auto_tag: true
+    dockerfile: Dockerfile
     when:
-      event: [ tag ]
-      branch: [ refs/tags/* ]
+      event: [ push, tag ]
+      local: false
+
+  publish_linux_i386:
+    image: plugins/docker:17.05
+    pull: true
+    secrets: [ docker_username, docker_password ]
+    group: release
+    repo: ${DRONE_REPO}
+    auto_tag: true
+    auto_tag_suffix: i386
+    dockerfile: Dockerfile.i386
+    when:
+      event: [ push, tag ]
+      local: false
+
+  publish_linux_arm64:
+    image: plugins/docker:17.05
+    pull: true
+    secrets: [ docker_username, docker_password ]
+    group: release
+    repo: ${DRONE_REPO}
+    auto_tag: true
+    auto_tag_suffix: arm64
+    dockerfile: Dockerfile.arm64
+    when:
+      event: [ push, tag ]
+      local: false
+
+  publish_linux_arm:
+    image: plugins/docker:17.05
+    pull: true
+    secrets: [ docker_username, docker_password ]
+    group: release
+    repo: ${DRONE_REPO}
+    auto_tag: true
+    auto_tag_suffix: arm
+    dockerfile: Dockerfile.arm
+    when:
+      event: [ push, tag ]
       local: false
 
   release_tag:
@@ -71,7 +131,6 @@ pipeline:
       - dist/release/*
     when:
       event: [ tag ]
-      branch: [ refs/tags/* ]
       local: false
 
   facebook:
