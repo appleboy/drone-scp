@@ -140,12 +140,12 @@ drone-scp --host example1.com \
 
 ```bash
 docker run --rm \
-  -e SCP_HOST example.com \
-  -e SCP_USERNAME xxxxxxx \
-  -e SCP_PORT 22 \
-  -e SCP_KEY_PATH "${HOME}/.ssh/id_rsa"
-  -e SCP_SOURCE SOURCE_FILE_LIST \
-  -e SCP_TARGET TARGET_FOLDER_PATH \
+  -e SCP_HOST=example.com \
+  -e SCP_USERNAME=xxxxxxx \
+  -e SCP_PORT=22 \
+  -e SCP_KEY_PATH="${HOME}/.ssh/id_rsa"
+  -e SCP_SOURCE=SOURCE_FILE_LIST \
+  -e SCP_TARGET=TARGET_FOLDER_PATH \
   -v $(pwd):$(pwd) \
   -w $(pwd) \
   appleboy/drone-scp
@@ -155,12 +155,12 @@ docker run --rm \
 
 ```diff
 docker run --rm \
-  -e SCP_HOST example.com \
-  -e SCP_USERNAME xxxxxxx \
-  -e SCP_PORT 22 \
-+ -e SCP_PASSWORD "xxxxxxx"
-  -e SCP_SOURCE SOURCE_FILE_LIST \
-  -e SCP_TARGET TARGET_FOLDER_PATH \
+  -e SCP_HOST=example.com \
+  -e SCP_USERNAME=xxxxxxx \
+  -e SCP_PORT=22 \
++ -e SCP_PASSWORD="xxxxxxx"
+  -e SCP_SOURCE=SOURCE_FILE_LIST \
+  -e SCP_TARGET=TARGET_FOLDER_PATH \
   -v $(pwd):$(pwd) \
   -w $(pwd) \
   appleboy/drone-scp
@@ -184,11 +184,11 @@ You don't need to add `SCP_PASSWORD` or `SCP_KEY_PATH ` arguments.
 
 ```bash
 docker run --rm \
-  -e SCP_HOST example.com \
-  -e SCP_USERNAME xxxxxxx \
-  -e SCP_PORT 22 \
-  -e SCP_SOURCE SOURCE_FILE_LIST \
-  -e SCP_TARGET TARGET_FOLDER_PATH \
+  -e SCP_HOST=example.com \
+  -e SCP_USERNAME=xxxxxxx \
+  -e SCP_PORT=22 \
+  -e SCP_SOURCE=SOURCE_FILE_LIST \
+  -e SCP_TARGET=TARGET_FOLDER_PATH \
   -v $(pwd):$(pwd) \
   -w $(pwd) \
   appleboy/drone-scp
@@ -198,12 +198,12 @@ docker run --rm \
 
 ```bash
 docker run --rm \
-  -e SCP_HOST example1.com,example2.com \
-  -e SCP_USERNAME xxxxxxx \
-  -e SCP_PASSWORD xxxxxxx \
-  -e SCP_PORT 22 \
-  -e SCP_SOURCE SOURCE_FILE_LIST_1,SOURCE_FILE_LIST_2 \
-  -e SCP_TARGET TARGET_FOLDER_PATH_1,TARGET_FOLDER_PATH_2 \
+  -e SCP_HOST=example1.com,example2.com \
+  -e SCP_USERNAME=xxxxxxx \
+  -e SCP_PASSWORD=xxxxxxx \
+  -e SCP_PORT=22 \
+  -e SCP_SOURCE=SOURCE_FILE_LIST_1,SOURCE_FILE_LIST_2 \
+  -e SCP_TARGET=TARGET_FOLDER_PATH_1,TARGET_FOLDER_PATH_2 \
   -v $(pwd):$(pwd) \
   -w $(pwd) \
   appleboy/drone-scp
@@ -216,23 +216,14 @@ Execute from the working directory:
 
 ```bash
 docker run --rm \
-  -e PLUGIN_HOST example.com \
-  -e PLUGIN_USERNAME xxxxxxx \
-  -e PLUGIN_PASSWORD xxxxxxx \
-  -e PLUGIN_PORT xxxxxxx \
-  -e PLUGIN_KEY "$(cat ${HOME}/.ssh/id_rsa)"
-  -e PLUGIN_SOURCE SOURCE_FILE_LIST \
-  -e PLUGIN_TARGET TARGET_FOLDER_PATH \
-  -e PLUGIN_RM false \
-  -e PLUGIN_DEBUG false \
-  -e DRONE_REPO_OWNER appleboy \
-  -e DRONE_REPO_NAME go-hello \
-  -e DRONE_COMMIT_SHA e5e82b5eb3737205c25955dcc3dcacc839b7be52 \
-  -e DRONE_COMMIT_BRANCH master \
-  -e DRONE_COMMIT_AUTHOR appleboy \
-  -e DRONE_BUILD_NUMBER 1 \
-  -e DRONE_BUILD_STATUS success \
-  -e DRONE_BUILD_LINK http://github.com/appleboy/go-hello \
+  -e PLUGIN_HOST=example.com \
+  -e PLUGIN_USERNAME=xxxxxxx \
+  -e PLUGIN_PASSWORD=xxxxxxx \
+  -e PLUGIN_PORT=xxxxxxx \
+  -e PLUGIN_SOURCE=SOURCE_FILE_LIST \
+  -e PLUGIN_TARGET=TARGET_FOLDER_PATH \
+  -e PLUGIN_RM=false \
+  -e PLUGIN_DEBUG=true \
   -v $(pwd):$(pwd) \
   -w $(pwd) \
   appleboy/drone-scp
