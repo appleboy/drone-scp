@@ -1,0 +1,62 @@
+version: '{build}'
+image: 'Visual Studio 2017'
+platform: x64
+
+clone_folder: 'c:\go\src\github.com\appleboy\drone-scp'
+max_jobs: 1
+
+environment:
+  GOPATH: c:\go
+  docker_username:
+    secure: em/TNLUXxG19O/HvbvfJuQ==
+  docker_password:
+    secure: Yo9FJJqihaNz5q8T4Jz8tQ==
+
+branches:
+  only:
+    - master
+
+install:
+  - echo %PATH%
+  - echo %GOPATH%
+  - set PATH=%GOPATH%\bin;c:\go\bin;%PATH%
+  - go version
+  - go env
+  - docker version
+
+build_script:
+  - ps: |
+      if ( $env:APPVEYOR_REPO_TAG -eq 'false' ) {
+        go build -ldflags "-X main.Version=$env:APPVEYOR_REPO_COMMIT -X main.BuildNum=$env:APPVEYOR_BUILD_VERSION" -a -o drone-scp.exe
+      } else {
+        $version = $env:APPVEYOR_REPO_TAG_NAME
+        go build -ldflags "-X main.Version=$version -X main.BuildNum=$env:APPVEYOR_BUILD_VERSION" -a -o drone-scp.exe
+      }
+      docker pull microsoft/nanoserver:10.0.14393.1884
+      docker build -f Dockerfile.windows -t appleboy/drone-scp:windows .
+
+test_script:
+  - ps: |
+      docker run --rm appleboy/drone-scp:windows --version
+
+deploy_script:
+  - ps: |
+      if ( $env:APPVEYOR_PULL_REQUEST_NUMBER ) {
+        Write-Host Nothing to deploy.
+      } else {
+        docker login --username $env:DOCKER_USERNAME --password $env:DOCKER_PASSWORD
+        if ( $env:APPVEYOR_REPO_TAG -eq 'true' ) {
+          $major,$minor,$patch = $env:APPVEYOR_REPO_TAG_NAME.split('.')
+          docker push appleboy/drone-scp:windows
+          docker tag appleboy/drone-scp:windows appleboy/drone-scp:$major.$minor.$patch-windows
+          docker push appleboy/drone-scp:$major.$minor.$patch-windows
+          docker tag appleboy/drone-scp:windows appleboy/drone-scp:$major.$minor-windows
+          docker push appleboy/drone-scp:$major.$minor-windows
+          docker tag appleboy/drone-scp:windows appleboy/drone-scp:$major-windows
+          docker push appleboy/drone-scp:$major-windows
+        } else {
+          if ( $env:APPVEYOR_REPO_BRANCH -eq 'master' ) {
+            docker push appleboy/drone-scp:windows
+          }
+        }
+      }
