@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"os"
 
 	"github.com/appleboy/easyssh-proxy"
@@ -10,7 +11,10 @@ import (
 )
 
 // Version set at compile-time
-var Version = "v1.0.0-dev"
+var (
+	Version  string
+	BuildNum string
+)
 
 func main() {
 
@@ -217,7 +221,15 @@ VERSION:
 REPOSITORY:
     Github: https://github.com/appleboy/drone-scp
 `
-	app.Run(os.Args)
+	app.Version = Version
+
+	if BuildNum != "" {
+		app.Version = app.Version + "+" + BuildNum
+	}
+
+	if err := app.Run(os.Args); err != nil {
+		log.Println(err)
+	}
 }
 
 func run(c *cli.Context) error {
