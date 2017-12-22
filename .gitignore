@@ -27,3 +27,4 @@ coverage.txt
 .env
 dist
 .cover
+release
