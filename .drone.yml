@@ -29,27 +29,6 @@ pipeline:
     commands:
       - make build_linux_amd64
 
-  build_linux_i386:
-    image: appleboy/golang-testing:1.9.2
-    pull: true
-    group: build
-    commands:
-      - make build_linux_i386
-
-  build_linux_arm64:
-    image: appleboy/golang-testing:1.9.2
-    pull: true
-    group: build
-    commands:
-      - make build_linux_arm64
-
-  build_linux_arm:
-    image: appleboy/golang-testing:1.9.2
-    pull: true
-    group: build
-    commands:
-      - make build_linux_arm
-
   release:
     image: appleboy/golang-testing:1.9.2
     pull: true
@@ -57,19 +36,6 @@ pipeline:
       - make release
     when:
       event: [ tag ]
-      local: false
-
-  publish_alpine:
-    image: plugins/docker
-    group: release
-    pull: true
-    dockerfile: Dockerfile.alpine
-    secrets: [ docker_username, docker_password ]
-    default_tags: true
-    default_suffix: alpine
-    repo: ${DRONE_REPO}
-    when:
-      event: [ push, tag ]
       local: false
 
   publish_linux_amd64:
@@ -80,45 +46,6 @@ pipeline:
     repo: ${DRONE_REPO}
     auto_tag: true
     dockerfile: Dockerfile
-    when:
-      event: [ push, tag ]
-      local: false
-
-  publish_linux_i386:
-    image: plugins/docker:17.05
-    pull: true
-    secrets: [ docker_username, docker_password ]
-    group: release
-    repo: ${DRONE_REPO}
-    auto_tag: true
-    auto_tag_suffix: i386
-    dockerfile: Dockerfile.i386
-    when:
-      event: [ push, tag ]
-      local: false
-
-  publish_linux_arm64:
-    image: plugins/docker:17.05
-    pull: true
-    secrets: [ docker_username, docker_password ]
-    group: release
-    repo: ${DRONE_REPO}
-    auto_tag: true
-    auto_tag_suffix: arm64
-    dockerfile: Dockerfile.arm64
-    when:
-      event: [ push, tag ]
-      local: false
-
-  publish_linux_arm:
-    image: plugins/docker:17.05
-    pull: true
-    secrets: [ docker_username, docker_password ]
-    group: release
-    repo: ${DRONE_REPO}
-    auto_tag: true
-    auto_tag_suffix: arm
-    dockerfile: Dockerfile.arm
     when:
       event: [ push, tag ]
       local: false
