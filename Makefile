@@ -13,7 +13,7 @@ GOFILES := $(shell find . -name "*.go" -type f -not -path "./vendor/*")
 PACKAGES ?= $(shell go list ./... | grep -v /vendor/)
 SOURCES ?= $(shell find . -name "*.go" -type f)
 TAGS ?=
-LDFLAGS ?= -X 'main.Version=$(VERSION)'
+LDFLAGS ?= -X 'main.Version=$(VERSION)' -X 'main.BuildNum=$(DRONE_BUILD_NUMBER)'
 
 ifneq ($(shell uname), Darwin)
 	EXTLDFLAGS = -extldflags "-static" $(null)
