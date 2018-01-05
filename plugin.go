@@ -255,10 +255,17 @@ func (p *Plugin) Exec() error {
 
 				// untar file
 				p.log(host, "untar file", p.DestFile)
+				var outStr string
 				if p.Config.StripComponents > 0 {
-					_, _, _, err = ssh.Run(fmt.Sprintf("tar -xf %s --strip-components=%d -C %s", p.DestFile, p.Config.StripComponents, target), p.Config.CommandTimeout)
+					outStr, errStr, _, err = ssh.Run(fmt.Sprintf("tar -vvv -xf %s --strip-components=%d -C %s", p.DestFile, p.Config.StripComponents, target), p.Config.CommandTimeout)
 				} else {
-					_, _, _, err = ssh.Run(fmt.Sprintf("tar -xf %s -C %s", p.DestFile, target), p.Config.CommandTimeout)
+					outStr, errStr, _, err = ssh.Run(fmt.Sprintf("tar -vvv -xf %s -C %s", p.DestFile, target), p.Config.CommandTimeout)
+				}
+
+				p.log(host, "output: ", outStr)
+
+				if errStr != "" {
+					p.log(host, "error: ", errStr)
 				}
 
 				if err != nil {
