@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/appleboy/easyssh-proxy"
+	easyssh "github.com/appleboy/easyssh-proxy"
 	"github.com/joho/godotenv"
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/urfave/cli"
@@ -82,6 +82,11 @@ func main() {
 			Name:   "source, s",
 			Usage:  "scp file list",
 			EnvVar: "PLUGIN_SOURCE,SCP_SOURCE",
+		},
+		cli.BoolFlag{
+			Name:   "overwrite",
+			Usage:  "use --overwrite flag with tar",
+			EnvVar: "PLUGIN_OVERWRITE,SCP_OVERWRITE",
 		},
 		cli.BoolFlag{
 			Name:   "rm, r",
@@ -263,6 +268,7 @@ func run(c *cli.Context) error {
 			KeyPath:         c.String("key-path"),
 			Target:          c.StringSlice("target"),
 			Source:          c.StringSlice("source"),
+			Overwrite:       c.Bool("overwrite"),
 			Remove:          c.Bool("rm"),
 			StripComponents: c.Int("strip.components"),
 			Proxy: easyssh.DefaultConfig{

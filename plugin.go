@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"github.com/appleboy/com/random"
-	"github.com/appleboy/easyssh-proxy"
+	easyssh "github.com/appleboy/easyssh-proxy"
 	"github.com/fatih/color"
 )
 
@@ -47,6 +47,7 @@ type (
 		CommandTimeout  int
 		Target          []string
 		Source          []string
+		Overwrite       bool
 		Remove          bool
 		StripComponents int
 		Proxy           easyssh.DefaultConfig
@@ -255,11 +256,18 @@ func (p *Plugin) Exec() error {
 
 				// untar file
 				p.log(host, "untar file", p.DestFile)
+
+				overwriteFlag := ""
+				if p.Config.Overwrite {
+					p.log(host, "overwriting existing files")
+					overwriteFlag = "--overwrite "
+				}
+
 				var outStr string
 				if p.Config.StripComponents > 0 {
-					outStr, errStr, _, err = ssh.Run(fmt.Sprintf("tar -vvv -xf %s --strip-components=%d -C %s", p.DestFile, p.Config.StripComponents, target), p.Config.CommandTimeout)
+					outStr, errStr, _, err = ssh.Run(fmt.Sprintf("tar %s-vvv -xf %s --strip-components=%d -C %s", overwriteFlag, p.DestFile, p.Config.StripComponents, target), p.Config.CommandTimeout)
 				} else {
-					outStr, errStr, _, err = ssh.Run(fmt.Sprintf("tar -vvv -xf %s -C %s", p.DestFile, target), p.Config.CommandTimeout)
+					outStr, errStr, _, err = ssh.Run(fmt.Sprintf("tar %s-vvv -xf %s -C %s", overwriteFlag, p.DestFile, target), p.Config.CommandTimeout)
 				}
 
 				p.log(host, "output: ", outStr)
