@@ -10,7 +10,7 @@ clone:
 
 pipeline:
   test:
-    image: appleboy/golang-testing:1.9.2
+    image: appleboy/golang-testing:1.10.0
     pull: true
     group: build
     secrets: [ codecov_token ]
@@ -23,28 +23,28 @@ pipeline:
       - make coverage
 
   build_linux_amd64:
-    image: appleboy/golang-testing:1.9.2
+    image: appleboy/golang-testing:1.10.0
     pull: true
     group: build
     commands:
       - make build_linux_amd64
 
   build_linux_arm64:
-    image: appleboy/golang-testing:1.9.2
+    image: appleboy/golang-testing:1.10.0
     pull: true
     group: build
     commands:
       - make build_linux_arm64
 
   build_linux_arm:
-    image: appleboy/golang-testing:1.9.2
+    image: appleboy/golang-testing:1.10.0
     pull: true
     group: build
     commands:
       - make build_linux_arm
 
   release:
-    image: appleboy/golang-testing:1.9.2
+    image: appleboy/golang-testing:1.10.0
     pull: true
     commands:
       - make release
