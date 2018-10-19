@@ -187,6 +187,12 @@ func main() {
 			Usage:  "Remove the specified number of leading path elements.",
 			EnvVar: "PLUGIN_STRIP_COMPONENTS,TAR_STRIP_COMPONENTS",
 		},
+		cli.StringFlag{
+			Name:   "tar.exec",
+			Usage:  "Alternative `tar` executable to on the dest host",
+			EnvVar: "PLUGIN_TAR_EXEC,SCP_TAR_EXEC",
+			Value:  "tar",
+		},
 	}
 
 	// Override a template
@@ -265,6 +271,7 @@ func run(c *cli.Context) error {
 			Source:          c.StringSlice("source"),
 			Remove:          c.Bool("rm"),
 			StripComponents: c.Int("strip.components"),
+			TarExec:         c.String("tar.exec"),
 			Proxy: easyssh.DefaultConfig{
 				Key:      c.String("proxy.ssh-key"),
 				KeyPath:  c.String("proxy.key-path"),

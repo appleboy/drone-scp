@@ -49,6 +49,7 @@ type (
 		Source          []string
 		Remove          bool
 		StripComponents int
+		TarExec         string
 		Proxy           easyssh.DefaultConfig
 	}
 
@@ -254,11 +255,11 @@ func (p *Plugin) Exec() error {
 				}
 
 				// untar file
-				p.log(host, "untar file", p.DestFile)
+				p.log(host, "untar file")
 				if p.Config.StripComponents > 0 {
-					_, _, _, err = ssh.Run(fmt.Sprintf("tar -xf %s --strip-components=%d -C %s", p.DestFile, p.Config.StripComponents, target), p.Config.CommandTimeout)
+					_, _, _, err = ssh.Run(fmt.Sprintf("%s -xf %s --strip-components=%d -C %s", p.Config.TarExec, p.DestFile, p.Config.StripComponents, target), p.Config.CommandTimeout)
 				} else {
-					_, _, _, err = ssh.Run(fmt.Sprintf("tar -xf %s -C %s", p.DestFile, target), p.Config.CommandTimeout)
+					_, _, _, err = ssh.Run(fmt.Sprintf("%s -xf %s -C %s", p.Config.TarExec, p.DestFile, target), p.Config.CommandTimeout)
 				}
 
 				if err != nil {
