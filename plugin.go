@@ -255,7 +255,7 @@ func (p *Plugin) Exec() error {
 				}
 
 				// untar file
-				p.log(host, "untar file")
+				p.log(host, "untar file", p.DestFile)
 				if p.Config.StripComponents > 0 {
 					_, _, _, err = ssh.Run(fmt.Sprintf("%s -xf %s --strip-components=%d -C %s", p.Config.TarExec, p.DestFile, p.Config.StripComponents, target), p.Config.CommandTimeout)
 				} else {
