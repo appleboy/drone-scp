@@ -45,7 +45,7 @@ func main() {
 		cli.StringFlag{
 			Name:   "username, u",
 			Usage:  "Server username",
-			EnvVar: "PLUGIN_USERNAME,SCP_USERNAME,SSH_USERNAME",
+			EnvVar: "PLUGIN_USERNAME,PLUGIN_USER,SCP_USERNAME,SSH_USERNAME",
 		},
 		cli.StringFlag{
 			Name:   "password, p",
