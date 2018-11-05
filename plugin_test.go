@@ -97,6 +97,7 @@ func TestSCPFileFromPublicKey(t *testing.T) {
 			Source:         []string{"tests/a.txt", "tests/b.txt"},
 			Target:         []string{filepath.Join(u.HomeDir, "/test")},
 			CommandTimeout: 60,
+			TarExec:        "tar",
 		},
 	}
 
@@ -144,6 +145,7 @@ func TestSCPWildcardFileList(t *testing.T) {
 			Source:         []string{"tests/global/*"},
 			Target:         []string{filepath.Join(u.HomeDir, "abc")},
 			CommandTimeout: 60,
+			TarExec:        "tar",
 		},
 	}
 
@@ -175,6 +177,7 @@ func TestSCPFromProxySetting(t *testing.T) {
 			Source:         []string{"tests/global/*"},
 			Target:         []string{filepath.Join(u.HomeDir, "def")},
 			CommandTimeout: 60,
+			TarExec:        "tar",
 			Proxy: easyssh.DefaultConfig{
 				Server:  "localhost",
 				User:    "drone-scp",
@@ -217,6 +220,7 @@ func TestStripComponentsFlag(t *testing.T) {
 			StripComponents: 2,
 			Target:          []string{filepath.Join(u.HomeDir, "123")},
 			CommandTimeout:  60,
+			TarExec:         "tar",
 		},
 	}
 
@@ -289,6 +293,7 @@ func TestIncorrectPassword(t *testing.T) {
 			Source:         []string{"tests/a.txt", "tests/b.txt"},
 			Target:         []string{"/home"},
 			CommandTimeout: 60,
+			TarExec:        "tar",
 		},
 	}
 
@@ -311,6 +316,7 @@ func TestNoPermissionCreateFolder(t *testing.T) {
 			Source:         []string{"tests/a.txt", "tests/b.txt"},
 			Target:         []string{"/etc/test"},
 			CommandTimeout: 60,
+			TarExec:        "tar",
 		},
 	}
 
