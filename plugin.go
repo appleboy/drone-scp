@@ -186,7 +186,7 @@ func (p *Plugin) Exec() error {
 	fmt.Println("tar all files into " + tar)
 	args := append(append([]string{}, "-cf", getRealPath(tar)), files...)
 
-	cmd := exec.Command("tar", args...)
+	cmd := exec.Command(p.Config.TarExec, args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
