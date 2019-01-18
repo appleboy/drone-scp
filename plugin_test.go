@@ -261,7 +261,7 @@ func TestIgnoreList(t *testing.T) {
 			Username:        "drone-scp",
 			Port:            "22",
 			KeyPath:         "tests/.ssh/id_rsa",
-			Source:          []string{"tests/global/*", "!tests/global/c.txt"},
+			Source:          []string{"tests/global/*", "!tests/global/c.txt", "!tests/global/e.txt"},
 			StripComponents: 2,
 			Target:          []string{filepath.Join(u.HomeDir, "ignore")},
 			CommandTimeout:  60,
@@ -274,6 +274,11 @@ func TestIgnoreList(t *testing.T) {
 
 	// check file exist
 	if _, err := os.Stat(filepath.Join(u.HomeDir, "ignore/c.txt")); err == nil {
+		t.Fatal("c.txt file exist")
+	}
+
+	// check file exist
+	if _, err := os.Stat(filepath.Join(u.HomeDir, "ignore/e.txt")); err == nil {
 		t.Fatal("c.txt file exist")
 	}
 
@@ -407,12 +412,12 @@ func TestGlobList(t *testing.T) {
 
 func TestBuildArgs(t *testing.T) {
 	list := fileList{
-		Source: []string{"tests/a.txt", "tests/b.txt"},
-		Ignore: []string{"tests/a.txt"},
+		Source: []string{"tests/a.txt", "tests/b.txt", "tests/c.txt"},
+		Ignore: []string{"tests/a.txt", "tests/b.txt"},
 	}
 
 	result := buildArgs("test.tar.gz", list)
-	expects := []string{"--exclude", "tests/a.txt", "-cf", "test.tar.gz", "tests/a.txt", "tests/b.txt"}
+	expects := []string{"--exclude", "tests/a.txt", "--exclude", "tests/b.txt", "-cf", "test.tar.gz", "tests/a.txt", "tests/b.txt", "tests/c.txt"}
 	assert.Equal(t, expects, result)
 
 	list = fileList{

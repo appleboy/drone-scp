@@ -116,8 +116,10 @@ func globList(paths []string) fileList {
 func buildArgs(tar string, files fileList) []string {
 	args := []string{}
 	if len(files.Ignore) > 0 {
-		args = append(args, "--exclude")
-		args = append(args, files.Ignore...)
+		for _, v := range files.Ignore {
+			args = append(args, "--exclude")
+			args = append(args, v)
+		}
 	}
 	args = append(args, "-cf")
 	args = append(args, getRealPath(tar))
