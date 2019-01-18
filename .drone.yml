@@ -12,7 +12,6 @@ pipeline:
   test:
     image: appleboy/golang-testing:1.10.0
     pull: true
-    group: build
     secrets: [ codecov_token ]
     commands:
       - make ssh-server

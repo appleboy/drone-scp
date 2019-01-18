@@ -193,6 +193,11 @@ func main() {
 			EnvVar: "PLUGIN_TAR_EXEC,SCP_TAR_EXEC",
 			Value:  "tar",
 		},
+		cli.BoolFlag{
+			Name:   "debug",
+			Usage:  "remove target folder before upload data",
+			EnvVar: "PLUGIN_DEBUG,DEBUG",
+		},
 	}
 
 	// Override a template
@@ -270,6 +275,7 @@ func run(c *cli.Context) error {
 			Target:          c.StringSlice("target"),
 			Source:          c.StringSlice("source"),
 			Remove:          c.Bool("rm"),
+			Debug:           c.Bool("debug"),
 			StripComponents: c.Int("strip.components"),
 			TarExec:         c.String("tar.exec"),
 			Proxy: easyssh.DefaultConfig{
