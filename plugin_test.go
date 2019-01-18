@@ -263,7 +263,7 @@ func TestIgnoreList(t *testing.T) {
 			KeyPath:         "tests/.ssh/id_rsa",
 			Source:          []string{"tests/global/*", "!tests/global/c.txt"},
 			StripComponents: 2,
-			Target:          []string{filepath.Join(u.HomeDir, "123")},
+			Target:          []string{filepath.Join(u.HomeDir, "ignore")},
 			CommandTimeout:  60,
 			TarExec:         "tar",
 		},
@@ -273,11 +273,11 @@ func TestIgnoreList(t *testing.T) {
 	assert.Nil(t, err)
 
 	// check file exist
-	if _, err := os.Stat(filepath.Join(u.HomeDir, "123/c.txt")); os.IsExist(err) {
-		t.Fatalf("SCP-error: %v", err)
+	if _, err := os.Stat(filepath.Join(u.HomeDir, "ignore/c.txt")); err == nil {
+		t.Fatal("c.txt file exist")
 	}
 
-	if _, err := os.Stat(filepath.Join(u.HomeDir, "123/d.txt")); os.IsNotExist(err) {
+	if _, err := os.Stat(filepath.Join(u.HomeDir, "ignore/d.txt")); os.IsNotExist(err) {
 		t.Fatalf("SCP-error: %v", err)
 	}
 }

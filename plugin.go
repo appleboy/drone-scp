@@ -51,6 +51,7 @@ type (
 		StripComponents int
 		TarExec         string
 		Proxy           easyssh.DefaultConfig
+		Debug           bool
 	}
 
 	// Plugin values.
@@ -213,6 +214,9 @@ func (p *Plugin) Exec() error {
 	fmt.Println("tar all files into " + tar)
 	args := buildArgs(tar, files)
 	cmd := exec.Command(p.Config.TarExec, args...)
+	if p.Config.Debug {
+		fmt.Println("$", strings.Join(cmd.Args, " "))
+	}
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
