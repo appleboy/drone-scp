@@ -80,7 +80,9 @@ func TestTrimElement(t *testing.T) {
 
 func TestSCPFileFromPublicKey(t *testing.T) {
 	if os.Getenv("SSH_AUTH_SOCK") != "" {
-		exec.Command("eval", "`ssh-agent -k`").Run()
+		if err := exec.Command("eval", "`ssh-agent -k`").Run(); err != nil {
+			t.Fatalf("exec: %v", err)
+		}
 	}
 
 	u, err := user.Lookup("drone-scp")
