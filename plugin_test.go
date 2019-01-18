@@ -130,7 +130,9 @@ func TestSCPFileFromPublicKey(t *testing.T) {
 
 func TestSCPWildcardFileList(t *testing.T) {
 	if os.Getenv("SSH_AUTH_SOCK") != "" {
-		exec.Command("eval", "`ssh-agent -k`").Run()
+		if err := exec.Command("eval", "`ssh-agent -k`").Run(); err != nil {
+			t.Fatalf("exec: %v", err)
+		}
 	}
 
 	u, err := user.Lookup("drone-scp")
@@ -204,7 +206,9 @@ func TestSCPFromProxySetting(t *testing.T) {
 
 func TestStripComponentsFlag(t *testing.T) {
 	if os.Getenv("SSH_AUTH_SOCK") != "" {
-		exec.Command("eval", "`ssh-agent -k`").Run()
+		if err := exec.Command("eval", "`ssh-agent -k`").Run(); err != nil {
+			t.Fatalf("exec: %v", err)
+		}
 	}
 
 	u, err := user.Lookup("drone-scp")
@@ -241,7 +245,9 @@ func TestStripComponentsFlag(t *testing.T) {
 
 func TestIgnoreList(t *testing.T) {
 	if os.Getenv("SSH_AUTH_SOCK") != "" {
-		exec.Command("eval", "`ssh-agent -k`").Run()
+		if err := exec.Command("eval", "`ssh-agent -k`").Run(); err != nil {
+			t.Fatalf("exec: %v", err)
+		}
 	}
 
 	u, err := user.Lookup("drone-scp")
