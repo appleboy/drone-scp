@@ -86,21 +86,43 @@ func trimPath(keys []string) []string {
 	return newKeys
 }
 
-func globList(paths []string) []string {
-	var newPaths []string
+func globList(paths []string) fileList {
+	var list fileList
 
 	for _, pattern := range paths {
+		ignore := false
 		pattern = strings.Trim(pattern, " ")
+		if string(pattern[0]) == "!" {
+			pattern = pattern[1:]
+			ignore = true
+		}
 		matches, err := filepath.Glob(pattern)
 		if err != nil {
 			fmt.Printf("Glob error for %q: %s\n", pattern, err)
 			continue
 		}
 
-		newPaths = append(newPaths, matches...)
+		if ignore {
+			list.Ignore = append(list.Ignore, matches...)
+		} else {
+			list.Source = append(list.Source, matches...)
+		}
 	}
 
-	return newPaths
+	return list
+}
+
+func buildArgs(tar string, files fileList) []string {
+	args := []string{}
+	if len(files.Ignore) > 0 {
+		args = append(args, "--exclude")
+		args = append(args, files.Ignore...)
+	}
+	args = append(args, "-cf")
+	args = append(args, getRealPath(tar))
+	args = append(args, files.Source...)
+
+	return args
 }
 
 func (p Plugin) log(host string, message ...interface{}) {
@@ -157,6 +179,11 @@ func (p *Plugin) removeAllDestFile() error {
 	return nil
 }
 
+type fileList struct {
+	Ignore []string
+	Source []string
+}
+
 // Exec executes the plugin.
 func (p *Plugin) Exec() error {
 
@@ -184,8 +211,7 @@ func (p *Plugin) Exec() error {
 
 	// run archive command
 	fmt.Println("tar all files into " + tar)
-	args := append(append([]string{}, "-cf", getRealPath(tar)), files...)
-
+	args := buildArgs(tar, files)
 	cmd := exec.Command(p.Config.TarExec, args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
