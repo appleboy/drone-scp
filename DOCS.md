@@ -3,8 +3,8 @@ date: 2017-01-06T00:00:00+00:00
 title: SCP
 author: appleboy
 tags: [ publish, ssh, scp ]
-repo: appleboy/drone-scp
 logo: term.svg
+repo: appleboy/drone-scp
 image: appleboy/drone-scp
 ---
 
@@ -14,9 +14,10 @@ The SCP plugin copy files and artifacts to target host machine via SSH. The belo
 pipeline:
   scp:
     image: appleboy/drone-scp
-    host: example.com
-    target: /home/deploy/web
-    source: release.tar.gz
+    settings:
+      host: example.com
+      target: /home/deploy/web
+      source: release.tar.gz
 ```
 
 Example configuration with custom username, password and port:
@@ -25,12 +26,13 @@ Example configuration with custom username, password and port:
 pipeline:
   scp:
     image: appleboy/drone-scp
-    host: example.com
-+   username: appleboy
-+   password: 12345678
-+   port: 4430
-    target: /home/deploy/web
-    source: release.tar.gz
+    settings:
+      host: example.com
++     username: appleboy
++     password: 12345678
++     port: 4430
+      target: /home/deploy/web
+      source: release.tar.gz
 ```
 
 Example configuration with multiple source and target folder:
@@ -39,13 +41,14 @@ Example configuration with multiple source and target folder:
 pipeline:
   scp:
     image: appleboy/drone-scp
-    host: example.com
-    target:
-+     - /home/deploy/web1
-+     - /home/deploy/web2
-    source:
-+     - release_1.tar.gz
-+     - release_2.tar.gz
+    settings:
+      host: example.com
+      target:
++       - /home/deploy/web1
++       - /home/deploy/web2
+      source:
++       - release_1.tar.gz
++       - release_2.tar.gz
 ```
 
 Example configuration with multiple host:
@@ -54,12 +57,13 @@ Example configuration with multiple host:
 pipeline:
   scp:
     image: appleboy/drone-scp
--   host: example.com
-+   host:
-+     - example1.com
-+     - example2.com
-    target: /home/deploy/web
-    source: release.tar.gz
+    settings:
+-     host: example.com
++     host:
++       - example1.com
++       - example2.com
+      target: /home/deploy/web
+      source: release.tar.gz
 ```
 
 Example configuration with wildcard pattern of source list:
@@ -68,32 +72,15 @@ Example configuration with wildcard pattern of source list:
 pipeline:
   scp:
     image: appleboy/drone-scp
-    host:
-      - example1.com
-      - example2.com
-    target: /home/deploy/web
-    source:
--     - release/backend.tar.gz
--     - release/images.tar.gz
-+     - release/*.tar.gz
-```
-
-Example ignore list configuration with wildcard pattern of source list:
-
-```diff
-pipeline:
-  scp:
-    image: appleboy/drone-scp
-    host:
-      - example1.com
-      - example2.com
-    target: /home/deploy/web
-    source:
--     - release/backend.tar.gz
--     - release/images.tar.gz
-+     - !release/backend.tar.gz
-+     - !release/images.tar.gz
-+     - release/*.tar.gz
+    settings:
+      host:
+        - example1.com
+        - example2.com
+      target: /home/deploy/web
+      source:
+-       - release/backend.tar.gz
+-       - release/images.tar.gz
++       - release/*.tar.gz
 ```
 
 Remove target folder before copy files and artifacts to target:
@@ -102,9 +89,10 @@ Remove target folder before copy files and artifacts to target:
   scp:
     image: appleboy/drone-scp
     host: example.com
-    target: /home/deploy/web
-    source: release.tar.gz
-+   rm: true
+    settings:
+      target: /home/deploy/web
+      source: release.tar.gz
++     rm: true
 ```
 
 Example for remove the specified number of leading path elements:
@@ -112,10 +100,11 @@ Example for remove the specified number of leading path elements:
 ```diff
   scp:
     image: appleboy/drone-scp
-    host: example.com
-    target: /home/deploy/web
-    source: dist/release.tar.gz
-+   strip_components: 1
+    settings:
+      host: example.com
+      target: /home/deploy/web
+      source: dist/release.tar.gz
++     strip_components: 1
 ```
 
 Example configuration using ｀SSHProxyCommand｀:
@@ -124,16 +113,17 @@ Example configuration using ｀SSHProxyCommand｀:
 pipeline:
   scp:
     image: appleboy/drone-scp
-    host:
-      - example1.com
-      - example2.com
-    target: /home/deploy/web
-    source:
-      - release/*.tar.gz
-+   proxy_host: 10.130.33.145
-+   proxy_user: ubuntu
-+   proxy_port: 22
-+   proxy_password: 1234
+    settings:
+      host:
+        - example1.com
+        - example2.com
+      target: /home/deploy/web
+      source:
+        - release/*.tar.gz
++     proxy_host: 10.130.33.145
++     proxy_user: ubuntu
++     proxy_port: 22
++     proxy_password: 1234
 ```
 
 Example configuration using password from secrets:
@@ -142,37 +132,19 @@ Example configuration using password from secrets:
 pipeline:
   scp:
     image: appleboy/drone-scp
-    host:
-      - example1.com
-      - example2.com
-    user: ubuntu
-    port: 22
--   password: 1234
-+   secrets: [ ssh_password ]
-    target: /home/deploy/web
-    source:
-      - release/*.tar.gz
+    settings:
+      host:
+        - example1.com
+        - example2.com
+      user: ubuntu
+      port: 22
+-     password: 1234
++     password:
+        from_secret: ssh_password
+      target: /home/deploy/web
+      source:
+        - release/*.tar.gz
 ```
-
-# Secret Reference
-
-ssh_username
-: account for target host user
-
-ssh_password
-: password for target host user
-
-ssh_key
-: plain text of user private key
-
-proxy_ssh_username
-: account for user of proxy server
-
-proxy_ssh_password
-: password for user of proxy server
-
-proxy_ssh_key
-: plain text of user private key for proxy server
 
 # Parameter Reference
 
