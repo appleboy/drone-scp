@@ -1,5 +1,5 @@
 local pipeline = import 'pipeline.libsonnet';
-local name = 'drone-jenkins';
+local name = 'drone-scp';
 
 [
   pipeline.test,
