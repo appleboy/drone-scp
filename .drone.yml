@@ -31,16 +31,14 @@ steps:
 
 - name: test
   pull: always
-  image: golang:1.12
+  image: golang:1.12-alpine
   commands:
+  - apk add git make curl perl bash build-base zlib-dev ucl-dev
+  - make ssh-server
   - make test
   - make coverage
   environment:
     GO111MODULE: on
-    WEBHOOK_ID:
-      from_secret: webhook_id
-    WEBHOOK_TOKEN:
-      from_secret: webhook_token
   volumes:
   - name: gopath
     path: /go
