@@ -190,8 +190,8 @@ type fileList struct {
 // Exec executes the plugin.
 func (p *Plugin) Exec() error {
 
-	if len(p.Config.Host) == 0 || len(p.Config.Username) == 0 {
-		return errors.New("missing ssh config (Host, Username)")
+	if len(p.Config.Host) == 0 {
+		return errors.New("missing ssh host config")
 	}
 
 	if len(p.Config.Password) != 0 && len(p.Config.Key) != 0 {
