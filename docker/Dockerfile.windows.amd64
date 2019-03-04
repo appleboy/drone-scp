@@ -5,5 +5,5 @@ LABEL maintainer="Bo-Yi Wu <appleboy.tw@gmail.com>" \
   org.label-schema.vendor="Bo-Yi Wu" \
   org.label-schema.schema-version="1.0"
 
-ADD drone-scp.exe /drone-scp.exe
+COPY drone-scp.exe /drone-scp.exe
 ENTRYPOINT [ "\\drone-scp.exe" ]

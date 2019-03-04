@@ -8,5 +8,5 @@ LABEL maintainer="Bo-Yi Wu <appleboy.tw@gmail.com>" \
 RUN apk add --no-cache ca-certificates && \
   rm -rf /var/cache/apk/*
 
-ADD release/linux/arm64/drone-scp /bin/
+COPY release/linux/arm64/drone-scp /bin/
 ENTRYPOINT ["/bin/drone-scp"]
