@@ -36,7 +36,7 @@ Copy files and artifacts via SSH using a binary, docker or [Drone CI](http://doc
 The pre-compiled binaries can be downloaded from [release page](https://github.com/appleboy/drone-scp/releases). Support the following OS type.
 
 * Windows amd64/386
-* Linux amd64/386
+* Linux arm/amd64/386
 * Darwin amd64/386
 
 With `Go` installed
@@ -48,7 +48,14 @@ $ go get -u -v github.com/appleboy/drone-scp
 or build the binary with the following command:
 
 ```
-$ make build
+$ export GOOS=linux
+$ export GOARCH=amd64
+$ export CGO_ENABLED=0
+$ export GO111MODULE=on
+
+$ go test -cover ./...
+
+$ go build -v -a -tags netgo -o release/linux/amd64/drone-scp .
 ```
 
 ## Docker
