@@ -61,7 +61,7 @@ func TestSetPasswordAndKey(t *testing.T) {
 	err := plugin.Exec()
 
 	assert.NotNil(t, err)
-	assert.Equal(t, "can't set password and key at the same time", err.Error())
+	assert.Equal(t, errSetPasswordandKey, err)
 }
 
 func TestTrimElement(t *testing.T) {

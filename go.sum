@@ -2,6 +2,7 @@ github.com/appleboy/com v0.0.0-20161216153920-c2e1fea1b771 h1:Z/Gd2ICB1/GjfcgrHD
 github.com/appleboy/com v0.0.0-20161216153920-c2e1fea1b771/go.mod h1:rtwjPnHClMOJw4K5oW3ASx9BCPCJ1SDbFbzJjY4Ebqw=
 github.com/appleboy/easyssh-proxy v0.0.0-20170511070730-14882d1d04ac h1:OcOz99ulMMpNqjpRVE8UBqFo5pyRamELU6xZuOR7GJs=
 github.com/appleboy/easyssh-proxy v0.0.0-20170511070730-14882d1d04ac/go.mod h1:bQbHdUQpAmc4Nv22/0slLXWdllbncGfA9ALkPuCe704=
+github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/fatih/color v1.4.1 h1:YJhD/SoQqn7ev9zwhIm7lHTAqsOAF2AN4xlAVZzNZnU=
 github.com/fatih/color v1.4.1/go.mod h1:Zm6kSWBoL9eyXnKyktHP6abPY2pDugNf5KwzbycvMj4=
@@ -12,7 +13,9 @@ github.com/mattn/go-colorable v0.1.1/go.mod h1:FuOcm+DKB9mbwrcAfNl7/TZVBZ6rcncea
 github.com/mattn/go-isatty v0.0.5/go.mod h1:Iq45c/XA43vh69/j3iqttzPXn0bhXyGjM0Hdxcsrc5s=
 github.com/mattn/go-isatty v0.0.6 h1:SrwhHcpV4nWrMGdNcC2kXpMfcBVYGDuTArqyhocJgvA=
 github.com/mattn/go-isatty v0.0.6/go.mod h1:Iq45c/XA43vh69/j3iqttzPXn0bhXyGjM0Hdxcsrc5s=
+github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
+github.com/stretchr/testify v0.0.0-20170130113145-4d4bfba8f1d1 h1:Zx8Rp9ozC4FPFxfEKRSUu8+Ay3sZxEUZ7JrCWMbGgvE=
 github.com/stretchr/testify v0.0.0-20170130113145-4d4bfba8f1d1/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
 github.com/urfave/cli v1.19.1 h1:0mKm4ZoB74PxYmZVua162y1dGt1qc10MyymYRBf3lb8=
 github.com/urfave/cli v1.19.1/go.mod h1:70zkFmudgCuE/ngEzBv17Jvp/497gISqfk5gWijbERA=

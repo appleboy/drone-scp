@@ -16,6 +16,13 @@ import (
 	"github.com/fatih/color"
 )
 
+var (
+	errMissingHost           = errors.New("Error: missing server host")
+	errMissingPasswordOrKey  = errors.New("Error: can't connect without a private SSH key or password")
+	errSetPasswordandKey     = errors.New("can't set password and key at the same time")
+	errMissingSourceOrTarget = errors.New("missing source or target config")
+)
+
 type (
 	// Repo information.
 	Repo struct {
@@ -189,17 +196,20 @@ type fileList struct {
 
 // Exec executes the plugin.
 func (p *Plugin) Exec() error {
-
 	if len(p.Config.Host) == 0 {
-		return errors.New("missing ssh host config")
+		return errMissingHost
 	}
 
-	if len(p.Config.Password) != 0 && len(p.Config.Key) != 0 {
-		return errors.New("can't set password and key at the same time")
+	if len(p.Config.Key) == 0 && len(p.Config.Password) == 0 && len(p.Config.KeyPath) == 0 {
+		return errMissingPasswordOrKey
+	}
+
+	if len(p.Config.Key) != 0 && len(p.Config.Password) != 0 {
+		return errSetPasswordandKey
 	}
 
 	if len(p.Config.Source) == 0 || len(p.Config.Target) == 0 {
-		return errors.New("missing source or target config")
+		return errMissingSourceOrTarget
 	}
 
 	files := globList(trimPath(p.Config.Source))
