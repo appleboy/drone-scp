@@ -31,6 +31,28 @@ Copy files and artifacts via SSH using a binary, docker or [Drone CI](http://doc
      192.168.1.5       121.1.2.3         10.10.29.68
 ```
 
+## Breaking changes
+
+`v1.5.0`: change command timeout flag to `Duration`. See the following setting:
+
+```diff
+pipeline:
+  scp:
+    image: appleboy/drone-scp
+    settings:
+      host:
+        - example1.com
+        - example2.com
+      user: ubuntu
+      port: 22
+-     command_timeout: 120
++     command_timeout: 2m
+        from_secret: ssh_password
+      target: /home/deploy/web
+      source:
+        - release/*.tar.gz
+```
+
 ## Build or Download a binary
 
 The pre-compiled binaries can be downloaded from [release page](https://github.com/appleboy/drone-scp/releases). Support the following OS type.

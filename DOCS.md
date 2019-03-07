@@ -146,6 +146,26 @@ pipeline:
         - release/*.tar.gz
 ```
 
+Example configuration using command timeout:
+
+```diff
+pipeline:
+  scp:
+    image: appleboy/drone-scp
+    settings:
+      host:
+        - example1.com
+        - example2.com
+      user: ubuntu
+      port: 22
+-     command_timeout: 120
++     command_timeout: 2m
+        from_secret: ssh_password
+      target: /home/deploy/web
+      source:
+        - release/*.tar.gz
+```
+
 # Parameter Reference
 
 host
@@ -174,6 +194,9 @@ rm
 
 timeout
 : timeout is the maximum amount of time for the TCP connection to establish
+
+command_timeout
+: timeout is the maximum amount of time for execute command
 
 strip_components
 : remove the specified number of leading path elements

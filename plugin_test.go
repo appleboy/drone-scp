@@ -6,6 +6,7 @@ import (
 	"os/user"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"github.com/appleboy/easyssh-proxy"
 	"github.com/stretchr/testify/assert"
@@ -98,7 +99,7 @@ func TestSCPFileFromPublicKey(t *testing.T) {
 			KeyPath:        "tests/.ssh/id_rsa",
 			Source:         []string{"tests/a.txt", "tests/b.txt"},
 			Target:         []string{filepath.Join(u.HomeDir, "/test")},
-			CommandTimeout: 60,
+			CommandTimeout: 60 * time.Second,
 			TarExec:        "tar",
 		},
 	}
@@ -148,7 +149,7 @@ func TestSCPWildcardFileList(t *testing.T) {
 			KeyPath:        "tests/.ssh/id_rsa",
 			Source:         []string{"tests/global/*"},
 			Target:         []string{filepath.Join(u.HomeDir, "abc")},
-			CommandTimeout: 60,
+			CommandTimeout: 60 * time.Second,
 			TarExec:        "tar",
 		},
 	}
@@ -180,7 +181,7 @@ func TestSCPFromProxySetting(t *testing.T) {
 			KeyPath:        "tests/.ssh/id_rsa",
 			Source:         []string{"tests/global/*"},
 			Target:         []string{filepath.Join(u.HomeDir, "def")},
-			CommandTimeout: 60,
+			CommandTimeout: 60 * time.Second,
 			TarExec:        "tar",
 			Proxy: easyssh.DefaultConfig{
 				Server:  "localhost",
@@ -225,7 +226,7 @@ func TestStripComponentsFlag(t *testing.T) {
 			Source:          []string{"tests/global/*"},
 			StripComponents: 2,
 			Target:          []string{filepath.Join(u.HomeDir, "123")},
-			CommandTimeout:  60,
+			CommandTimeout:  60 * time.Second,
 			TarExec:         "tar",
 		},
 	}
@@ -264,7 +265,7 @@ func TestIgnoreList(t *testing.T) {
 			Source:          []string{"tests/global/*", "!tests/global/c.txt", "!tests/global/e.txt"},
 			StripComponents: 2,
 			Target:          []string{filepath.Join(u.HomeDir, "ignore")},
-			CommandTimeout:  60,
+			CommandTimeout:  60 * time.Second,
 			TarExec:         "tar",
 		},
 	}
@@ -342,7 +343,7 @@ func TestIncorrectPassword(t *testing.T) {
 			Password:       "123456",
 			Source:         []string{"tests/a.txt", "tests/b.txt"},
 			Target:         []string{"/home"},
-			CommandTimeout: 60,
+			CommandTimeout: 60 * time.Second,
 			TarExec:        "tar",
 		},
 	}
@@ -365,7 +366,7 @@ func TestNoPermissionCreateFolder(t *testing.T) {
 			KeyPath:        "tests/.ssh/id_rsa",
 			Source:         []string{"tests/a.txt", "tests/b.txt"},
 			Target:         []string{"/etc/test"},
-			CommandTimeout: 60,
+			CommandTimeout: 60 * time.Second,
 			TarExec:        "tar",
 		},
 	}
@@ -440,7 +441,7 @@ func TestRemoveDestFile(t *testing.T) {
 	}
 	plugin := Plugin{
 		Config: Config{
-			CommandTimeout: 60,
+			CommandTimeout: 60 * time.Second,
 		},
 		DestFile: "/etc/resolv.conf",
 	}
