@@ -195,6 +195,9 @@ rm
 timeout
 : timeout is the maximum amount of time for the TCP connection to establish
 
+command_timeout
+: timeout is the maximum amount of time for execute command
+
 strip_components
 : remove the specified number of leading path elements
 
