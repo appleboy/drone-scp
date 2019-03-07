@@ -51,7 +51,7 @@ type (
 		Key             string
 		KeyPath         string
 		Timeout         time.Duration
-		CommandTimeout  int
+		CommandTimeout  time.Duration
 		Target          []string
 		Source          []string
 		Remove          bool
