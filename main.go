@@ -13,16 +13,15 @@ import (
 
 // Version set at compile-time
 var (
-	Version  string
-	BuildNum string
+	Version string
 )
 
 func main() {
-
 	app := cli.NewApp()
 	app.Name = "Drone SCP"
 	app.Usage = "Copy files and artifacts via SSH."
-	app.Copyright = "Copyright (c) 2017 Bo-Yi Wu"
+	app.Copyright = "Copyright (c) 2019 Bo-Yi Wu"
+	app.Version = Version
 	app.Authors = []cli.Author{
 		{
 			Name:  "Bo-Yi Wu",
@@ -233,11 +232,6 @@ VERSION:
 REPOSITORY:
     Github: https://github.com/appleboy/drone-scp
 `
-	app.Version = Version
-
-	if BuildNum != "" {
-		app.Version = app.Version + "+" + BuildNum
-	}
 
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
