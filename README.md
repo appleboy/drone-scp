@@ -43,7 +43,9 @@ pipeline:
       host:
         - example1.com
         - example2.com
-      user: ubuntu
+      username: ubuntu
+      password:
+        from_secret: ssh_password
       port: 22
 -     command_timeout: 120
 +     command_timeout: 2m
