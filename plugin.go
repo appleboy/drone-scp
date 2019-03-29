@@ -237,8 +237,8 @@ func (p *Plugin) Exec() error {
 
 	wg := sync.WaitGroup{}
 	wg.Add(len(p.Config.Host))
-	errChannel := make(chan error, 1)
-	finished := make(chan bool, 1)
+	errChannel := make(chan error)
+	finished := make(chan struct{})
 	for _, host := range p.Config.Host {
 		go func(host string) {
 			// Create MakeConfig instance with remote username, server address and path to private key.
