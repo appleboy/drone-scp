@@ -49,7 +49,6 @@ pipeline:
       port: 22
 -     command_timeout: 120
 +     command_timeout: 2m
-        from_secret: ssh_password
       target: /home/deploy/web
       source:
         - release/*.tar.gz
@@ -88,14 +87,6 @@ Build the docker image with the following commands:
 
 ```
 $ make docker
-```
-
-Please note incorrectly building the image for the correct x64 linux and with
-CGO disabled will result in an error when running the Docker image:
-
-```
-docker: Error response from daemon: Container command
-'/bin/drone-scp' not found or does not exist..
 ```
 
 ## Usage
