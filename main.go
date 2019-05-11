@@ -34,23 +34,23 @@ func main() {
 		cli.StringSliceFlag{
 			Name:   "host, H",
 			Usage:  "Server host",
-			EnvVar: "PLUGIN_HOST,SCP_HOST,SSH_HOST",
+			EnvVar: "PLUGIN_HOST,SCP_HOST,SSH_HOST,HOST",
 		},
 		cli.StringFlag{
 			Name:   "port, P",
 			Value:  "22",
 			Usage:  "Server port, default to 22",
-			EnvVar: "PLUGIN_PORT,SCP_PORT,SSH_PORT",
+			EnvVar: "PLUGIN_PORT,SCP_PORT,SSH_PORT,PORT",
 		},
 		cli.StringFlag{
 			Name:   "username, u",
 			Usage:  "Server username",
-			EnvVar: "PLUGIN_USERNAME,PLUGIN_USER,SCP_USERNAME,SSH_USERNAME",
+			EnvVar: "PLUGIN_USERNAME,PLUGIN_USER,SCP_USERNAME,SSH_USERNAME,USERNAME",
 		},
 		cli.StringFlag{
 			Name:   "password, p",
 			Usage:  "Password for password-based authentication",
-			EnvVar: "PLUGIN_PASSWORD,SCP_PASSWORD,SSH_PASSWORD",
+			EnvVar: "PLUGIN_PASSWORD,SCP_PASSWORD,SSH_PASSWORD,PASSWORD",
 		},
 		cli.DurationFlag{
 			Name:   "timeout",
@@ -76,17 +76,17 @@ func main() {
 		cli.StringSliceFlag{
 			Name:   "target, t",
 			Usage:  "Target path on the server",
-			EnvVar: "PLUGIN_TARGET,SCP_TARGET",
+			EnvVar: "PLUGIN_TARGET,SCP_TARGET,TARGET",
 		},
 		cli.StringSliceFlag{
 			Name:   "source, s",
 			Usage:  "scp file list",
-			EnvVar: "PLUGIN_SOURCE,SCP_SOURCE",
+			EnvVar: "PLUGIN_SOURCE,SCP_SOURCE,SOURCE",
 		},
 		cli.BoolFlag{
 			Name:   "rm, r",
 			Usage:  "remove target folder before upload data",
-			EnvVar: "PLUGIN_RM,SCP_RM",
+			EnvVar: "PLUGIN_RM,SCP_RM,RM",
 		},
 		cli.StringFlag{
 			Name:   "repo.owner",
