@@ -66,7 +66,7 @@ func main() {
 		cli.StringFlag{
 			Name:   "key, k",
 			Usage:  "ssh private key",
-			EnvVar: "PLUGIN_KEY,SCP_KEY,SSH_KEY",
+			EnvVar: "PLUGIN_KEY,SCP_KEY,SSH_KEY,KEY",
 		},
 		cli.StringFlag{
 			Name:   "key-path, i",
