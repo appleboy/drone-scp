@@ -157,13 +157,35 @@ pipeline:
         - example1.com
         - example2.com
       user: ubuntu
+      password:
+        from_secret: ssh_password
       port: 22
 -     command_timeout: 120
 +     command_timeout: 2m
-        from_secret: ssh_password
       target: /home/deploy/web
       source:
         - release/*.tar.gz
+```
+
+Example configuration for ignore list:
+
+```diff
+pipeline:
+  scp:
+    image: appleboy/drone-scp
+    settings:
+      host:
+        - example1.com
+        - example2.com
+      user: ubuntu
+      password:
+        from_secret: ssh_password
+      port: 22
+      command_timeout: 2m
+      target: /home/deploy/web
+      source:
++       - !release/README.md
+        - release/*
 ```
 
 # Parameter Reference
