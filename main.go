@@ -148,7 +148,7 @@ func main() {
 		cli.StringFlag{
 			Name:   "proxy.ssh-key",
 			Usage:  "private ssh key of proxy",
-			EnvVar: "PLUGIN_PROXY_SSH_KEY,PLUGIN_PROXY_KEY,PROXY_SSH_KEY",
+			EnvVar: "PLUGIN_PROXY_SSH_KEY,PLUGIN_PROXY_KEY,PROXY_SSH_KEY,PROXY_KEY",
 		},
 		cli.StringFlag{
 			Name:   "proxy.key-path",
@@ -158,23 +158,23 @@ func main() {
 		cli.StringFlag{
 			Name:   "proxy.username",
 			Usage:  "connect as user of proxy",
-			EnvVar: "PLUGIN_PROXY_USERNAME,PLUGIN_PROXY_USER,PROXY_SSH_USERNAME",
+			EnvVar: "PLUGIN_PROXY_USERNAME,PLUGIN_PROXY_USER,PROXY_SSH_USERNAME,PROXY_USERNAME",
 			Value:  "root",
 		},
 		cli.StringFlag{
 			Name:   "proxy.password",
 			Usage:  "user password of proxy",
-			EnvVar: "PLUGIN_PROXY_PASSWORD,PROXY_SSH_PASSWORD",
+			EnvVar: "PLUGIN_PROXY_PASSWORD,PROXY_SSH_PASSWORD,PROXY_PASSWORD",
 		},
 		cli.StringFlag{
 			Name:   "proxy.host",
 			Usage:  "connect to host of proxy",
-			EnvVar: "PLUGIN_PROXY_HOST,PROXY_SSH_HOST",
+			EnvVar: "PLUGIN_PROXY_HOST,PROXY_SSH_HOST,PROXY_HOST",
 		},
 		cli.StringFlag{
 			Name:   "proxy.port",
 			Usage:  "connect to port of proxy",
-			EnvVar: "PLUGIN_PROXY_PORT,PROXY_SSH_PORT",
+			EnvVar: "PLUGIN_PROXY_PORT,PROXY_SSH_PORT,PROXY_PORT",
 			Value:  "22",
 		},
 		cli.DurationFlag{
