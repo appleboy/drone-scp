@@ -1,11 +1,11 @@
 # drone-scp
 
-[![GoDoc](https://godoc.org/github.com/appleboy/drone-scp?status.svg)](https://godoc.org/github.com/appleboy/drone-scp) 
+[![GoDoc](https://godoc.org/github.com/appleboy/drone-scp?status.svg)](https://godoc.org/github.com/appleboy/drone-scp)
 [![Build Status](https://cloud.drone.io/api/badges/appleboy/drone-scp/status.svg)](https://cloud.drone.io/appleboy/drone-scp)
-[![codecov](https://codecov.io/gh/appleboy/drone-scp/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/drone-scp) 
+[![codecov](https://codecov.io/gh/appleboy/drone-scp/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/drone-scp)
 [![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/drone-scp)](https://goreportcard.com/report/github.com/appleboy/drone-scp) 
-[![Docker Pulls](https://img.shields.io/docker/pulls/appleboy/drone-scp.svg)](https://hub.docker.com/r/appleboy/drone-scp/) 
-[![](https://images.microbadger.com/badges/image/appleboy/drone-scp.svg)](https://microbadger.com/images/appleboy/drone-scp "Get your own image badge on microbadger.com")
+[![Docker Pulls](https://img.shields.io/docker/pulls/appleboy/drone-scp.svg)](https://hub.docker.com/r/appleboy/drone-scp/)
+[![micro badger](https://images.microbadger.com/badges/image/appleboy/drone-scp.svg)](https://microbadger.com/images/appleboy/drone-scp "Get your own image badge on microbadger.com")
 
 Copy files and artifacts via SSH using a binary, docker or [Drone CI](http://docs.drone.io/).
 
@@ -18,17 +18,17 @@ Copy files and artifacts via SSH using a binary, docker or [Drone CI](http://doc
 * [x] Support load ssh key from absolute path or raw body.
 * [x] Support SSH ProxyCommand.
 
-```
-     +--------+       +----------+      +-----------+
-     | Laptop | <-->  | Jumphost | <--> | FooServer |
-     +--------+       +----------+      +-----------+
+```sh
++--------+       +----------+      +-----------+
+| Laptop | <-->  | Jumphost | <--> | FooServer |
++--------+       +----------+      +-----------+
 
-                         OR
+                   OR
 
-     +--------+       +----------+      +-----------+
-     | Laptop | <-->  | Firewall | <--> | FooServer |
-     +--------+       +----------+      +-----------+
-     192.168.1.5       121.1.2.3         10.10.29.68
++--------+       +----------+      +-----------+
+| Laptop | <-->  | Firewall | <--> | FooServer |
++--------+       +----------+      +-----------+
+192.168.1.5       121.1.2.3         10.10.29.68
 ```
 
 ## Breaking changes
@@ -64,29 +64,29 @@ The pre-compiled binaries can be downloaded from [release page](https://github.c
 
 With `Go` installed
 
+```sh
+go get -u -v github.com/appleboy/drone-scp
 ```
-$ go get -u -v github.com/appleboy/drone-scp
-``` 
 
 or build the binary with the following command:
 
-```
-$ export GOOS=linux
-$ export GOARCH=amd64
-$ export CGO_ENABLED=0
-$ export GO111MODULE=on
+```sh
+export GOOS=linux
+export GOARCH=amd64
+export CGO_ENABLED=0
+export GO111MODULE=on
 
-$ go test -cover ./...
+go test -cover ./...
 
-$ go build -v -a -tags netgo -o release/linux/amd64/drone-scp .
+go build -v -a -tags netgo -o release/linux/amd64/drone-scp .
 ```
 
 ## Docker
 
 Build the docker image with the following commands:
 
-```
-$ make docker
+```sh
+make docker
 ```
 
 ## Usage
@@ -97,7 +97,6 @@ There are three ways to send notification.
 * [usage from docker](#usage-from-docker)
 * [usage from drone ci](#usage-from-drone-ci)
 
-<a name="usage-from-binary"></a>
 ### Usage from binary
 
 #### Using public key
@@ -132,8 +131,8 @@ eval `ssh-agent -s`
 
 Import your local public key `~/.ssh/id_rsa`
 
-```bash
-$ ssh-add
+```sh
+ssh-add
 ```
 
 You don't need to add `--password` or `--key-path` arguments.
@@ -160,7 +159,6 @@ drone-scp --host example1.com \
 + --source your_local_folder_path_2
 ```
 
-<a name="usage-from-docker"></a>
 ### Usage from docker
 
 #### Using public key
@@ -203,11 +201,11 @@ eval `ssh-agent -s`
 
 Import your local public key `~/.ssh/id_rsa`
 
-```bash
-$ ssh-add
+```sh
+ssh-add
 ```
 
-You don't need to add `SCP_PASSWORD` or `SCP_KEY_PATH ` arguments.
+You don't need to add `SCP_PASSWORD` or `SCP_KEY_PATH` arguments.
 
 ```bash
 docker run --rm \
@@ -236,7 +234,6 @@ docker run --rm \
   appleboy/drone-scp
 ```
 
-<a name="usage-from-drone-ci"></a>
 ### Usage from drone ci
 
 Execute from the working directory:
@@ -262,6 +259,6 @@ You can get more [information](http://plugins.drone.io/appleboy/drone-scp/) abou
 
 Test the package with the following command:
 
-```
-$ make test
+```sh
+make test
 ```
