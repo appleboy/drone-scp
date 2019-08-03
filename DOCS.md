@@ -140,7 +140,7 @@ pipeline:
       port: 22
 -     password: 1234
 +     password:
-        from_secret: ssh_password
++       from_secret: ssh_password
       target: /home/deploy/web
       source:
         - release/*.tar.gz
