@@ -188,7 +188,7 @@ pipeline:
         - release/*
 ```
 
-# Parameter Reference
+## Parameter Reference
 
 host
 : target hostname or IP
@@ -241,7 +241,7 @@ proxy_key
 proxy_key_path
 : key path of proxy private key
 
-# Template Reference
+## Template Reference
 
 repo.owner
 : repository owner
