@@ -57,6 +57,7 @@ type (
 		Remove          bool
 		StripComponents int
 		TarExec         string
+		TarTmpPath      string
 		Proxy           easyssh.DefaultConfig
 		Debug           bool
 	}
@@ -260,6 +261,9 @@ func (p *Plugin) Exec() error {
 					Timeout:  p.Config.Proxy.Timeout,
 				},
 			}
+
+			// upload file to the tmp path
+			p.DestFile = fmt.Sprintf("%s%s", p.Config.TarTmpPath, p.DestFile)
 
 			// Call Scp method with file you want to upload to remote server.
 			p.log(host, "scp file to server.")
