@@ -267,6 +267,7 @@ func TestIgnoreList(t *testing.T) {
 			Target:          []string{filepath.Join(u.HomeDir, "ignore")},
 			CommandTimeout:  60 * time.Second,
 			TarExec:         "tar",
+			Debug:           true,
 		},
 	}
 

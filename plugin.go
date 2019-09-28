@@ -202,13 +202,16 @@ func (p *Plugin) Args(target string) []string {
 		p.Config.TarExec,
 		"-xf",
 		p.DestFile,
-		"-C",
-		target,
 	)
 
 	if p.Config.StripComponents > 0 {
 		args = append(args, fmt.Sprintf("-strip-components=%d", p.Config.StripComponents))
 	}
+
+	args = append(args,
+		"-C",
+		target,
+	)
 
 	return args
 }
@@ -318,6 +321,9 @@ func (p *Plugin) Exec() error {
 				// untar file
 				p.log(host, "untar file", p.DestFile)
 				commamd := strings.Join(p.Args(target), " ")
+				if p.Config.Debug {
+					fmt.Println("$", commamd)
+				}
 				_, _, _, err = ssh.Run(commamd, p.Config.CommandTimeout)
 
 				if err != nil {
