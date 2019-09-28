@@ -223,6 +223,15 @@ command_timeout
 strip_components
 : remove the specified number of leading path elements
 
+tar_tmp_path
+: temporary path for tar file on the dest host
+
+tar_exec
+: alternative `tar` executable to on the dest host
+
+overwrite
+: use `--overwrite` flag with tar
+
 proxy_host
 : proxy hostname or IP
 
