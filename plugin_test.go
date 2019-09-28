@@ -459,27 +459,6 @@ func TestRemoveDestFile(t *testing.T) {
 	assert.Error(t, err)
 }
 
-func Test_buildArgs(t *testing.T) {
-	type args struct {
-		tar   string
-		files fileList
-	}
-	tests := []struct {
-		name string
-		args args
-		want []string
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := buildArgs(tt.args.tar, tt.args.files); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("buildArgs() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
 func TestPlugin_buildArgs(t *testing.T) {
 	type fields struct {
 		Repo     Repo
