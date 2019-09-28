@@ -193,6 +193,11 @@ func main() {
 			EnvVar: "PLUGIN_TAR_EXEC,SCP_TAR_EXEC,INPUT_TAR_EXEC",
 			Value:  "tar",
 		},
+		cli.StringFlag{
+			Name:   "tar.tmp-path",
+			Usage:  "Temporary path for tar file on the dest host",
+			EnvVar: "PLUGIN_TAR_TMP_PATH,SCP_TAR_TMP_PATH",
+		},
 		cli.BoolFlag{
 			Name:   "debug",
 			Usage:  "remove target folder before upload data",
@@ -273,6 +278,7 @@ func run(c *cli.Context) error {
 			Debug:           c.Bool("debug"),
 			StripComponents: c.Int("strip.components"),
 			TarExec:         c.String("tar.exec"),
+			TarTmpPath:      c.String("tar.tmp-path"),
 			Proxy: easyssh.DefaultConfig{
 				Key:      c.String("proxy.ssh-key"),
 				KeyPath:  c.String("proxy.key-path"),
