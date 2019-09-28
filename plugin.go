@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -205,7 +206,8 @@ func (p *Plugin) Args(target string) []string {
 	)
 
 	if p.Config.StripComponents > 0 {
-		args = append(args, fmt.Sprintf("-strip-components=%d", p.Config.StripComponents))
+		args = append(args, "--strip-components")
+		args = append(args, strconv.Itoa(p.Config.StripComponents))
 	}
 
 	args = append(args,
