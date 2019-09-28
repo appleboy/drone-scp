@@ -11,9 +11,9 @@ image: appleboy/drone-scp
 The SCP plugin copy files and artifacts to target host machine via SSH. The below pipeline configuration demonstrates simple usage:
 
 ```yaml
-pipeline:
-  scp:
-    image: appleboy/drone-scp
+- name: scp files
+  image: appleboy/drone-scp
+  settings:
     settings:
       host: example.com
       target: /home/deploy/web
@@ -23,169 +23,150 @@ pipeline:
 Example configuration with custom username, password and port:
 
 ```diff
-pipeline:
-  scp:
-    image: appleboy/drone-scp
-    settings:
-      host: example.com
-+     username: appleboy
-+     password: 12345678
-+     port: 4430
-      target: /home/deploy/web
-      source: release.tar.gz
+  image: appleboy/drone-scp
+  settings:
+    host: example.com
++   username: appleboy
++   password: 12345678
++   port: 4430
+    target: /home/deploy/web
+    source: release.tar.gz
 ```
 
 Example configuration with multiple source and target folder:
 
 ```diff
-pipeline:
-  scp:
-    image: appleboy/drone-scp
-    settings:
-      host: example.com
-      target:
-+       - /home/deploy/web1
-+       - /home/deploy/web2
-      source:
-+       - release_1.tar.gz
-+       - release_2.tar.gz
+  image: appleboy/drone-scp
+  settings:
+    host: example.com
+    target:
++     - /home/deploy/web1
++     - /home/deploy/web2
+    source:
++     - release_1.tar.gz
++     - release_2.tar.gz
 ```
 
 Example configuration with multiple host:
 
 ```diff
-pipeline:
-  scp:
-    image: appleboy/drone-scp
-    settings:
--     host: example.com
-+     host:
-+       - example1.com
-+       - example2.com
-      target: /home/deploy/web
-      source: release.tar.gz
+  image: appleboy/drone-scp
+  settings:
+-   host: example.com
++   host:
++     - example1.com
++     - example2.com
+    target: /home/deploy/web
+    source: release.tar.gz
 ```
 
 Example configuration with wildcard pattern of source list:
 
 ```diff
-pipeline:
-  scp:
-    image: appleboy/drone-scp
-    settings:
-      host:
-        - example1.com
-        - example2.com
-      target: /home/deploy/web
-      source:
--       - release/backend.tar.gz
--       - release/images.tar.gz
-+       - release/*.tar.gz
+  image: appleboy/drone-scp
+  settings:
+    host:
+      - example1.com
+      - example2.com
+    target: /home/deploy/web
+    source:
+-     - release/backend.tar.gz
+-     - release/images.tar.gz
++     - release/*.tar.gz
 ```
 
 Remove target folder before copy files and artifacts to target:
 
 ```diff
-  scp:
-    image: appleboy/drone-scp
-    host: example.com
-    settings:
-      target: /home/deploy/web
-      source: release.tar.gz
-+     rm: true
+  image: appleboy/drone-scp
+  settings:
+    target: /home/deploy/web
+    source: release.tar.gz
++   rm: true
 ```
 
 Example for remove the specified number of leading path elements:
 
 ```diff
-  scp:
-    image: appleboy/drone-scp
-    settings:
-      host: example.com
-      target: /home/deploy/web
-      source: dist/release.tar.gz
-+     strip_components: 1
+  image: appleboy/drone-scp
+  settings:
+    host: example.com
+    target: /home/deploy/web
+    source: dist/release.tar.gz
++   strip_components: 1
 ```
 
 Example configuration using ｀SSHProxyCommand｀:
 
 ```diff
-pipeline:
-  scp:
-    image: appleboy/drone-scp
-    settings:
-      host:
-        - example1.com
-        - example2.com
-      target: /home/deploy/web
-      source:
-        - release/*.tar.gz
-+     proxy_host: 10.130.33.145
-+     proxy_user: ubuntu
-+     proxy_port: 22
-+     proxy_password: 1234
+  image: appleboy/drone-scp
+  settings:
+    host:
+      - example1.com
+      - example2.com
+    target: /home/deploy/web
+    source:
+      - release/*.tar.gz
++   proxy_host: 10.130.33.145
++   proxy_user: ubuntu
++   proxy_port: 22
++   proxy_password: 1234
 ```
 
 Example configuration using password from secrets:
 
 ```diff
-pipeline:
-  scp:
-    image: appleboy/drone-scp
-    settings:
-      host:
-        - example1.com
-        - example2.com
-      user: ubuntu
-      port: 22
--     password: 1234
-+     password:
-+       from_secret: ssh_password
-      target: /home/deploy/web
-      source:
-        - release/*.tar.gz
+  image: appleboy/drone-scp
+  settings:
+    host:
+      - example1.com
+      - example2.com
+    user: ubuntu
+    port: 22
+-   password: 1234
++   password:
++     from_secret: ssh_password
+    target: /home/deploy/web
+    source:
+      - release/*.tar.gz
 ```
 
 Example configuration using command timeout:
 
 ```diff
-pipeline:
-  scp:
-    image: appleboy/drone-scp
-    settings:
-      host:
-        - example1.com
-        - example2.com
-      user: ubuntu
-      password:
-        from_secret: ssh_password
-      port: 22
--     command_timeout: 120
-+     command_timeout: 2m
-      target: /home/deploy/web
-      source:
-        - release/*.tar.gz
+  image: appleboy/drone-scp
+  settings:
+    host:
+    - example1.com
+    - example2.com
+    user: ubuntu
+    password:
+    from_secret: ssh_password
+    port: 22
+-   command_timeout: 120
++   command_timeout: 2m
+    target: /home/deploy/web
+    source:
+    - release/*.tar.gz
 ```
 
 Example configuration for ignore list:
 
 ```diff
-pipeline:
-  scp:
-    image: appleboy/drone-scp
-    settings:
-      host:
-        - example1.com
-        - example2.com
-      user: ubuntu
-      password:
-        from_secret: ssh_password
-      port: 22
-      command_timeout: 2m
-      target: /home/deploy/web
-      source:
-+       - !release/README.md
-        - release/*
+  image: appleboy/drone-scp
+  settings:
+    host:
+      - example1.com
+      - example2.com
+    user: ubuntu
+    password:
+      from_secret: ssh_password
+    port: 22
+    command_timeout: 2m
+    target: /home/deploy/web
+    source:
++     - !release/README.md
+      - release/*
 ```
 
 ## Parameter Reference
