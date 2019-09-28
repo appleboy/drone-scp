@@ -334,7 +334,7 @@ func (p *Plugin) Exec() error {
 				if p.Config.Debug {
 					fmt.Println("$", commamd)
 				}
-				outStr, errStr, _, err = ssh.Run(commamd, p.Config.CommandTimeout)
+				outStr, errStr, _, err := ssh.Run(commamd, p.Config.CommandTimeout)
 
 				if outStr != "" {
 					p.log(host, "output: ", outStr)
@@ -342,7 +342,7 @@ func (p *Plugin) Exec() error {
 
 				if errStr != "" {
 					p.log(host, "error: ", errStr)
-				}					}
+				}
 
 				if err != nil {
 					errChannel <- err
