@@ -203,6 +203,11 @@ func main() {
 			Usage:  "remove target folder before upload data",
 			EnvVar: "PLUGIN_DEBUG,DEBUG,INPUT_DEBUG",
 		},
+		cli.BoolFlag{
+			Name:   "overwrite",
+			Usage:  "use --overwrite flag with tar",
+			EnvVar: "PLUGIN_OVERWRITE,SCP_OVERWRITE,INPUT_OVERWRITE",
+		},
 	}
 
 	// Override a template
@@ -279,6 +284,7 @@ func run(c *cli.Context) error {
 			StripComponents: c.Int("strip.components"),
 			TarExec:         c.String("tar.exec"),
 			TarTmpPath:      c.String("tar.tmp-path"),
+			Overwrite:       c.Bool("overwrite"),
 			Proxy: easyssh.DefaultConfig{
 				Key:      c.String("proxy.ssh-key"),
 				KeyPath:  c.String("proxy.key-path"),

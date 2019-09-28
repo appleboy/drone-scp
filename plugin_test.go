@@ -5,6 +5,7 @@ import (
 	"os/exec"
 	"os/user"
 	"path/filepath"
+	"reflect"
 	"testing"
 	"time"
 
@@ -456,4 +457,101 @@ func TestRemoveDestFile(t *testing.T) {
 	// permission denied
 	err = plugin.removeDestFile(ssh)
 	assert.Error(t, err)
+}
+
+func Test_buildArgs(t *testing.T) {
+	type args struct {
+		tar   string
+		files fileList
+	}
+	tests := []struct {
+		name string
+		args args
+		want []string
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := buildArgs(tt.args.tar, tt.args.files); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("buildArgs() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestPlugin_buildArgs(t *testing.T) {
+	type fields struct {
+		Repo     Repo
+		Build    Build
+		Config   Config
+		DestFile string
+	}
+	type args struct {
+		target string
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   []string
+	}{
+		{
+			name: "default command",
+			fields: fields{
+				Config: Config{
+					Overwrite: false,
+					TarExec:   "tar",
+				},
+				DestFile: "foo.tar",
+			},
+			args: args{
+				target: "foo",
+			},
+			want: []string{"tar", "-xf", "foo.tar", "-C", "foo"},
+		},
+		{
+			name: "strip components",
+			fields: fields{
+				Config: Config{
+					Overwrite:       false,
+					TarExec:         "tar",
+					StripComponents: 2,
+				},
+				DestFile: "foo.tar",
+			},
+			args: args{
+				target: "foo",
+			},
+			want: []string{"tar", "-xf", "foo.tar", "--strip-components", "2", "-C", "foo"},
+		},
+		{
+			name: "overwrite",
+			fields: fields{
+				Config: Config{
+					TarExec:         "tar",
+					StripComponents: 2,
+					Overwrite:       true,
+				},
+				DestFile: "foo.tar",
+			},
+			args: args{
+				target: "foo",
+			},
+			want: []string{"tar", "-xf", "foo.tar", "--strip-components", "2", "--overwrite", "-C", "foo"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			p := &Plugin{
+				Repo:     tt.fields.Repo,
+				Build:    tt.fields.Build,
+				Config:   tt.fields.Config,
+				DestFile: tt.fields.DestFile,
+			}
+			if got := p.buildArgs(tt.args.target); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Plugin.buildArgs() = %v, want %v", got, tt.want)
+			}
+		})
+	}
 }
