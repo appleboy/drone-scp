@@ -61,6 +61,7 @@ type (
 		TarTmpPath      string
 		Proxy           easyssh.DefaultConfig
 		Debug           bool
+		Overwrite       bool
 	}
 
 	// Plugin values.
@@ -196,8 +197,7 @@ type fileList struct {
 	Source []string
 }
 
-// Args get tar command
-func (p *Plugin) Args(target string) []string {
+func (p *Plugin) buildArgs(target string) []string {
 	args := []string{}
 
 	args = append(args,
@@ -209,6 +209,10 @@ func (p *Plugin) Args(target string) []string {
 	if p.Config.StripComponents > 0 {
 		args = append(args, "--strip-components")
 		args = append(args, strconv.Itoa(p.Config.StripComponents))
+	}
+
+	if p.Config.Overwrite {
+		args = append(args, "--overwrite")
 	}
 
 	args = append(args,
@@ -326,11 +330,19 @@ func (p *Plugin) Exec() error {
 
 				// untar file
 				p.log(host, "untar file", p.DestFile)
-				commamd := strings.Join(p.Args(target), " ")
+				commamd := strings.Join(p.buildArgs(target), " ")
 				if p.Config.Debug {
 					fmt.Println("$", commamd)
 				}
-				_, _, _, err = ssh.Run(commamd, p.Config.CommandTimeout)
+				outStr, errStr, _, err := ssh.Run(commamd, p.Config.CommandTimeout)
+
+				if outStr != "" {
+					p.log(host, "output: ", outStr)
+				}
+
+				if errStr != "" {
+					p.log(host, "error: ", errStr)
+				}
 
 				if err != nil {
 					errChannel <- err
