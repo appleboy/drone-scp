@@ -194,6 +194,25 @@ type fileList struct {
 	Source []string
 }
 
+// Args get tar command
+func (p *Plugin) Args(target string) []string {
+	args := []string{}
+
+	args = append(args,
+		p.Config.TarExec,
+		"-xf",
+		p.DestFile,
+		"-C",
+		target,
+	)
+
+	if p.Config.StripComponents > 0 {
+		args = append(args, fmt.Sprintf("-strip-components=%d", p.Config.StripComponents))
+	}
+
+	return args
+}
+
 // Exec executes the plugin.
 func (p *Plugin) Exec() error {
 	if len(p.Config.Host) == 0 {
@@ -298,11 +317,8 @@ func (p *Plugin) Exec() error {
 
 				// untar file
 				p.log(host, "untar file", p.DestFile)
-				if p.Config.StripComponents > 0 {
-					_, _, _, err = ssh.Run(fmt.Sprintf("%s -xf %s --strip-components=%d -C %s", p.Config.TarExec, p.DestFile, p.Config.StripComponents, target), p.Config.CommandTimeout)
-				} else {
-					_, _, _, err = ssh.Run(fmt.Sprintf("%s -xf %s -C %s", p.Config.TarExec, p.DestFile, target), p.Config.CommandTimeout)
-				}
+				commamd := strings.Join(p.Args(target), " ")
+				_, _, _, err = ssh.Run(commamd, p.Config.CommandTimeout)
 
 				if err != nil {
 					errChannel <- err
