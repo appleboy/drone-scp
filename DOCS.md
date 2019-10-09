@@ -14,10 +14,9 @@ The SCP plugin copy files and artifacts to target host machine via SSH. The belo
 - name: scp files
   image: appleboy/drone-scp
   settings:
-    settings:
-      host: example.com
-      target: /home/deploy/web
-      source: release.tar.gz
+    host: example.com
+    target: /home/deploy/web
+    source: release.tar.gz
 ```
 
 Example configuration with custom username, password and port:
