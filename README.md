@@ -36,8 +36,7 @@ Copy files and artifacts via SSH using a binary, docker or [Drone CI](http://doc
 `v1.5.0`: change command timeout flag to `Duration`. See the following setting:
 
 ```diff
-pipeline:
-  scp:
+  - name: scp files
     image: appleboy/drone-scp
     settings:
       host:
