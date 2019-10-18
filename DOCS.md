@@ -36,137 +36,146 @@ Example configuration with custom username, password and port:
 Example configuration with multiple source and target folder:
 
 ```diff
-  image: appleboy/drone-scp
-  settings:
-    host: example.com
-    target:
-+     - /home/deploy/web1
-+     - /home/deploy/web2
-    source:
-+     - release_1.tar.gz
-+     - release_2.tar.gz
+  - name: scp files
+    image: appleboy/drone-scp
+    settings:
+      host: example.com
+      target:
++       - /home/deploy/web1
++       - /home/deploy/web2
+      source:
++       - release_1.tar.gz
++       - release_2.tar.gz
 ```
 
 Example configuration with multiple host:
 
 ```diff
-  image: appleboy/drone-scp
-  settings:
--   host: example.com
-+   host:
-+     - example1.com
-+     - example2.com
-    target: /home/deploy/web
-    source: release.tar.gz
+  - name: scp files
+    image: appleboy/drone-scp
+    settings:
+-     host: example.com
++     host:
++       - example1.com
++       - example2.com
+      target: /home/deploy/web
+      source: release.tar.gz
 ```
 
 Example configuration with wildcard pattern of source list:
 
 ```diff
-  image: appleboy/drone-scp
-  settings:
-    host:
-      - example1.com
-      - example2.com
-    target: /home/deploy/web
-    source:
--     - release/backend.tar.gz
--     - release/images.tar.gz
-+     - release/*.tar.gz
+  - name: scp files
+    image: appleboy/drone-scp
+    settings:
+      host:
+        - example1.com
+        - example2.com
+      target: /home/deploy/web
+      source:
+-       - release/backend.tar.gz
+-       - release/images.tar.gz
++       - release/*.tar.gz
 ```
 
 Remove target folder before copy files and artifacts to target:
 
 ```diff
-  image: appleboy/drone-scp
-  settings:
-    target: /home/deploy/web
-    source: release.tar.gz
-+   rm: true
+  - name: scp files
+    image: appleboy/drone-scp
+    settings:
+      target: /home/deploy/web
+      source: release.tar.gz
++     rm: true
 ```
 
 Example for remove the specified number of leading path elements:
 
 ```diff
-  image: appleboy/drone-scp
-  settings:
-    host: example.com
-    target: /home/deploy/web
-    source: dist/release.tar.gz
-+   strip_components: 1
+  - name: scp files
+    image: appleboy/drone-scp
+    settings:
+      host: example.com
+      target: /home/deploy/web
+      source: dist/release.tar.gz
++     strip_components: 1
 ```
 
 Example configuration using ｀SSHProxyCommand｀:
 
 ```diff
-  image: appleboy/drone-scp
-  settings:
-    host:
-      - example1.com
-      - example2.com
-    target: /home/deploy/web
-    source:
-      - release/*.tar.gz
-+   proxy_host: 10.130.33.145
-+   proxy_user: ubuntu
-+   proxy_port: 22
-+   proxy_password: 1234
+  - name: scp files
+    image: appleboy/drone-scp
+    settings:
+      host:
+        - example1.com
+        - example2.com
+      target: /home/deploy/web
+      source:
+        - release/*.tar.gz
++     proxy_host: 10.130.33.145
++     proxy_user: ubuntu
++     proxy_port: 22
++     proxy_password: 1234
 ```
 
 Example configuration using password from secrets:
 
 ```diff
-  image: appleboy/drone-scp
-  settings:
-    host:
-      - example1.com
-      - example2.com
-    user: ubuntu
-    port: 22
--   password: 1234
-+   password:
-+     from_secret: ssh_password
-    target: /home/deploy/web
-    source:
-      - release/*.tar.gz
+  - name: scp files
+    image: appleboy/drone-scp
+    settings:
+      host:
+        - example1.com
+        - example2.com
+      user: ubuntu
+      port: 22
+-     password: 1234
++     password:
++       from_secret: ssh_password
+      target: /home/deploy/web
+      source:
+        - release/*.tar.gz
 ```
 
 Example configuration using command timeout:
 
 ```diff
-  image: appleboy/drone-scp
-  settings:
-    host:
-    - example1.com
-    - example2.com
-    user: ubuntu
-    password:
-    from_secret: ssh_password
-    port: 22
--   command_timeout: 120
-+   command_timeout: 2m
-    target: /home/deploy/web
-    source:
-    - release/*.tar.gz
+  - name: scp files
+    image: appleboy/drone-scp
+    settings:
+      host:
+      - example1.com
+      - example2.com
+      user: ubuntu
+      password:
+      from_secret: ssh_password
+      port: 22
+-     command_timeout: 120
++     command_timeout: 2m
+      target: /home/deploy/web
+      source:
+      - release/*.tar.gz
 ```
 
 Example configuration for ignore list:
 
 ```diff
-  image: appleboy/drone-scp
-  settings:
-    host:
-      - example1.com
-      - example2.com
-    user: ubuntu
-    password:
-      from_secret: ssh_password
-    port: 22
-    command_timeout: 2m
-    target: /home/deploy/web
-    source:
-+     - !release/README.md
-      - release/*
+  - name: scp files
+    image: appleboy/drone-scp
+    settings:
+      host:
+        - example1.com
+        - example2.com
+      user: ubuntu
+      password:
+        from_secret: ssh_password
+      port: 22
+      command_timeout: 2m
+      target: /home/deploy/web
+      source:
++       - !release/README.md
+        - release/*
 ```
 
 ## Parameter Reference
