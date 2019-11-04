@@ -18,7 +18,7 @@ The SCP plugin copy files and artifacts to target host machine via SSH. The belo
     username: foo
     password: bar
     port: 22
-    target: /home/deploy/web
+    target: /var/www/deploy/${DRONE_REPO_OWNER}/${DRONE_REPO_NAME}
     source: release.tar.gz
 ```
 
