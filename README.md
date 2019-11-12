@@ -64,6 +64,7 @@ The pre-compiled binaries can be downloaded from [release page](https://github.c
 With `Go` installed
 
 ```sh
+export GO111MODULE=on
 go get -u -v github.com/appleboy/drone-scp
 ```
 
