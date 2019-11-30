@@ -56,12 +56,13 @@ func main() {
 			Name:   "timeout",
 			Usage:  "connection timeout",
 			EnvVar: "PLUGIN_TIMEOUT,SCP_TIMEOUT,INPUT_TIMEOUT",
+			Value:  30 * time.Second,
 		},
 		cli.DurationFlag{
 			Name:   "command.timeout,T",
 			Usage:  "command timeout",
 			EnvVar: "PLUGIN_COMMAND_TIMEOUT,SSH_COMMAND_TIMEOUT,INPUT_COMMAND_TIMEOUT",
-			Value:  60 * time.Second,
+			Value:  10 * time.Minute,
 		},
 		cli.StringFlag{
 			Name:   "key, k",

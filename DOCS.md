@@ -194,10 +194,10 @@ rm
 : remove target folder before copy files and artifacts
 
 timeout
-: timeout is the maximum amount of time for the TCP connection to establish
+: Timeout is the maximum amount of time for the ssh connection to establish, default is 30 seconds.
 
 command_timeout
-: timeout is the maximum amount of time for execute command
+: Command timeout is the maximum amount of time for the execute commands, default is 10 minutes.
 
 strip_components
 : remove the specified number of leading path elements
