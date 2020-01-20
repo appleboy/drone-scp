@@ -428,7 +428,7 @@ func TestGlobList(t *testing.T) {
 	assert.Equal(t, expects, globList(paterns).Source)
 
 	paterns = []string{"tests/*.txt", "tests/.ssh/*", "abc*"}
-	expects = []string{"tests/a.txt", "tests/b.txt", "tests/.ssh/id_rsa", "tests/.ssh/id_rsa.pub"}
+	expects = []string{"tests/a.txt", "tests/b.txt", "tests/.ssh/id_rsa", "tests/.ssh/id_rsa.pub", "tests/.ssh/test", "tests/.ssh/test.pub"}
 	assert.Equal(t, expects, globList(paterns).Source)
 
 	paterns = []string{"tests/?.txt"}
