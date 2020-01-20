@@ -130,6 +130,45 @@ func TestSCPFileFromPublicKey(t *testing.T) {
 	}
 }
 
+func TestSCPFileFromPublicKeyWithPassphrase(t *testing.T) {
+	if os.Getenv("SSH_AUTH_SOCK") != "" {
+		if err := exec.Command("eval", "`ssh-agent -k`").Run(); err != nil {
+			t.Fatalf("exec: %v", err)
+		}
+	}
+
+	u, err := user.Lookup("drone-scp")
+	if err != nil {
+		t.Fatalf("Lookup: %v", err)
+	}
+
+	plugin := Plugin{
+		Config: Config{
+			Host:           []string{"localhost"},
+			Username:       "drone-scp",
+			Port:           "22",
+			KeyPath:        "tests/.ssh/test",
+			Passphrase:     "1234",
+			Source:         []string{"tests/a.txt", "tests/b.txt"},
+			Target:         []string{filepath.Join(u.HomeDir, "/test2")},
+			CommandTimeout: 60 * time.Second,
+			TarExec:        "tar",
+		},
+	}
+
+	err = plugin.Exec()
+	assert.Nil(t, err)
+
+	// check file exist
+	if _, err := os.Stat(filepath.Join(u.HomeDir, "/test2/tests/a.txt")); os.IsNotExist(err) {
+		t.Fatalf("SCP-error: %v", err)
+	}
+
+	if _, err := os.Stat(filepath.Join(u.HomeDir, "/test2/tests/b.txt")); os.IsNotExist(err) {
+		t.Fatalf("SCP-error: %v", err)
+	}
+}
+
 func TestSCPWildcardFileList(t *testing.T) {
 	if os.Getenv("SSH_AUTH_SOCK") != "" {
 		if err := exec.Command("eval", "`ssh-agent -k`").Run(); err != nil {
