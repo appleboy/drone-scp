@@ -50,6 +50,7 @@ type (
 		Username        string
 		Password        string
 		Key             string
+		Passphrase      string
 		KeyPath         string
 		Timeout         time.Duration
 		CommandTimeout  time.Duration
@@ -164,21 +165,23 @@ func (p *Plugin) removeDestFile(ssh *easyssh.MakeConfig) error {
 func (p *Plugin) removeAllDestFile() error {
 	for _, host := range p.Config.Host {
 		ssh := &easyssh.MakeConfig{
-			Server:   host,
-			User:     p.Config.Username,
-			Password: p.Config.Password,
-			Port:     p.Config.Port,
-			Key:      p.Config.Key,
-			KeyPath:  p.Config.KeyPath,
-			Timeout:  p.Config.Timeout,
+			Server:     host,
+			User:       p.Config.Username,
+			Password:   p.Config.Password,
+			Port:       p.Config.Port,
+			Key:        p.Config.Key,
+			KeyPath:    p.Config.KeyPath,
+			Passphrase: p.Config.Passphrase,
+			Timeout:    p.Config.Timeout,
 			Proxy: easyssh.DefaultConfig{
-				Server:   p.Config.Proxy.Server,
-				User:     p.Config.Proxy.User,
-				Password: p.Config.Proxy.Password,
-				Port:     p.Config.Proxy.Port,
-				Key:      p.Config.Proxy.Key,
-				KeyPath:  p.Config.Proxy.KeyPath,
-				Timeout:  p.Config.Proxy.Timeout,
+				Server:     p.Config.Proxy.Server,
+				User:       p.Config.Proxy.User,
+				Password:   p.Config.Proxy.Password,
+				Port:       p.Config.Proxy.Port,
+				Key:        p.Config.Proxy.Key,
+				KeyPath:    p.Config.Proxy.KeyPath,
+				Passphrase: p.Config.Proxy.Passphrase,
+				Timeout:    p.Config.Proxy.Timeout,
 			},
 		}
 
@@ -272,21 +275,23 @@ func (p *Plugin) Exec() error {
 		go func(host string) {
 			// Create MakeConfig instance with remote username, server address and path to private key.
 			ssh := &easyssh.MakeConfig{
-				Server:   host,
-				User:     p.Config.Username,
-				Password: p.Config.Password,
-				Port:     p.Config.Port,
-				Key:      p.Config.Key,
-				KeyPath:  p.Config.KeyPath,
-				Timeout:  p.Config.Timeout,
+				Server:     host,
+				User:       p.Config.Username,
+				Password:   p.Config.Password,
+				Port:       p.Config.Port,
+				Key:        p.Config.Key,
+				KeyPath:    p.Config.KeyPath,
+				Passphrase: p.Config.Passphrase,
+				Timeout:    p.Config.Timeout,
 				Proxy: easyssh.DefaultConfig{
-					Server:   p.Config.Proxy.Server,
-					User:     p.Config.Proxy.User,
-					Password: p.Config.Proxy.Password,
-					Port:     p.Config.Proxy.Port,
-					Key:      p.Config.Proxy.Key,
-					KeyPath:  p.Config.Proxy.KeyPath,
-					Timeout:  p.Config.Proxy.Timeout,
+					Server:     p.Config.Proxy.Server,
+					User:       p.Config.Proxy.User,
+					Password:   p.Config.Proxy.Password,
+					Port:       p.Config.Proxy.Port,
+					Key:        p.Config.Proxy.Key,
+					KeyPath:    p.Config.Proxy.KeyPath,
+					Passphrase: p.Config.Proxy.Passphrase,
+					Timeout:    p.Config.Proxy.Timeout,
 				},
 			}
 
