@@ -167,6 +167,26 @@ Example configuration for ignore list:
         - release/*
 ```
 
+Example configuration for passphrase which protecting a private key:
+
+```diff
+  - name: scp files
+    image: appleboy/drone-scp
+    settings:
+      host:
+        - example1.com
+        - example2.com
+      user: ubuntu
++     key:
++       from_secret: ssh_key
++     passphrase: 1234
+      port: 22
+      command_timeout: 2m
+      target: /home/deploy/web
+      source:
+        - release/*
+```
+
 ## Parameter Reference
 
 host
@@ -183,6 +203,9 @@ password
 
 key
 : plain text of user private key
+
+ssh_passphrase
+: The purpose of the passphrase is usually to encrypt the private key.
 
 target
 : folder path of target host
@@ -228,6 +251,9 @@ proxy_key
 
 proxy_key_path
 : key path of proxy private key
+
+proxy_ssh_passphrase
+: The purpose of the passphrase is usually to encrypt the private key.
 
 ## Template Reference
 
