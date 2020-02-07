@@ -204,7 +204,7 @@ password
 key
 : plain text of user private key
 
-ssh_passphrase
+passphrase
 : The purpose of the passphrase is usually to encrypt the private key.
 
 target
@@ -252,7 +252,7 @@ proxy_key
 proxy_key_path
 : key path of proxy private key
 
-proxy_ssh_passphrase
+proxy_passphrase
 : The purpose of the passphrase is usually to encrypt the private key.
 
 ## Template Reference
