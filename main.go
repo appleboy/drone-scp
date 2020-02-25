@@ -159,7 +159,7 @@ func main() {
 		&cli.StringFlag{
 			Name:    "proxy.ssh-passphrase",
 			Usage:   "The purpose of the passphrase is usually to encrypt the private key.",
-			EnvVars: []string{"PLUGIN_PROXY_SSH_PASSPHRASE", "PLUGIN_PROXY_PASSPHRASE", "PROXY_SSH_PASSPHRASE,PROXY_PASSPHRASE", "INPUT_PROXY_PASSPHRASE"},
+			EnvVars: []string{"PLUGIN_PROXY_SSH_PASSPHRASE", "PLUGIN_PROXY_PASSPHRASE", "PROXY_SSH_PASSPHRASE", "PROXY_PASSPHRASE", "INPUT_PROXY_PASSPHRASE"},
 		},
 		&cli.StringFlag{
 			Name:    "proxy.key-path",
