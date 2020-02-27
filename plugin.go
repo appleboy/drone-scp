@@ -386,9 +386,9 @@ func (p *Plugin) Exec() error {
 		}
 	}
 
-	fmt.Println("================================================")
-	fmt.Println("Successfully executed transfer data to all host.")
-	fmt.Println("================================================")
+	fmt.Println("===================================================")
+	fmt.Println("✅ Successfully executed transfer data to all host")
+	fmt.Println("===================================================")
 
 	return nil
 }
