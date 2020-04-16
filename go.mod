@@ -1,6 +1,6 @@
 module github.com/appleboy/drone-scp
 
-go 1.13
+go 1.14
 
 require (
 	github.com/appleboy/com v0.0.6
