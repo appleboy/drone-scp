@@ -17,6 +17,8 @@ var (
 )
 
 func main() {
+	defaultCiphers := []string{"aes128-ctr", "aes192-ctr", "aes256-ctr", "aes128-gcm@openssh.com", "arcfour256", "arcfour128", "aes128-cbc", "3des-cbc"}
+
 	app := cli.NewApp()
 	app.Name = "Drone SCP"
 	app.Usage = "Copy files and artifacts via SSH."
@@ -52,6 +54,12 @@ func main() {
 			Name:    "password, p",
 			Usage:   "Password for password-based authentication",
 			EnvVars: []string{"PLUGIN_PASSWORD", "SCP_PASSWORD", "SSH_PASSWORD", "PASSWORD", "INPUT_PASSWORD"},
+		},
+		&cli.StringSliceFlag{
+			Name:    "ciphers",
+			Usage:   "The allowed cipher algorithms. If unspecified then a sensible",
+			EnvVars: []string{"PLUGIN_CIPHERS", "SSH_CIPHERS", "CIPHERS", "INPUT_CIPHERS"},
+			Value:   cli.NewStringSlice(defaultCiphers...),
 		},
 		&cli.DurationFlag{
 			Name:    "timeout",
@@ -183,6 +191,12 @@ func main() {
 			Usage:   "connect to host of proxy",
 			EnvVars: []string{"PLUGIN_PROXY_HOST", "PROXY_SSH_HOST", "PROXY_HOST", "INPUT_PROXY_HOST"},
 		},
+		&cli.StringSliceFlag{
+			Name:    "proxy.ciphers",
+			Usage:   "The allowed cipher algorithms. If unspecified then a sensible",
+			EnvVars: []string{"PLUGIN_PROXY_CIPHERS", "PROXY_SSH_CIPHERS", "PROXY_CIPHERS", "INPUT_PROXY_CIPHERS"},
+			Value:   cli.NewStringSlice(defaultCiphers...),
+		},
 		&cli.StringFlag{
 			Name:    "proxy.port",
 			Usage:   "connect to port of proxy",
@@ -298,6 +312,7 @@ func run(c *cli.Context) error {
 			TarExec:         c.String("tar.exec"),
 			TarTmpPath:      c.String("tar.tmp-path"),
 			Overwrite:       c.Bool("overwrite"),
+			Ciphers:         c.StringSlice("ciphers"),
 			Proxy: easyssh.DefaultConfig{
 				Key:        c.String("proxy.ssh-key"),
 				Passphrase: c.String("proxy.ssh-passphrase"),
@@ -307,6 +322,7 @@ func run(c *cli.Context) error {
 				Server:     c.String("proxy.host"),
 				Port:       c.String("proxy.port"),
 				Timeout:    c.Duration("proxy.timeout"),
+				Ciphers:    c.StringSlice("proxy.ciphers"),
 			},
 		},
 	}

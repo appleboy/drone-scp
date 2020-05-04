@@ -63,6 +63,7 @@ type (
 		Proxy           easyssh.DefaultConfig
 		Debug           bool
 		Overwrite       bool
+		Ciphers         []string
 	}
 
 	// Plugin values.
@@ -283,6 +284,7 @@ func (p *Plugin) Exec() error {
 				KeyPath:    p.Config.KeyPath,
 				Passphrase: p.Config.Passphrase,
 				Timeout:    p.Config.Timeout,
+				Ciphers:    p.Config.Ciphers,
 				Proxy: easyssh.DefaultConfig{
 					Server:     p.Config.Proxy.Server,
 					User:       p.Config.Proxy.User,
@@ -292,6 +294,7 @@ func (p *Plugin) Exec() error {
 					KeyPath:    p.Config.Proxy.KeyPath,
 					Passphrase: p.Config.Proxy.Passphrase,
 					Timeout:    p.Config.Proxy.Timeout,
+					Ciphers:    p.Config.Proxy.Ciphers,
 				},
 			}
 
