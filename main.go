@@ -17,6 +17,11 @@ var (
 )
 
 func main() {
+	// Load env-file if it exists first
+	if filename, found := os.LookupEnv("PLUGIN_ENV_FILE"); found {
+		_ = godotenv.Load(filename)
+	}
+
 	defaultCiphers := []string{"aes128-ctr", "aes192-ctr", "aes256-ctr", "aes128-gcm@openssh.com", "arcfour256", "arcfour128", "aes128-cbc", "3des-cbc"}
 
 	app := cli.NewApp()
@@ -157,10 +162,6 @@ func main() {
 			EnvVars: []string{"DRONE_BUILD_LINK"},
 		},
 		&cli.StringFlag{
-			Name:  "env-file",
-			Usage: "source env file",
-		},
-		&cli.StringFlag{
 			Name:    "proxy.ssh-key",
 			Usage:   "private ssh key of proxy",
 			EnvVars: []string{"PLUGIN_PROXY_SSH_KEY", "PLUGIN_PROXY_KEY", "PROXY_SSH_KEY", "PROXY_KEY", "INPUT_PROXY_SSH_KEY"},
@@ -275,10 +276,6 @@ REPOSITORY:
 }
 
 func run(c *cli.Context) error {
-	if c.String("env-file") != "" {
-		_ = godotenv.Load(c.String("env-file"))
-	}
-
 	plugin := Plugin{
 		Repo: Repo{
 			Owner: c.String("repo.owner"),
