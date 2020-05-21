@@ -175,6 +175,7 @@ func (p *Plugin) removeAllDestFile() error {
 			KeyPath:     p.Config.KeyPath,
 			Passphrase:  p.Config.Passphrase,
 			Timeout:     p.Config.Timeout,
+			Ciphers:     p.Config.Ciphers,
 			Fingerprint: p.Config.Fingerprint,
 			Proxy: easyssh.DefaultConfig{
 				Server:      p.Config.Proxy.Server,
@@ -185,6 +186,7 @@ func (p *Plugin) removeAllDestFile() error {
 				KeyPath:     p.Config.Proxy.KeyPath,
 				Passphrase:  p.Config.Proxy.Passphrase,
 				Timeout:     p.Config.Proxy.Timeout,
+				Ciphers:     p.Config.Proxy.Ciphers,
 				Fingerprint: p.Config.Proxy.Fingerprint,
 			},
 		}
