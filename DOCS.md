@@ -207,6 +207,9 @@ key
 passphrase
 : The purpose of the passphrase is usually to encrypt the private key.
 
+fingerprint
+: fingerprint SHA256 of the host public key, default is to skip verification
+
 target
 : folder path of target host
 
@@ -254,6 +257,9 @@ proxy_key_path
 
 proxy_passphrase
 : The purpose of the passphrase is usually to encrypt the private key.
+
+proxy_fingerprint
+: fingerprint SHA256 of the host public key, default is to skip verification
 
 ## Template Reference
 
