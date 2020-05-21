@@ -2,6 +2,7 @@ package main
 
 import (
 	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
 	"os/user"
@@ -192,6 +193,7 @@ func TestWrongFingerprint(t *testing.T) {
 	}
 
 	err = plugin.Exec()
+	log.Println(err)
 	assert.NotNil(t, err)
 }
 
