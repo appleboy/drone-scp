@@ -22,12 +22,10 @@ func main() {
 		_ = godotenv.Load(filename)
 	}
 
-	defaultCiphers := []string{"aes128-ctr", "aes192-ctr", "aes256-ctr", "aes128-gcm@openssh.com", "arcfour256", "arcfour128", "aes128-cbc", "3des-cbc"}
-
 	app := cli.NewApp()
 	app.Name = "Drone SCP"
 	app.Usage = "Copy files and artifacts via SSH."
-	app.Copyright = "Copyright (c) 2019 Bo-Yi Wu"
+	app.Copyright = "Copyright (c) 2020 Bo-Yi Wu"
 	app.Version = Version
 	app.Authors = []*cli.Author{
 		{
@@ -64,7 +62,11 @@ func main() {
 			Name:    "ciphers",
 			Usage:   "The allowed cipher algorithms. If unspecified then a sensible",
 			EnvVars: []string{"PLUGIN_CIPHERS", "SSH_CIPHERS", "CIPHERS", "INPUT_CIPHERS"},
-			Value:   cli.NewStringSlice(defaultCiphers...),
+		},
+		&cli.BoolFlag{
+			Name:    "useInsecureCipher",
+			Usage:   "include more ciphers with use_insecure_cipher",
+			EnvVars: []string{"PLUGIN_USE_INSECURE_CIPHER", "SSH_USE_INSECURE_CIPHER", "USE_INSECURE_CIPHER", "INPUT_USE_INSECURE_CIPHER"},
 		},
 		&cli.StringFlag{
 			Name:    "fingerprint",
@@ -201,7 +203,11 @@ func main() {
 			Name:    "proxy.ciphers",
 			Usage:   "The allowed cipher algorithms. If unspecified then a sensible",
 			EnvVars: []string{"PLUGIN_PROXY_CIPHERS", "PROXY_SSH_CIPHERS", "PROXY_CIPHERS", "INPUT_PROXY_CIPHERS"},
-			Value:   cli.NewStringSlice(defaultCiphers...),
+		},
+		&cli.BoolFlag{
+			Name:    "proxy.useInsecureCipher",
+			Usage:   "include more ciphers with use_insecure_cipher",
+			EnvVars: []string{"PLUGIN_PROXY_USE_INSECURE_CIPHER", "SSH_PROXY_USE_INSECURE_CIPHER", "PROXY_USE_INSECURE_CIPHER", "INPUT_PROXY_USE_INSECURE_CIPHER"},
 		},
 		&cli.StringFlag{
 			Name:    "proxy.fingerprint",
@@ -302,36 +308,38 @@ func run(c *cli.Context) error {
 			Link:    c.String("build.link"),
 		},
 		Config: Config{
-			Host:            c.StringSlice("host"),
-			Port:            c.String("port"),
-			Username:        c.String("username"),
-			Password:        c.String("password"),
-			Passphrase:      c.String("ssh-passphrase"),
-			Fingerprint:     c.String("fingerprint"),
-			Timeout:         c.Duration("timeout"),
-			CommandTimeout:  c.Duration("command.timeout"),
-			Key:             c.String("ssh-key"),
-			KeyPath:         c.String("key-path"),
-			Target:          c.StringSlice("target"),
-			Source:          c.StringSlice("source"),
-			Remove:          c.Bool("rm"),
-			Debug:           c.Bool("debug"),
-			StripComponents: c.Int("strip.components"),
-			TarExec:         c.String("tar.exec"),
-			TarTmpPath:      c.String("tar.tmp-path"),
-			Overwrite:       c.Bool("overwrite"),
-			Ciphers:         c.StringSlice("ciphers"),
+			Host:              c.StringSlice("host"),
+			Port:              c.String("port"),
+			Username:          c.String("username"),
+			Password:          c.String("password"),
+			Passphrase:        c.String("ssh-passphrase"),
+			Fingerprint:       c.String("fingerprint"),
+			Timeout:           c.Duration("timeout"),
+			CommandTimeout:    c.Duration("command.timeout"),
+			Key:               c.String("ssh-key"),
+			KeyPath:           c.String("key-path"),
+			Target:            c.StringSlice("target"),
+			Source:            c.StringSlice("source"),
+			Remove:            c.Bool("rm"),
+			Debug:             c.Bool("debug"),
+			StripComponents:   c.Int("strip.components"),
+			TarExec:           c.String("tar.exec"),
+			TarTmpPath:        c.String("tar.tmp-path"),
+			Overwrite:         c.Bool("overwrite"),
+			Ciphers:           c.StringSlice("ciphers"),
+			UseInsecureCipher: c.Bool("useInsecureCipher"),
 			Proxy: easyssh.DefaultConfig{
-				Key:         c.String("proxy.ssh-key"),
-				Passphrase:  c.String("proxy.ssh-passphrase"),
-				Fingerprint: c.String("proxy.fingerprint"),
-				KeyPath:     c.String("proxy.key-path"),
-				User:        c.String("proxy.username"),
-				Password:    c.String("proxy.password"),
-				Server:      c.String("proxy.host"),
-				Port:        c.String("proxy.port"),
-				Timeout:     c.Duration("proxy.timeout"),
-				Ciphers:     c.StringSlice("proxy.ciphers"),
+				Key:               c.String("proxy.ssh-key"),
+				Passphrase:        c.String("proxy.ssh-passphrase"),
+				Fingerprint:       c.String("proxy.fingerprint"),
+				KeyPath:           c.String("proxy.key-path"),
+				User:              c.String("proxy.username"),
+				Password:          c.String("proxy.password"),
+				Server:            c.String("proxy.host"),
+				Port:              c.String("proxy.port"),
+				Timeout:           c.Duration("proxy.timeout"),
+				Ciphers:           c.StringSlice("proxy.ciphers"),
+				UseInsecureCipher: c.Bool("proxy.useInsecureCipher"),
 			},
 		},
 	}
