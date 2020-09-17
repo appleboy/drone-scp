@@ -361,7 +361,7 @@ func (p *Plugin) Exec() error {
 				mkdircmd := ""
 				switch systemType {
 				case "windows":
-					mkdircmd = fmt.Sprintf("if not exist %s mkdir %s", target)
+					mkdircmd = fmt.Sprintf("if not exist %s mkdir %s", target, target)
 				case "unix":
 					mkdircmd = fmt.Sprintf("mkdir -p %s", target)
 				}
