@@ -34,18 +34,6 @@ steps:
   - name: gopath
     path: /go
 
-- name: test
-  pull: always
-  image: golang:1.16-alpine
-  commands:
-  - apk add git make curl perl bash build-base zlib-dev ucl-dev
-  - make ssh-server
-  - make test
-  - make coverage
-  volumes:
-  - name: gopath
-    path: /go
-
 - name: codecov
   pull: always
   image: robertstettner/drone-codecov
