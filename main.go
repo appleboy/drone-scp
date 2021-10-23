@@ -170,7 +170,7 @@ func main() {
 		&cli.StringFlag{
 			Name:    "proxy.ssh-key",
 			Usage:   "private ssh key of proxy",
-			EnvVars: []string{"PLUGIN_PROXY_SSH_KEY", "PLUGIN_PROXY_KEY", "PROXY_SSH_KEY", "PROXY_KEY", "INPUT_PROXY_SSH_KEY"},
+			EnvVars: []string{"PLUGIN_PROXY_SSH_KEY", "PLUGIN_PROXY_KEY", "PROXY_SSH_KEY", "PROXY_KEY", "INPUT_PROXY_KEY"},
 		},
 		&cli.StringFlag{
 			Name:    "proxy.ssh-passphrase",
@@ -180,7 +180,7 @@ func main() {
 		&cli.StringFlag{
 			Name:    "proxy.key-path",
 			Usage:   "ssh private key path of proxy",
-			EnvVars: []string{"PLUGIN_PROXY_KEY_PATH", "PROXY_SSH_KEY_PATH", "INPUT_PROXY_SSH_KEY_PATH"},
+			EnvVars: []string{"PLUGIN_PROXY_KEY_PATH", "PROXY_SSH_KEY_PATH", "INPUT_PROXY_KEY_PATH"},
 		},
 		&cli.StringFlag{
 			Name:    "proxy.username",
