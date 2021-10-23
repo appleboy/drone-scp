@@ -153,7 +153,6 @@ func (p Plugin) log(host string, message ...interface{}) {
 func (p *Plugin) removeDestFile(ssh *easyssh.MakeConfig) error {
 	p.log(ssh.Server, "remove file", p.DestFile)
 	_, errStr, _, err := ssh.Run(fmt.Sprintf("rm -rf %s", p.DestFile), p.Config.CommandTimeout)
-
 	if err != nil {
 		return err
 	}
@@ -316,7 +315,6 @@ func (p *Plugin) Exec() error {
 			// Call Scp method with file you want to upload to remote server.
 			p.log(host, "scp file to server.")
 			err := ssh.Scp(tar, p.DestFile)
-
 			if err != nil {
 				errChannel <- copyError{host, err.Error()}
 				return
@@ -328,7 +326,6 @@ func (p *Plugin) Exec() error {
 					p.log(host, "Remove target folder:", target)
 
 					_, _, _, err := ssh.Run(fmt.Sprintf("rm -rf %s", target), p.Config.CommandTimeout)
-
 					if err != nil {
 						errChannel <- err
 						return
@@ -378,7 +375,6 @@ func (p *Plugin) Exec() error {
 			}
 
 			wg.Done()
-
 		}(host)
 	}
 
@@ -395,7 +391,9 @@ func (p *Plugin) Exec() error {
 			c.Println("drone-scp error: ", err)
 			if _, ok := err.(copyError); !ok {
 				fmt.Println("drone-scp rollback: remove all target tmp file")
-				p.removeAllDestFile()
+				if err := p.removeAllDestFile(); err != nil {
+					return err
+				}
 			}
 			return err
 		}
