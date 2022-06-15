@@ -9,7 +9,7 @@
     steps: [
       {
         name: 'vet',
-        image: 'golang:1.16',
+        image: 'golang:1.18',
         pull: 'always',
         commands: [
           'make vet',
@@ -21,37 +21,9 @@
           },
         ],
       },
-      {
-        name: 'lint',
-        image: 'golang:1.16',
-        pull: 'always',
-        commands: [
-          'make lint',
-        ],
-        volumes: [
-          {
-            name: 'gopath',
-            path: '/go',
-          },
-        ],
-      },
-      {
-        name: 'misspell',
-        image: 'golang:1.16',
-        pull: 'always',
-        commands: [
-          'make misspell-check',
-        ],
-        volumes: [
-          {
-            name: 'gopath',
-            path: '/go',
-          },
-        ],
-      },
       // {
       //   name: 'test',
-      //   image: 'golang:1.16-alpine',
+      //   image: 'golang:1.18-alpine',
       //   pull: 'always',
       //   commands: [
       //     'apk add git make curl perl bash build-base zlib-dev ucl-dev',
@@ -93,7 +65,7 @@
     steps: [
       {
         name: 'build-push',
-        image: 'golang:1.16',
+        image: 'golang:1.18',
         pull: 'always',
         environment: {
           CGO_ENABLED: '0',
@@ -109,7 +81,7 @@
       },
       {
         name: 'build-tag',
-        image: 'golang:1.16',
+        image: 'golang:1.18',
         pull: 'always',
         environment: {
           CGO_ENABLED: '0',
@@ -123,7 +95,7 @@
       },
       {
         name: 'executable',
-        image: 'golang:1.16',
+        image: 'golang:1.18',
         pull: 'always',
         commands: [
           './release/' + os + '/' + arch + '/' + name + ' --help',
@@ -188,7 +160,7 @@
     steps: [
       {
         name: 'build-all-binary',
-        image: 'golang:1.16',
+        image: 'golang:1.18',
         pull: 'always',
         commands: [
           'make release'
