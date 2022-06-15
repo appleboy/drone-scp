@@ -13,22 +13,6 @@ steps:
   volumes:
   - name: gopath
     path: /go
-- commands:
-  - make lint
-  image: golang:1.18
-  name: lint
-  pull: always
-  volumes:
-  - name: gopath
-    path: /go
-- commands:
-  - make misspell-check
-  image: golang:1.18
-  name: misspell
-  pull: always
-  volumes:
-  - name: gopath
-    path: /go
 - image: robertstettner/drone-codecov
   name: codecov
   pull: always
