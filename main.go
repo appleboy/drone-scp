@@ -36,24 +36,28 @@ func main() {
 	app.Version = Version
 	app.Flags = []cli.Flag{
 		&cli.StringSliceFlag{
-			Name:     "host, H",
+			Name:     "host",
+			Aliases:  []string{"H"},
 			Usage:    "Server host",
 			EnvVars:  []string{"PLUGIN_HOST", "SCP_HOST", "SSH_HOST", "HOST", "INPUT_HOST"},
 			FilePath: ".host",
 		},
 		&cli.StringFlag{
-			Name:    "port, P",
+			Name:    "port",
+			Aliases: []string{"P"},
 			Value:   "22",
 			Usage:   "Server port, default to 22",
 			EnvVars: []string{"PLUGIN_PORT", "SCP_PORT", "SSH_PORT", "PORT", "INPUT_PORT"},
 		},
 		&cli.StringFlag{
-			Name:    "username, u",
+			Name:    "username",
+			Aliases: []string{"u"},
 			Usage:   "Server username",
 			EnvVars: []string{"PLUGIN_USERNAME", "PLUGIN_USER", "SCP_USERNAME", "SSH_USERNAME", "USERNAME", "INPUT_USERNAME"},
 		},
 		&cli.StringFlag{
-			Name:    "password, p",
+			Name:    "password",
+			Aliases: []string{"p"},
 			Usage:   "Password for password-based authentication",
 			EnvVars: []string{"PLUGIN_PASSWORD", "SCP_PASSWORD", "SSH_PASSWORD", "PASSWORD", "INPUT_PASSWORD"},
 		},
@@ -85,7 +89,8 @@ func main() {
 			Value:   10 * time.Minute,
 		},
 		&cli.StringFlag{
-			Name:    "ssh-key, k",
+			Name:    "ssh-key",
+			Aliases: []string{"k"},
 			Usage:   "ssh private key",
 			EnvVars: []string{"PLUGIN_SSH_KEY,", "PLUGIN_KEY", "SCP_KEY", "SSH_KEY", "KEY", "INPUT_KEY"},
 		},
@@ -95,22 +100,26 @@ func main() {
 			EnvVars: []string{"PLUGIN_SSH_PASSPHRASE", "PLUGIN_PASSPHRASE", "SSH_PASSPHRASE", "PASSPHRASE", "INPUT_PASSPHRASE"},
 		},
 		&cli.StringFlag{
-			Name:    "key-path, i",
+			Name:    "key-path",
+			Aliases: []string{"i"},
 			Usage:   "ssh private key path",
 			EnvVars: []string{"PLUGIN_KEY_PATH", "SCP_KEY_PATH", "SSH_KEY_PATH", "INPUT_KEY_PATH"},
 		},
 		&cli.StringSliceFlag{
-			Name:    "target, t",
+			Name:    "target",
+			Aliases: []string{"t"},
 			Usage:   "Target path on the server",
 			EnvVars: []string{"PLUGIN_TARGET", "SCP_TARGET", "TARGET", "INPUT_TARGET"},
 		},
 		&cli.StringSliceFlag{
-			Name:    "source, s",
+			Name:    "source",
+			Aliases: []string{"s"},
 			Usage:   "scp file list",
 			EnvVars: []string{"PLUGIN_SOURCE", "SCP_SOURCE", "SOURCE", "INPUT_SOURCE"},
 		},
 		&cli.BoolFlag{
-			Name:    "rm, r",
+			Name:    "rm",
+			Aliases: []string{"r"},
 			Usage:   "remove target folder before upload data",
 			EnvVars: []string{"PLUGIN_RM", "SCP_RM", "RM", "INPUT_RM"},
 		},
