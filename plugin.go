@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -256,10 +255,7 @@ func (p *Plugin) Exec() error {
 	p.DestFile = fmt.Sprintf("%s.tar", random.String(10))
 
 	// create a temporary file for the archive
-	dir, err := ioutil.TempDir("", "")
-	if err != nil {
-		return err
-	}
+	dir := os.TempDir()
 	tar := filepath.Join(dir, p.DestFile)
 
 	// run archive command
