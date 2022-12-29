@@ -1,11 +1,9 @@
 # drone-scp
 
 [![GoDoc](https://godoc.org/github.com/appleboy/drone-scp?status.svg)](https://godoc.org/github.com/appleboy/drone-scp)
-[![Build Status](https://cloud.drone.io/api/badges/appleboy/drone-scp/status.svg)](https://cloud.drone.io/appleboy/drone-scp)
 [![codecov](https://codecov.io/gh/appleboy/drone-scp/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/drone-scp)
 [![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/drone-scp)](https://goreportcard.com/report/github.com/appleboy/drone-scp)
 [![Docker Pulls](https://img.shields.io/docker/pulls/appleboy/drone-scp.svg)](https://hub.docker.com/r/appleboy/drone-scp/)
-[![micro badger](https://images.microbadger.com/badges/image/appleboy/drone-scp.svg)](https://microbadger.com/images/appleboy/drone-scp "Get your own image badge on microbadger.com")
 
 Copy files and artifacts via SSH using a binary, docker or [Drone CI](http://docs.drone.io/).
 
