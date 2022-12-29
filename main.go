@@ -259,6 +259,11 @@ func main() {
 			Usage:   "use --overwrite flag with tar",
 			EnvVars: []string{"PLUGIN_OVERWRITE", "SCP_OVERWRITE", "INPUT_OVERWRITE"},
 		},
+		&cli.BoolFlag{
+			Name:    "unlink.first",
+			Usage:   "use --unlink-first flag with tar",
+			EnvVars: []string{"PLUGIN_UNLINK_FIRST", "SCP_UNLINK_FIRST", "INPUT_UNLINK_FIRST"},
+		},
 	}
 
 	// Override a template
@@ -334,6 +339,7 @@ func run(c *cli.Context) error {
 			TarExec:           c.String("tar.exec"),
 			TarTmpPath:        c.String("tar.tmp-path"),
 			Overwrite:         c.Bool("overwrite"),
+			UnlinkFirst:       c.Bool("unlink.first"),
 			Ciphers:           c.StringSlice("ciphers"),
 			UseInsecureCipher: c.Bool("useInsecureCipher"),
 			Proxy: easyssh.DefaultConfig{

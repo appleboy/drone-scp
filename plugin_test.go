@@ -638,8 +638,9 @@ func TestPlugin_buildArgs(t *testing.T) {
 			name: "default command",
 			fields: fields{
 				Config: Config{
-					Overwrite: false,
-					TarExec:   "tar",
+					Overwrite:   false,
+					UnlinkFirst: false,
+					TarExec:     "tar",
 				},
 				DestFile: "foo.tar",
 			},
@@ -653,6 +654,7 @@ func TestPlugin_buildArgs(t *testing.T) {
 			fields: fields{
 				Config: Config{
 					Overwrite:       false,
+					UnlinkFirst:     false,
 					TarExec:         "tar",
 					StripComponents: 2,
 				},
@@ -670,6 +672,7 @@ func TestPlugin_buildArgs(t *testing.T) {
 					TarExec:         "tar",
 					StripComponents: 2,
 					Overwrite:       true,
+					UnlinkFirst:     false,
 				},
 				DestFile: "foo.tar",
 			},
@@ -677,6 +680,22 @@ func TestPlugin_buildArgs(t *testing.T) {
 				target: "foo",
 			},
 			want: []string{"tar", "-xf", "foo.tar", "--strip-components", "2", "--overwrite", "-C", "foo"},
+		},
+		{
+			name: "unlink first",
+			fields: fields{
+				Config: Config{
+					TarExec:         "tar",
+					StripComponents: 2,
+					Overwrite:       true,
+					UnlinkFirst:     true,
+				},
+				DestFile: "foo.tar",
+			},
+			args: args{
+				target: "foo",
+			},
+			want: []string{"tar", "-xf", "foo.tar", "--strip-components", "2", "--overwrite", "--unlink-first", "-C", "foo"},
 		},
 	}
 	for _, tt := range tests {

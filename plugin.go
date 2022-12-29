@@ -63,6 +63,7 @@ type (
 		Proxy             easyssh.DefaultConfig
 		Debug             bool
 		Overwrite         bool
+		UnlinkFirst       bool
 		Ciphers           []string
 		UseInsecureCipher bool
 	}
@@ -223,6 +224,10 @@ func (p *Plugin) buildArgs(target string) []string {
 
 	if p.Config.Overwrite {
 		args = append(args, "--overwrite")
+	}
+
+	if p.Config.UnlinkFirst {
+		args = append(args, "--unlink-first")
 	}
 
 	args = append(args,
