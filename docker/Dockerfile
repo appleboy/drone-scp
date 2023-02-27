@@ -4,7 +4,7 @@ ARG TARGETOS
 ARG TARGETARCH
 
 LABEL maintainer="Bo-Yi Wu <appleboy.tw@gmail.com>" \
-  org.label-schema.name="Git SCP Plugin" \
+  org.label-schema.name="SCP Plugin" \
   org.label-schema.vendor="Bo-Yi Wu" \
   org.label-schema.schema-version="1.0"
 
