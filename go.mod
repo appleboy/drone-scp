@@ -3,7 +3,7 @@ module github.com/appleboy/drone-scp
 go 1.20
 
 require (
-	github.com/appleboy/com v0.1.6
+	github.com/appleboy/com v0.1.7
 	github.com/appleboy/easyssh-proxy v1.3.9
 	github.com/fatih/color v1.14.1
 	github.com/joho/godotenv v1.5.1
