@@ -579,7 +579,7 @@ func TestBuildArgs(t *testing.T) {
 	}
 
 	result := buildArgs("test.tar.gz", list)
-	expects := []string{"--exclude", "tests/a.txt", "--exclude", "tests/b.txt", "-cf", "test.tar.gz", "tests/a.txt", "tests/b.txt", "tests/c.txt"}
+	expects := []string{"--exclude", "tests/a.txt", "--exclude", "tests/b.txt", "-zcf", "test.tar.gz", "tests/a.txt", "tests/b.txt", "tests/c.txt"}
 	assert.Equal(t, expects, result)
 
 	list = fileList{
@@ -587,7 +587,7 @@ func TestBuildArgs(t *testing.T) {
 	}
 
 	result = buildArgs("test.tar.gz", list)
-	expects = []string{"-cf", "test.tar.gz", "tests/a.txt", "tests/b.txt"}
+	expects = []string{"-zcf", "test.tar.gz", "tests/a.txt", "tests/b.txt"}
 	assert.Equal(t, expects, result)
 }
 
