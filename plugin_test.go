@@ -723,3 +723,34 @@ func TestPlugin_buildArgs(t *testing.T) {
 		})
 	}
 }
+
+func TestCheckTargetFolderExist(t *testing.T) {
+	if os.Getenv("SSH_AUTH_SOCK") != "" {
+		if err := exec.Command("eval", "`ssh-agent -k`").Run(); err != nil {
+			t.Fatalf("exec: %v", err)
+		}
+	}
+
+	u, err := user.Lookup("drone-scp")
+	if err != nil {
+		t.Fatalf("Lookup: %v", err)
+	}
+
+	plugin := Plugin{
+		Config: Config{
+			Host:           []string{"localhost"},
+			Username:       "drone-scp",
+			Port:           "22",
+			KeyPath:        "tests/.ssh/id_rsa",
+			Source:         []string{"tests/global/*"},
+			Target:         []string{filepath.Join(u.HomeDir, "__test__")},
+			CommandTimeout: 60 * time.Second,
+		},
+	}
+
+	err = plugin.Exec()
+	assert.Nil(t, err)
+
+	err = plugin.Exec()
+	assert.Nil(t, err)
+}
