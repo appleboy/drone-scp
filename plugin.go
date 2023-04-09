@@ -209,7 +209,7 @@ func (p *Plugin) buildArgs(target string) []string {
 
 	args = append(args,
 		p.Config.TarExec,
-		"-xf",
+		"-zxf",
 		p.DestFile,
 	)
 
