@@ -86,21 +86,6 @@ func (e copyError) Error() string {
 	return fmt.Sprintf("error copy file to dest: %s, error message: %s\n", e.host, e.message)
 }
 
-func trimPath(keys []string) []string {
-	var newKeys []string
-
-	for _, value := range keys {
-		value = strings.Trim(value, " ")
-		if len(value) == 0 {
-			continue
-		}
-
-		newKeys = append(newKeys, value)
-	}
-
-	return newKeys
-}
-
 func globList(paths []string) fileList {
 	var list fileList
 
@@ -268,7 +253,7 @@ func (p *Plugin) Exec() error {
 		return errMissingSourceOrTarget
 	}
 
-	files := globList(trimPath(p.Config.Source))
+	files := globList(trimValues(p.Config.Source))
 	p.DestFile = fmt.Sprintf("%s.tar", random.String(10))
 
 	// create a temporary file for the archive
