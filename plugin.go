@@ -19,7 +19,6 @@ import (
 var (
 	errMissingHost           = errors.New("Error: missing server host")
 	errMissingPasswordOrKey  = errors.New("Error: can't connect without a private SSH key or password")
-	errSetPasswordandKey     = errors.New("can't set password and key at the same time")
 	errMissingSourceOrTarget = errors.New("missing source or target config")
 )
 
@@ -243,21 +242,17 @@ func (p *Plugin) buildUnTarArgs(target string) []string {
 
 // Exec executes the plugin.
 func (p *Plugin) Exec() error {
-	hosts := trimValues(p.Config.Host)
-	if len(hosts) == 0 {
-		return errMissingHost
-	}
-
 	if len(p.Config.Key) == 0 && len(p.Config.Password) == 0 && len(p.Config.KeyPath) == 0 {
 		return errMissingPasswordOrKey
 	}
 
-	if len(p.Config.Key) != 0 && len(p.Config.Password) != 0 {
-		return errSetPasswordandKey
-	}
-
 	if len(p.Config.Source) == 0 || len(p.Config.Target) == 0 {
 		return errMissingSourceOrTarget
+	}
+
+	hosts := trimValues(p.Config.Host)
+	if len(hosts) == 0 {
+		return errMissingHost
 	}
 
 	p.DestFile = fmt.Sprintf("%s.tar.gz", random.String(10))
