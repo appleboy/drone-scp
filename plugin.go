@@ -165,7 +165,7 @@ func (p *Plugin) removeDestFile(os string, ssh *easyssh.MakeConfig) error {
 }
 
 func (p *Plugin) removeAllDestFile() error {
-	for _, host := range p.Config.Host {
+	for _, host := range trimValues(p.Config.Host) {
 		ssh := &easyssh.MakeConfig{
 			Server:            host,
 			User:              p.Config.Username,
@@ -251,7 +251,8 @@ func (p *Plugin) buildArgs(target string) []string {
 
 // Exec executes the plugin.
 func (p *Plugin) Exec() error {
-	if len(p.Config.Host) == 0 {
+	hosts := trimValues(p.Config.Host)
+	if len(hosts) == 0 {
 		return errMissingHost
 	}
 
@@ -291,8 +292,9 @@ func (p *Plugin) Exec() error {
 	wg.Add(len(p.Config.Host))
 	errChannel := make(chan error)
 	finished := make(chan struct{})
-	for _, host := range p.Config.Host {
+	for _, host := range hosts {
 		go func(host string) {
+			defer wg.Done()
 			// Create MakeConfig instance with remote username, server address and path to private key.
 			ssh := &easyssh.MakeConfig{
 				Server:            host,
@@ -395,8 +397,6 @@ func (p *Plugin) Exec() error {
 				errChannel <- err
 				return
 			}
-
-			wg.Done()
 		}(host)
 	}
 
@@ -426,4 +426,19 @@ func (p *Plugin) Exec() error {
 	fmt.Println("===================================================")
 
 	return nil
+}
+
+func trimValues(keys []string) []string {
+	var newKeys []string
+
+	for _, value := range keys {
+		value = strings.TrimSpace(value)
+		if len(value) == 0 {
+			continue
+		}
+
+		newKeys = append(newKeys, value)
+	}
+
+	return newKeys
 }
