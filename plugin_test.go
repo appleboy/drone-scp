@@ -572,25 +572,6 @@ func TestGlobList(t *testing.T) {
 	assert.Equal(t, expectIgnores, result.Ignore)
 }
 
-func TestBuildArgs(t *testing.T) {
-	list := fileList{
-		Source: []string{"tests/a.txt", "tests/b.txt", "tests/c.txt"},
-		Ignore: []string{"tests/a.txt", "tests/b.txt"},
-	}
-
-	result := buildArgs("test.tar.gz", list)
-	expects := []string{"--exclude", "tests/a.txt", "--exclude", "tests/b.txt", "-zcf", "test.tar.gz", "tests/a.txt", "tests/b.txt", "tests/c.txt"}
-	assert.Equal(t, expects, result)
-
-	list = fileList{
-		Source: []string{"tests/a.txt", "tests/b.txt"},
-	}
-
-	result = buildArgs("test.tar.gz", list)
-	expects = []string{"-zcf", "test.tar.gz", "tests/a.txt", "tests/b.txt"}
-	assert.Equal(t, expects, result)
-}
-
 func TestRemoveDestFile(t *testing.T) {
 	ssh := &easyssh.MakeConfig{
 		Server:  "localhost",
@@ -629,7 +610,7 @@ func TestRemoveDestFile(t *testing.T) {
 	assert.Error(t, err)
 }
 
-func TestPlugin_buildArgs(t *testing.T) {
+func TestPlugin_buildUnTarArgs(t *testing.T) {
 	type fields struct {
 		Repo     Repo
 		Build    Build
@@ -653,12 +634,12 @@ func TestPlugin_buildArgs(t *testing.T) {
 					UnlinkFirst: false,
 					TarExec:     "tar",
 				},
-				DestFile: "foo.tar",
+				DestFile: "foo.tar.gz",
 			},
 			args: args{
 				target: "foo",
 			},
-			want: []string{"tar", "-xf", "foo.tar", "-C", "foo"},
+			want: []string{"tar", "-zxf", "foo.tar.gz", "-C", "foo"},
 		},
 		{
 			name: "strip components",
@@ -669,12 +650,12 @@ func TestPlugin_buildArgs(t *testing.T) {
 					TarExec:         "tar",
 					StripComponents: 2,
 				},
-				DestFile: "foo.tar",
+				DestFile: "foo.tar.gz",
 			},
 			args: args{
 				target: "foo",
 			},
-			want: []string{"tar", "-xf", "foo.tar", "--strip-components", "2", "-C", "foo"},
+			want: []string{"tar", "-zxf", "foo.tar.gz", "--strip-components", "2", "-C", "foo"},
 		},
 		{
 			name: "overwrite",
@@ -685,12 +666,12 @@ func TestPlugin_buildArgs(t *testing.T) {
 					Overwrite:       true,
 					UnlinkFirst:     false,
 				},
-				DestFile: "foo.tar",
+				DestFile: "foo.tar.gz",
 			},
 			args: args{
 				target: "foo",
 			},
-			want: []string{"tar", "-xf", "foo.tar", "--strip-components", "2", "--overwrite", "-C", "foo"},
+			want: []string{"tar", "-zxf", "foo.tar.gz", "--strip-components", "2", "--overwrite", "-C", "foo"},
 		},
 		{
 			name: "unlink first",
@@ -701,12 +682,12 @@ func TestPlugin_buildArgs(t *testing.T) {
 					Overwrite:       true,
 					UnlinkFirst:     true,
 				},
-				DestFile: "foo.tar",
+				DestFile: "foo.tar.gz",
 			},
 			args: args{
 				target: "foo",
 			},
-			want: []string{"tar", "-xf", "foo.tar", "--strip-components", "2", "--overwrite", "--unlink-first", "-C", "foo"},
+			want: []string{"tar", "-zxf", "foo.tar.gz", "--strip-components", "2", "--overwrite", "--unlink-first", "-C", "foo"},
 		},
 	}
 	for _, tt := range tests {
@@ -717,8 +698,79 @@ func TestPlugin_buildArgs(t *testing.T) {
 				Config:   tt.fields.Config,
 				DestFile: tt.fields.DestFile,
 			}
-			if got := p.buildArgs(tt.args.target); !reflect.DeepEqual(got, tt.want) {
+			if got := p.buildUnTarArgs(tt.args.target); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Plugin.buildArgs() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestPlugin_buildTarArgs(t *testing.T) {
+	type fields struct {
+		Config Config
+	}
+	type args struct {
+		src string
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   []string
+	}{
+		{
+			name: "default command",
+			fields: fields{
+				Config: Config{
+					TarExec: "tar",
+				},
+			},
+			args: args{
+				src: "foo.tar.gz",
+			},
+			want: []string{"-zcf", "foo.tar.gz"},
+		},
+		{
+			name: "ignore list",
+			fields: fields{
+				Config: Config{
+					TarExec: "tar",
+					Source: []string{
+						"tests/*.txt",
+						"!tests/a.txt",
+					},
+				},
+			},
+			args: args{
+				src: "foo.tar.gz",
+			},
+			want: []string{"--exclude", "tests/a.txt", "-zcf", "foo.tar.gz", "tests/a.txt", "tests/b.txt"},
+		},
+		{
+			name: "dereference flag",
+			fields: fields{
+				Config: Config{
+					TarExec:        "tar",
+					TarDereference: true,
+					Source: []string{
+						"tests/*.txt",
+						"!tests/a.txt",
+					},
+				},
+			},
+			args: args{
+				src: "foo.tar.gz",
+			},
+			want: []string{"--exclude", "tests/a.txt", "--dereference", "-zcf", "foo.tar.gz", "tests/a.txt", "tests/b.txt"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			p := &Plugin{
+				Config: tt.fields.Config,
+			}
+			if got := p.buildTarArgs(tt.args.src); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Plugin.buildTarArgs() = %v, want %v", got, tt.want)
 			}
 		})
 	}

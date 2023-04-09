@@ -264,6 +264,11 @@ func main() {
 			Usage:   "use --unlink-first flag with tar",
 			EnvVars: []string{"PLUGIN_UNLINK_FIRST", "SCP_UNLINK_FIRST", "INPUT_UNLINK_FIRST"},
 		},
+		&cli.BoolFlag{
+			Name:    "tar.dereference",
+			Usage:   "use --dereference flag with tar",
+			EnvVars: []string{"PLUGIN_TAR_DEREFERENCE", "SCP_TAR_DEREFERENCE", "INPUT_TAR_DEREFERENCE"},
+		},
 	}
 
 	// Override a template
@@ -342,6 +347,7 @@ func run(c *cli.Context) error {
 			UnlinkFirst:       c.Bool("unlink.first"),
 			Ciphers:           c.StringSlice("ciphers"),
 			UseInsecureCipher: c.Bool("useInsecureCipher"),
+			TarDereference:    c.Bool("tar.dereference"),
 			Proxy: easyssh.DefaultConfig{
 				Key:               c.String("proxy.ssh-key"),
 				Passphrase:        c.String("proxy.ssh-passphrase"),

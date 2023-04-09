@@ -66,6 +66,7 @@ type (
 		UnlinkFirst       bool
 		Ciphers           []string
 		UseInsecureCipher bool
+		TarDereference    bool
 	}
 
 	// Plugin values.
@@ -91,7 +92,7 @@ func globList(paths []string) fileList {
 
 	for _, pattern := range paths {
 		ignore := false
-		pattern = strings.Trim(pattern, " ")
+		pattern = strings.TrimSpace(pattern)
 		if string(pattern[0]) == "!" {
 			pattern = pattern[1:]
 			ignore = true
@@ -110,21 +111,6 @@ func globList(paths []string) fileList {
 	}
 
 	return list
-}
-
-func buildArgs(tar string, files fileList) []string {
-	args := []string{}
-	if len(files.Ignore) > 0 {
-		for _, v := range files.Ignore {
-			args = append(args, "--exclude")
-			args = append(args, v)
-		}
-	}
-	args = append(args, "-zcf")
-	args = append(args, getRealPath(tar))
-	args = append(args, files.Source...)
-
-	return args
 }
 
 func (p Plugin) log(host string, message ...interface{}) {
@@ -204,7 +190,28 @@ type fileList struct {
 	Source []string
 }
 
-func (p *Plugin) buildArgs(target string) []string {
+func (p *Plugin) buildTarArgs(src string) []string {
+	files := globList(trimValues(p.Config.Source))
+	args := []string{}
+	if len(files.Ignore) > 0 {
+		for _, v := range files.Ignore {
+			args = append(args, "--exclude")
+			args = append(args, v)
+		}
+	}
+
+	if p.Config.TarDereference {
+		args = append(args, "--dereference")
+	}
+
+	args = append(args, "-zcf")
+	args = append(args, getRealPath(src))
+	args = append(args, files.Source...)
+
+	return args
+}
+
+func (p *Plugin) buildUnTarArgs(target string) []string {
 	args := []string{}
 
 	args = append(args,
@@ -253,16 +260,15 @@ func (p *Plugin) Exec() error {
 		return errMissingSourceOrTarget
 	}
 
-	files := globList(trimValues(p.Config.Source))
 	p.DestFile = fmt.Sprintf("%s.tar.gz", random.String(10))
 
 	// create a temporary file for the archive
 	dir := os.TempDir()
-	tar := filepath.Join(dir, p.DestFile)
+	src := filepath.Join(dir, p.DestFile)
 
 	// run archive command
-	fmt.Println("tar all files into " + tar)
-	args := buildArgs(tar, files)
+	fmt.Println("tar all files into " + src)
+	args := p.buildTarArgs(src)
 	cmd := exec.Command(p.Config.TarExec, args...)
 	if p.Config.Debug {
 		fmt.Println("$", strings.Join(cmd.Args, " "))
@@ -324,7 +330,7 @@ func (p *Plugin) Exec() error {
 
 			// Call Scp method with file you want to upload to remote server.
 			p.log(host, "scp file to server.")
-			err = ssh.Scp(tar, p.DestFile)
+			err = ssh.Scp(src, p.DestFile)
 			if err != nil {
 				errChannel <- copyError{host, err.Error()}
 				return
@@ -356,7 +362,7 @@ func (p *Plugin) Exec() error {
 
 				// untar file
 				p.log(host, "untar file", p.DestFile)
-				commamd := strings.Join(p.buildArgs(target), " ")
+				commamd := strings.Join(p.buildUnTarArgs(target), " ")
 				if p.Config.Debug {
 					fmt.Println("$", commamd)
 				}
