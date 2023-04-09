@@ -745,6 +745,7 @@ func TestCheckTargetFolderExist(t *testing.T) {
 			Source:         []string{"tests/global/*"},
 			Target:         []string{filepath.Join(u.HomeDir, "__test__")},
 			CommandTimeout: 60 * time.Second,
+			TarExec:        "tar",
 		},
 	}
 
