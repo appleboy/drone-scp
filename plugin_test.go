@@ -74,12 +74,12 @@ func TestTrimElement(t *testing.T) {
 	input = []string{"1", "     ", "3"}
 	result = []string{"1", "3"}
 
-	assert.Equal(t, result, trimPath(input))
+	assert.Equal(t, result, trimValues(input))
 
 	input = []string{"1", "2"}
 	result = []string{"1", "2"}
 
-	assert.Equal(t, result, trimPath(input))
+	assert.Equal(t, result, trimValues(input))
 }
 
 func TestSCPFileFromPublicKey(t *testing.T) {
