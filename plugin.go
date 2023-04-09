@@ -120,7 +120,7 @@ func buildArgs(tar string, files fileList) []string {
 			args = append(args, v)
 		}
 	}
-	args = append(args, "-cf")
+	args = append(args, "-zcf")
 	args = append(args, getRealPath(tar))
 	args = append(args, files.Source...)
 
@@ -254,7 +254,7 @@ func (p *Plugin) Exec() error {
 	}
 
 	files := globList(trimValues(p.Config.Source))
-	p.DestFile = fmt.Sprintf("%s.tar", random.String(10))
+	p.DestFile = fmt.Sprintf("%s.tar.gz", random.String(10))
 
 	// create a temporary file for the archive
 	dir := os.TempDir()
