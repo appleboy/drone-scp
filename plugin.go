@@ -150,9 +150,9 @@ func (p Plugin) log(host string, message ...interface{}) {
 	}
 }
 
-func (p *Plugin) removeDestFile(ssh *easyssh.MakeConfig) error {
+func (p *Plugin) removeDestFile(os string, ssh *easyssh.MakeConfig) error {
 	p.log(ssh.Server, "remove file", p.DestFile)
-	_, errStr, _, err := ssh.Run(rmcmd(p.DestFile), p.Config.CommandTimeout)
+	_, errStr, _, err := ssh.Run(rmcmd(os, p.DestFile), p.Config.CommandTimeout)
 	if err != nil {
 		return err
 	}
@@ -193,8 +193,19 @@ func (p *Plugin) removeAllDestFile() error {
 			},
 		}
 
+		_, _, _, err := ssh.Run("ver", p.Config.CommandTimeout)
+		systemType := "unix"
+		if err == nil {
+			systemType = "windows"
+		}
+
+		_, _, _, err = ssh.Run("uname", p.Config.CommandTimeout)
+		if err == nil {
+			systemType = "unix"
+		}
+
 		// remove tar file
-		err := p.removeDestFile(ssh)
+		err = p.removeDestFile(systemType, ssh)
 		if err != nil {
 			return err
 		}
@@ -310,12 +321,23 @@ func (p *Plugin) Exec() error {
 				},
 			}
 
+			_, _, _, err := ssh.Run("ver", p.Config.CommandTimeout)
+			systemType := "unix"
+			if err == nil {
+				systemType = "windows"
+			}
+
+			_, _, _, err = ssh.Run("uname", p.Config.CommandTimeout)
+			if err == nil {
+				systemType = "unix"
+			}
+
 			// upload file to the tmp path
 			p.DestFile = fmt.Sprintf("%s%s", p.Config.TarTmpPath, p.DestFile)
 
 			// Call Scp method with file you want to upload to remote server.
 			p.log(host, "scp file to server.")
-			err := ssh.Scp(tar, p.DestFile)
+			err = ssh.Scp(tar, p.DestFile)
 			if err != nil {
 				errChannel <- copyError{host, err.Error()}
 				return
@@ -326,7 +348,7 @@ func (p *Plugin) Exec() error {
 				if p.Config.Remove {
 					p.log(host, "Remove target folder:", target)
 
-					_, _, _, err := ssh.Run(rmcmd(target), p.Config.CommandTimeout)
+					_, _, _, err := ssh.Run(rmcmd(systemType, target), p.Config.CommandTimeout)
 					if err != nil {
 						errChannel <- err
 						return
@@ -334,7 +356,7 @@ func (p *Plugin) Exec() error {
 				}
 
 				p.log(host, "create folder", target)
-				_, errStr, _, err := ssh.Run(mkdircmd(target), p.Config.CommandTimeout)
+				_, errStr, _, err := ssh.Run(mkdircmd(systemType, target), p.Config.CommandTimeout)
 				if err != nil {
 					errChannel <- err
 					return
@@ -368,7 +390,7 @@ func (p *Plugin) Exec() error {
 			}
 
 			// remove tar file
-			err = p.removeDestFile(ssh)
+			err = p.removeDestFile(systemType, ssh)
 			if err != nil {
 				errChannel <- err
 				return
