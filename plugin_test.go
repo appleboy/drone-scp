@@ -435,12 +435,12 @@ func TestIgnoreList(t *testing.T) {
 	assert.Nil(t, err)
 
 	// check file exist
-	if _, err := os.Stat(filepath.Join(u.HomeDir, "ignore/c.txt")); err == nil {
+	if _, err := os.Stat(filepath.Join(u.HomeDir, "ignore/c.txt")); !os.IsNotExist(err) {
 		t.Fatal("c.txt file exist")
 	}
 
 	// check file exist
-	if _, err := os.Stat(filepath.Join(u.HomeDir, "ignore/e.txt")); err == nil {
+	if _, err := os.Stat(filepath.Join(u.HomeDir, "ignore/e.txt")); !os.IsNotExist(err) {
 		t.Fatal("c.txt file exist")
 	}
 
