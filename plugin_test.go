@@ -607,14 +607,25 @@ func TestRemoveDestFile(t *testing.T) {
 		DestFile: "/etc/resolv.conf",
 	}
 
+	_, _, _, err := ssh.Run("ver", plugin.Config.CommandTimeout)
+	systemType := "unix"
+	if err == nil {
+		systemType = "windows"
+	}
+
+	_, _, _, err = ssh.Run("uname", plugin.Config.CommandTimeout)
+	if err == nil {
+		systemType = "unix"
+	}
+
 	// ssh io timeout
-	err := plugin.removeDestFile(ssh)
+	err = plugin.removeDestFile(systemType, ssh)
 	assert.Error(t, err)
 
 	ssh.Timeout = 0
 
 	// permission denied
-	err = plugin.removeDestFile(ssh)
+	err = plugin.removeDestFile(systemType, ssh)
 	assert.Error(t, err)
 }
 
