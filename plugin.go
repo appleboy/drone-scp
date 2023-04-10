@@ -169,11 +169,6 @@ func (p *Plugin) removeAllDestFile() error {
 			systemType = "windows"
 		}
 
-		_, _, _, err = ssh.Run("uname", p.Config.CommandTimeout)
-		if err == nil {
-			systemType = "unix"
-		}
-
 		// remove tar file
 		err = p.removeDestFile(systemType, ssh)
 		if err != nil {
@@ -309,15 +304,10 @@ func (p *Plugin) Exec() error {
 				},
 			}
 
-			_, _, _, err := ssh.Run("ver", p.Config.CommandTimeout)
 			systemType := "unix"
+			_, _, _, err := ssh.Run("ver", p.Config.CommandTimeout)
 			if err == nil {
 				systemType = "windows"
-			}
-
-			_, _, _, err = ssh.Run("uname", p.Config.CommandTimeout)
-			if err == nil {
-				systemType = "unix"
 			}
 
 			// upload file to the tmp path
