@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/appleboy/com v0.1.7
-	github.com/appleboy/easyssh-proxy v1.3.9
+	github.com/appleboy/easyssh-proxy v1.3.10
 	github.com/fatih/color v1.15.0
 	github.com/joho/godotenv v1.5.1
 	github.com/stretchr/testify v1.8.2
