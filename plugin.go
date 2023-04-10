@@ -323,6 +323,7 @@ func (p *Plugin) Exec() error {
 			// upload file to the tmp path
 			p.DestFile = fmt.Sprintf("%s%s", p.Config.TarTmpPath, p.DestFile)
 
+			p.log(host, "remote server os type is "+systemType)
 			// Call Scp method with file you want to upload to remote server.
 			p.log(host, "scp file to server.")
 			err = ssh.Scp(src, p.DestFile)
