@@ -234,7 +234,7 @@ func (p *Plugin) buildUnTarArgs(target string) []string {
 
 	args = append(args,
 		"-C",
-		target,
+		"'"+target+"'",
 	)
 
 	return args
