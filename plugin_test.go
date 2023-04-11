@@ -577,11 +577,6 @@ func TestRemoveDestFile(t *testing.T) {
 		systemType = "windows"
 	}
 
-	_, _, _, err = ssh.Run("uname", plugin.Config.CommandTimeout)
-	if err == nil {
-		systemType = "unix"
-	}
-
 	// ssh io timeout
 	err = plugin.removeDestFile(systemType, ssh)
 	assert.Error(t, err)
@@ -622,7 +617,7 @@ func TestPlugin_buildUnTarArgs(t *testing.T) {
 			args: args{
 				target: "foo",
 			},
-			want: []string{"tar", "-zxf", "foo.tar.gz", "-C", "foo"},
+			want: []string{"tar", "-zxf", "foo.tar.gz", "-C", "'foo'"},
 		},
 		{
 			name: "strip components",
@@ -638,7 +633,7 @@ func TestPlugin_buildUnTarArgs(t *testing.T) {
 			args: args{
 				target: "foo",
 			},
-			want: []string{"tar", "-zxf", "foo.tar.gz", "--strip-components", "2", "-C", "foo"},
+			want: []string{"tar", "-zxf", "foo.tar.gz", "--strip-components", "2", "-C", "'foo'"},
 		},
 		{
 			name: "overwrite",
@@ -654,7 +649,7 @@ func TestPlugin_buildUnTarArgs(t *testing.T) {
 			args: args{
 				target: "foo",
 			},
-			want: []string{"tar", "-zxf", "foo.tar.gz", "--strip-components", "2", "--overwrite", "-C", "foo"},
+			want: []string{"tar", "-zxf", "foo.tar.gz", "--strip-components", "2", "--overwrite", "-C", "'foo'"},
 		},
 		{
 			name: "unlink first",
@@ -670,7 +665,23 @@ func TestPlugin_buildUnTarArgs(t *testing.T) {
 			args: args{
 				target: "foo",
 			},
-			want: []string{"tar", "-zxf", "foo.tar.gz", "--strip-components", "2", "--overwrite", "--unlink-first", "-C", "foo"},
+			want: []string{"tar", "-zxf", "foo.tar.gz", "--strip-components", "2", "--overwrite", "--unlink-first", "-C", "'foo'"},
+		},
+		{
+			name: "output folder path with space",
+			fields: fields{
+				Config: Config{
+					TarExec:         "tar",
+					StripComponents: 2,
+					Overwrite:       true,
+					UnlinkFirst:     true,
+				},
+				DestFile: "foo.tar.gz",
+			},
+			args: args{
+				target: "foo bar",
+			},
+			want: []string{"tar", "-zxf", "foo.tar.gz", "--strip-components", "2", "--overwrite", "--unlink-first", "-C", "'foo bar'"},
 		},
 	}
 	for _, tt := range tests {
@@ -756,5 +767,44 @@ func TestPlugin_buildTarArgs(t *testing.T) {
 				t.Errorf("Plugin.buildTarArgs() = %v, want %v", got, tt.want)
 			}
 		})
+	}
+}
+
+func TestTargetFolderWithSpaces(t *testing.T) {
+	if os.Getenv("SSH_AUTH_SOCK") != "" {
+		if err := exec.Command("eval", "`ssh-agent -k`").Run(); err != nil {
+			t.Fatalf("exec: %v", err)
+		}
+	}
+
+	u, err := user.Lookup("drone-scp")
+	if err != nil {
+		t.Fatalf("Lookup: %v", err)
+	}
+
+	plugin := Plugin{
+		Config: Config{
+			Host:            []string{"localhost"},
+			Username:        "drone-scp",
+			Port:            "22",
+			KeyPath:         "tests/.ssh/id_rsa",
+			Source:          []string{"tests/global/*"},
+			StripComponents: 2,
+			Target:          []string{filepath.Join(u.HomeDir, "123 456 789")},
+			CommandTimeout:  60 * time.Second,
+			TarExec:         "tar",
+		},
+	}
+
+	err = plugin.Exec()
+	assert.Nil(t, err)
+
+	// check file exist
+	if _, err := os.Stat(filepath.Join(u.HomeDir, "123 456 789", "c.txt")); os.IsNotExist(err) {
+		t.Fatalf("SCP-error: %v", err)
+	}
+
+	if _, err := os.Stat(filepath.Join(u.HomeDir, "123 456 789", "d.txt")); os.IsNotExist(err) {
+		t.Fatalf("SCP-error: %v", err)
 	}
 }
