@@ -61,32 +61,11 @@ func main() {
 			Usage:   "Password for password-based authentication",
 			EnvVars: []string{"PLUGIN_PASSWORD", "SSH_PASSWORD", "INPUT_PASSWORD"},
 		},
-		&cli.StringSliceFlag{
-			Name:    "ciphers",
-			Usage:   "The allowed cipher algorithms. If unspecified then a sensible",
-			EnvVars: []string{"PLUGIN_CIPHERS", "SSH_CIPHERS", "INPUT_CIPHERS"},
-		},
-		&cli.BoolFlag{
-			Name:    "useInsecureCipher",
-			Usage:   "include more ciphers with use_insecure_cipher",
-			EnvVars: []string{"PLUGIN_USE_INSECURE_CIPHER", "SSH_USE_INSECURE_CIPHER", "INPUT_USE_INSECURE_CIPHER"},
-		},
-		&cli.StringFlag{
-			Name:    "fingerprint",
-			Usage:   "fingerprint SHA256 of the host public key, default is to skip verification",
-			EnvVars: []string{"PLUGIN_FINGERPRINT", "SSH_FINGERPRINT", "INPUT_FINGERPRINT"},
-		},
 		&cli.DurationFlag{
 			Name:    "timeout",
 			Usage:   "connection timeout",
 			EnvVars: []string{"PLUGIN_TIMEOUT", "SSH_TIMEOUT", "INPUT_TIMEOUT"},
 			Value:   30 * time.Second,
-		},
-		&cli.DurationFlag{
-			Name:    "command.timeout",
-			Usage:   "command timeout",
-			EnvVars: []string{"PLUGIN_COMMAND_TIMEOUT", "SSH_COMMAND_TIMEOUT", "INPUT_COMMAND_TIMEOUT"},
-			Value:   10 * time.Minute,
 		},
 		&cli.StringFlag{
 			Name:    "ssh-key",
@@ -106,6 +85,27 @@ func main() {
 			EnvVars: []string{"PLUGIN_KEY_PATH", "SSH_KEY_PATH", "INPUT_KEY_PATH"},
 		},
 		&cli.StringSliceFlag{
+			Name:    "ciphers",
+			Usage:   "The allowed cipher algorithms. If unspecified then a sensible",
+			EnvVars: []string{"PLUGIN_CIPHERS", "SSH_CIPHERS", "INPUT_CIPHERS"},
+		},
+		&cli.BoolFlag{
+			Name:    "useInsecureCipher",
+			Usage:   "include more ciphers with use_insecure_cipher",
+			EnvVars: []string{"PLUGIN_USE_INSECURE_CIPHER", "SSH_USE_INSECURE_CIPHER", "INPUT_USE_INSECURE_CIPHER"},
+		},
+		&cli.StringFlag{
+			Name:    "fingerprint",
+			Usage:   "fingerprint SHA256 of the host public key, default is to skip verification",
+			EnvVars: []string{"PLUGIN_FINGERPRINT", "SSH_FINGERPRINT", "INPUT_FINGERPRINT"},
+		},
+		&cli.DurationFlag{
+			Name:    "command.timeout",
+			Usage:   "command timeout",
+			EnvVars: []string{"PLUGIN_COMMAND_TIMEOUT", "SSH_COMMAND_TIMEOUT", "INPUT_COMMAND_TIMEOUT"},
+			Value:   10 * time.Minute,
+		},
+		&cli.StringSliceFlag{
 			Name:    "target",
 			Aliases: []string{"t"},
 			Usage:   "Target path on the server",
@@ -123,6 +123,29 @@ func main() {
 			Usage:   "remove target folder before upload data",
 			EnvVars: []string{"PLUGIN_RM", "SCP_RM", "INPUT_RM"},
 		},
+
+		&cli.StringFlag{
+			Name:    "proxy.host",
+			Usage:   "connect to host of proxy",
+			EnvVars: []string{"PLUGIN_PROXY_HOST", "PROXY_SSH_HOST", "INPUT_PROXY_HOST"},
+		},
+		&cli.StringFlag{
+			Name:    "proxy.port",
+			Usage:   "connect to port of proxy",
+			EnvVars: []string{"PLUGIN_PROXY_PORT", "PROXY_SSH_PORT", "INPUT_PROXY_PORT"},
+			Value:   "22",
+		},
+		&cli.StringFlag{
+			Name:    "proxy.username",
+			Usage:   "connect as user of proxy",
+			EnvVars: []string{"PLUGIN_PROXY_USERNAME", "PLUGIN_PROXY_USER", "PROXY_SSH_USERNAME", "INPUT_PROXY_USERNAME"},
+			Value:   "root",
+		},
+		&cli.StringFlag{
+			Name:    "proxy.password",
+			Usage:   "user password of proxy",
+			EnvVars: []string{"PLUGIN_PROXY_PASSWORD", "PROXY_SSH_PASSWORD", "INPUT_PROXY_PASSWORD"},
+		},
 		&cli.StringFlag{
 			Name:    "proxy.ssh-key",
 			Usage:   "private ssh key of proxy",
@@ -138,21 +161,10 @@ func main() {
 			Usage:   "ssh private key path of proxy",
 			EnvVars: []string{"PLUGIN_PROXY_KEY_PATH", "PROXY_SSH_KEY_PATH", "INPUT_PROXY_KEY_PATH"},
 		},
-		&cli.StringFlag{
-			Name:    "proxy.username",
-			Usage:   "connect as user of proxy",
-			EnvVars: []string{"PLUGIN_PROXY_USERNAME", "PLUGIN_PROXY_USER", "PROXY_SSH_USERNAME", "INPUT_PROXY_USERNAME"},
-			Value:   "root",
-		},
-		&cli.StringFlag{
-			Name:    "proxy.password",
-			Usage:   "user password of proxy",
-			EnvVars: []string{"PLUGIN_PROXY_PASSWORD", "PROXY_SSH_PASSWORD", "INPUT_PROXY_PASSWORD"},
-		},
-		&cli.StringFlag{
-			Name:    "proxy.host",
-			Usage:   "connect to host of proxy",
-			EnvVars: []string{"PLUGIN_PROXY_HOST", "PROXY_SSH_HOST", "INPUT_PROXY_HOST"},
+		&cli.DurationFlag{
+			Name:    "proxy.timeout",
+			Usage:   "proxy connection timeout",
+			EnvVars: []string{"PLUGIN_PROXY_TIMEOUT", "PROXY_SSH_TIMEOUT", "INPUT_PROXY_TIMEOUT"},
 		},
 		&cli.StringSliceFlag{
 			Name:    "proxy.ciphers",
@@ -168,17 +180,6 @@ func main() {
 			Name:    "proxy.fingerprint",
 			Usage:   "fingerprint SHA256 of the host public key, default is to skip verification",
 			EnvVars: []string{"PLUGIN_PROXY_FINGERPRINT", "SSH_PROXY_FINGERPRINT", "INPUT_PROXY_FINGERPRINT"},
-		},
-		&cli.StringFlag{
-			Name:    "proxy.port",
-			Usage:   "connect to port of proxy",
-			EnvVars: []string{"PLUGIN_PROXY_PORT", "PROXY_SSH_PORT", "INPUT_PROXY_PORT"},
-			Value:   "22",
-		},
-		&cli.DurationFlag{
-			Name:    "proxy.timeout",
-			Usage:   "proxy connection timeout",
-			EnvVars: []string{"PLUGIN_PROXY_TIMEOUT", "PROXY_SSH_TIMEOUT", "INPUT_PROXY_TIMEOUT"},
 		},
 		&cli.IntFlag{
 			Name:    "strip.components",
