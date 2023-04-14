@@ -38,40 +38,41 @@ func main() {
 		&cli.StringSliceFlag{
 			Name:     "host",
 			Aliases:  []string{"H"},
-			Usage:    "Server host",
+			Usage:    "connect to host",
 			EnvVars:  []string{"PLUGIN_HOST", "SSH_HOST", "INPUT_HOST"},
 			FilePath: ".host",
 		},
-		&cli.StringFlag{
+		&cli.IntFlag{
 			Name:    "port",
-			Aliases: []string{"P"},
-			Value:   "22",
-			Usage:   "Server port, default to 22",
+			Aliases: []string{"p"},
+			Usage:   "connect to port",
 			EnvVars: []string{"PLUGIN_PORT", "SSH_PORT", "INPUT_PORT"},
+			Value:   22,
 		},
 		&cli.StringFlag{
 			Name:    "username",
-			Aliases: []string{"u"},
-			Usage:   "Server username",
+			Aliases: []string{"user", "u"},
+			Usage:   "connect as user",
 			EnvVars: []string{"PLUGIN_USERNAME", "PLUGIN_USER", "SSH_USERNAME", "INPUT_USERNAME"},
+			Value:   "root",
 		},
 		&cli.StringFlag{
 			Name:    "password",
-			Aliases: []string{"p"},
-			Usage:   "Password for password-based authentication",
+			Aliases: []string{"P"},
+			Usage:   "user password",
 			EnvVars: []string{"PLUGIN_PASSWORD", "SSH_PASSWORD", "INPUT_PASSWORD"},
 		},
 		&cli.DurationFlag{
 			Name:    "timeout",
+			Aliases: []string{"t"},
 			Usage:   "connection timeout",
 			EnvVars: []string{"PLUGIN_TIMEOUT", "SSH_TIMEOUT", "INPUT_TIMEOUT"},
 			Value:   30 * time.Second,
 		},
 		&cli.StringFlag{
 			Name:    "ssh-key",
-			Aliases: []string{"k"},
-			Usage:   "ssh private key",
-			EnvVars: []string{"PLUGIN_SSH_KEY,", "PLUGIN_KEY", "SSH_KEY", "KEY", "INPUT_KEY"},
+			Usage:   "private ssh key",
+			EnvVars: []string{"PLUGIN_SSH_KEY", "PLUGIN_KEY", "SSH_KEY", "INPUT_KEY"},
 		},
 		&cli.StringFlag{
 			Name:    "ssh-passphrase",
@@ -123,7 +124,6 @@ func main() {
 			Usage:   "remove target folder before upload data",
 			EnvVars: []string{"PLUGIN_RM", "SCP_RM", "INPUT_RM"},
 		},
-
 		&cli.StringFlag{
 			Name:    "proxy.host",
 			Usage:   "connect to host of proxy",
@@ -174,12 +174,12 @@ func main() {
 		&cli.BoolFlag{
 			Name:    "proxy.useInsecureCipher",
 			Usage:   "include more ciphers with use_insecure_cipher",
-			EnvVars: []string{"PLUGIN_PROXY_USE_INSECURE_CIPHER", "SSH_PROXY_USE_INSECURE_CIPHER", "INPUT_PROXY_USE_INSECURE_CIPHER"},
+			EnvVars: []string{"PLUGIN_PROXY_USE_INSECURE_CIPHER", "PROXY_SSH_USE_INSECURE_CIPHER", "INPUT_PROXY_USE_INSECURE_CIPHER"},
 		},
 		&cli.StringFlag{
 			Name:    "proxy.fingerprint",
 			Usage:   "fingerprint SHA256 of the host public key, default is to skip verification",
-			EnvVars: []string{"PLUGIN_PROXY_FINGERPRINT", "SSH_PROXY_FINGERPRINT", "INPUT_PROXY_FINGERPRINT"},
+			EnvVars: []string{"PLUGIN_PROXY_FINGERPRINT", "PROXY_SSH_FINGERPRINT", "PROXY_FINGERPRINT", "INPUT_PROXY_FINGERPRINT"},
 		},
 		&cli.IntFlag{
 			Name:    "strip.components",
