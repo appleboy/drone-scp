@@ -23,24 +23,6 @@ var (
 )
 
 type (
-	// Repo information.
-	Repo struct {
-		Owner string
-		Name  string
-	}
-
-	// Build information.
-	Build struct {
-		Event   string
-		Number  int
-		Commit  string
-		Message string
-		Branch  string
-		Author  string
-		Status  string
-		Link    string
-	}
-
 	// Config for the plugin.
 	Config struct {
 		Host              []string
@@ -70,8 +52,6 @@ type (
 
 	// Plugin values.
 	Plugin struct {
-		Repo     Repo
-		Build    Build
 		Config   Config
 		DestFile string
 	}
