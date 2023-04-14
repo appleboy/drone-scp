@@ -64,7 +64,6 @@ func main() {
 		},
 		&cli.DurationFlag{
 			Name:    "timeout",
-			Aliases: []string{"t"},
 			Usage:   "connection timeout",
 			EnvVars: []string{"PLUGIN_TIMEOUT", "SSH_TIMEOUT", "INPUT_TIMEOUT"},
 			Value:   30 * time.Second,
