@@ -590,8 +590,6 @@ func TestRemoveDestFile(t *testing.T) {
 
 func TestPlugin_buildUnTarArgs(t *testing.T) {
 	type fields struct {
-		Repo     Repo
-		Build    Build
 		Config   Config
 		DestFile string
 	}
@@ -687,8 +685,6 @@ func TestPlugin_buildUnTarArgs(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			p := &Plugin{
-				Repo:     tt.fields.Repo,
-				Build:    tt.fields.Build,
 				Config:   tt.fields.Config,
 				DestFile: tt.fields.DestFile,
 			}

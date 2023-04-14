@@ -39,7 +39,7 @@ func main() {
 			Name:     "host",
 			Aliases:  []string{"H"},
 			Usage:    "Server host",
-			EnvVars:  []string{"PLUGIN_HOST", "SCP_HOST", "SSH_HOST", "HOST", "INPUT_HOST"},
+			EnvVars:  []string{"PLUGIN_HOST", "SSH_HOST", "INPUT_HOST"},
 			FilePath: ".host",
 		},
 		&cli.StringFlag{
@@ -47,39 +47,39 @@ func main() {
 			Aliases: []string{"P"},
 			Value:   "22",
 			Usage:   "Server port, default to 22",
-			EnvVars: []string{"PLUGIN_PORT", "SCP_PORT", "SSH_PORT", "PORT", "INPUT_PORT"},
+			EnvVars: []string{"PLUGIN_PORT", "SSH_PORT", "INPUT_PORT"},
 		},
 		&cli.StringFlag{
 			Name:    "username",
 			Aliases: []string{"u"},
 			Usage:   "Server username",
-			EnvVars: []string{"PLUGIN_USERNAME", "PLUGIN_USER", "SCP_USERNAME", "SSH_USERNAME", "USERNAME", "INPUT_USERNAME"},
+			EnvVars: []string{"PLUGIN_USERNAME", "PLUGIN_USER", "SSH_USERNAME", "INPUT_USERNAME"},
 		},
 		&cli.StringFlag{
 			Name:    "password",
 			Aliases: []string{"p"},
 			Usage:   "Password for password-based authentication",
-			EnvVars: []string{"PLUGIN_PASSWORD", "SCP_PASSWORD", "SSH_PASSWORD", "PASSWORD", "INPUT_PASSWORD"},
+			EnvVars: []string{"PLUGIN_PASSWORD", "SSH_PASSWORD", "INPUT_PASSWORD"},
 		},
 		&cli.StringSliceFlag{
 			Name:    "ciphers",
 			Usage:   "The allowed cipher algorithms. If unspecified then a sensible",
-			EnvVars: []string{"PLUGIN_CIPHERS", "SSH_CIPHERS", "CIPHERS", "INPUT_CIPHERS"},
+			EnvVars: []string{"PLUGIN_CIPHERS", "SSH_CIPHERS", "INPUT_CIPHERS"},
 		},
 		&cli.BoolFlag{
 			Name:    "useInsecureCipher",
 			Usage:   "include more ciphers with use_insecure_cipher",
-			EnvVars: []string{"PLUGIN_USE_INSECURE_CIPHER", "SSH_USE_INSECURE_CIPHER", "USE_INSECURE_CIPHER", "INPUT_USE_INSECURE_CIPHER"},
+			EnvVars: []string{"PLUGIN_USE_INSECURE_CIPHER", "SSH_USE_INSECURE_CIPHER", "INPUT_USE_INSECURE_CIPHER"},
 		},
 		&cli.StringFlag{
 			Name:    "fingerprint",
 			Usage:   "fingerprint SHA256 of the host public key, default is to skip verification",
-			EnvVars: []string{"PLUGIN_FINGERPRINT", "SSH_FINGERPRINT", "FINGERPRINT", "INPUT_FINGERPRINT"},
+			EnvVars: []string{"PLUGIN_FINGERPRINT", "SSH_FINGERPRINT", "INPUT_FINGERPRINT"},
 		},
 		&cli.DurationFlag{
 			Name:    "timeout",
 			Usage:   "connection timeout",
-			EnvVars: []string{"PLUGIN_TIMEOUT", "SCP_TIMEOUT", "INPUT_TIMEOUT"},
+			EnvVars: []string{"PLUGIN_TIMEOUT", "SSH_TIMEOUT", "INPUT_TIMEOUT"},
 			Value:   30 * time.Second,
 		},
 		&cli.DurationFlag{
@@ -92,99 +92,46 @@ func main() {
 			Name:    "ssh-key",
 			Aliases: []string{"k"},
 			Usage:   "ssh private key",
-			EnvVars: []string{"PLUGIN_SSH_KEY,", "PLUGIN_KEY", "SCP_KEY", "SSH_KEY", "KEY", "INPUT_KEY"},
+			EnvVars: []string{"PLUGIN_SSH_KEY,", "PLUGIN_KEY", "SSH_KEY", "KEY", "INPUT_KEY"},
 		},
 		&cli.StringFlag{
 			Name:    "ssh-passphrase",
 			Usage:   "The purpose of the passphrase is usually to encrypt the private key.",
-			EnvVars: []string{"PLUGIN_SSH_PASSPHRASE", "PLUGIN_PASSPHRASE", "SSH_PASSPHRASE", "PASSPHRASE", "INPUT_PASSPHRASE"},
+			EnvVars: []string{"PLUGIN_SSH_PASSPHRASE", "PLUGIN_PASSPHRASE", "SSH_PASSPHRASE", "INPUT_PASSPHRASE"},
 		},
 		&cli.StringFlag{
 			Name:    "key-path",
 			Aliases: []string{"i"},
 			Usage:   "ssh private key path",
-			EnvVars: []string{"PLUGIN_KEY_PATH", "SCP_KEY_PATH", "SSH_KEY_PATH", "INPUT_KEY_PATH"},
+			EnvVars: []string{"PLUGIN_KEY_PATH", "SSH_KEY_PATH", "INPUT_KEY_PATH"},
 		},
 		&cli.StringSliceFlag{
 			Name:    "target",
 			Aliases: []string{"t"},
 			Usage:   "Target path on the server",
-			EnvVars: []string{"PLUGIN_TARGET", "SCP_TARGET", "TARGET", "INPUT_TARGET"},
+			EnvVars: []string{"PLUGIN_TARGET", "SSH_TARGET", "INPUT_TARGET"},
 		},
 		&cli.StringSliceFlag{
 			Name:    "source",
 			Aliases: []string{"s"},
 			Usage:   "scp file list",
-			EnvVars: []string{"PLUGIN_SOURCE", "SCP_SOURCE", "SOURCE", "INPUT_SOURCE"},
+			EnvVars: []string{"PLUGIN_SOURCE", "SCP_SOURCE", "INPUT_SOURCE"},
 		},
 		&cli.BoolFlag{
 			Name:    "rm",
 			Aliases: []string{"r"},
 			Usage:   "remove target folder before upload data",
-			EnvVars: []string{"PLUGIN_RM", "SCP_RM", "RM", "INPUT_RM"},
-		},
-		&cli.StringFlag{
-			Name:    "repo.owner",
-			Usage:   "repository owner",
-			EnvVars: []string{"DRONE_REPO_OWNER"},
-		},
-		&cli.StringFlag{
-			Name:    "repo.name",
-			Usage:   "repository name",
-			EnvVars: []string{"DRONE_REPO_NAME"},
-		},
-		&cli.StringFlag{
-			Name:    "commit.sha",
-			Usage:   "git commit sha",
-			EnvVars: []string{"DRONE_COMMIT_SHA"},
-		},
-		&cli.StringFlag{
-			Name:    "commit.branch",
-			Value:   "master",
-			Usage:   "git commit branch",
-			EnvVars: []string{"DRONE_COMMIT_BRANCH"},
-		},
-		&cli.StringFlag{
-			Name:    "commit.author",
-			Usage:   "git author name",
-			EnvVars: []string{"DRONE_COMMIT_AUTHOR"},
-		},
-		&cli.StringFlag{
-			Name:    "commit.message",
-			Usage:   "commit message",
-			EnvVars: []string{"DRONE_COMMIT_MESSAGE"},
-		},
-		&cli.StringFlag{
-			Name:    "build.event",
-			Value:   "push",
-			Usage:   "build event",
-			EnvVars: []string{"DRONE_BUILD_EVENT"},
-		},
-		&cli.IntFlag{
-			Name:    "build.number",
-			Usage:   "build number",
-			EnvVars: []string{"DRONE_BUILD_NUMBER"},
-		},
-		&cli.StringFlag{
-			Name:    "build.status",
-			Usage:   "build status",
-			Value:   "success",
-			EnvVars: []string{"DRONE_BUILD_STATUS"},
-		},
-		&cli.StringFlag{
-			Name:    "build.link",
-			Usage:   "build link",
-			EnvVars: []string{"DRONE_BUILD_LINK"},
+			EnvVars: []string{"PLUGIN_RM", "SCP_RM", "INPUT_RM"},
 		},
 		&cli.StringFlag{
 			Name:    "proxy.ssh-key",
 			Usage:   "private ssh key of proxy",
-			EnvVars: []string{"PLUGIN_PROXY_SSH_KEY", "PLUGIN_PROXY_KEY", "PROXY_SSH_KEY", "PROXY_KEY", "INPUT_PROXY_KEY"},
+			EnvVars: []string{"PLUGIN_PROXY_SSH_KEY", "PLUGIN_PROXY_KEY", "PROXY_SSH_KEY", "INPUT_PROXY_KEY"},
 		},
 		&cli.StringFlag{
 			Name:    "proxy.ssh-passphrase",
 			Usage:   "The purpose of the passphrase is usually to encrypt the private key.",
-			EnvVars: []string{"PLUGIN_PROXY_SSH_PASSPHRASE", "PLUGIN_PROXY_PASSPHRASE", "PROXY_SSH_PASSPHRASE", "PROXY_PASSPHRASE", "INPUT_PROXY_PASSPHRASE"},
+			EnvVars: []string{"PLUGIN_PROXY_SSH_PASSPHRASE", "PLUGIN_PROXY_PASSPHRASE", "PROXY_SSH_PASSPHRASE", "INPUT_PROXY_PASSPHRASE"},
 		},
 		&cli.StringFlag{
 			Name:    "proxy.key-path",
@@ -194,38 +141,38 @@ func main() {
 		&cli.StringFlag{
 			Name:    "proxy.username",
 			Usage:   "connect as user of proxy",
-			EnvVars: []string{"PLUGIN_PROXY_USERNAME", "PLUGIN_PROXY_USER", "PROXY_SSH_USERNAME", "PROXY_USERNAME", "INPUT_PROXY_USERNAME"},
+			EnvVars: []string{"PLUGIN_PROXY_USERNAME", "PLUGIN_PROXY_USER", "PROXY_SSH_USERNAME", "INPUT_PROXY_USERNAME"},
 			Value:   "root",
 		},
 		&cli.StringFlag{
 			Name:    "proxy.password",
 			Usage:   "user password of proxy",
-			EnvVars: []string{"PLUGIN_PROXY_PASSWORD", "PROXY_SSH_PASSWORD", "PROXY_PASSWORD", "INPUT_PROXY_PASSWORD"},
+			EnvVars: []string{"PLUGIN_PROXY_PASSWORD", "PROXY_SSH_PASSWORD", "INPUT_PROXY_PASSWORD"},
 		},
 		&cli.StringFlag{
 			Name:    "proxy.host",
 			Usage:   "connect to host of proxy",
-			EnvVars: []string{"PLUGIN_PROXY_HOST", "PROXY_SSH_HOST", "PROXY_HOST", "INPUT_PROXY_HOST"},
+			EnvVars: []string{"PLUGIN_PROXY_HOST", "PROXY_SSH_HOST", "INPUT_PROXY_HOST"},
 		},
 		&cli.StringSliceFlag{
 			Name:    "proxy.ciphers",
 			Usage:   "The allowed cipher algorithms. If unspecified then a sensible",
-			EnvVars: []string{"PLUGIN_PROXY_CIPHERS", "PROXY_SSH_CIPHERS", "PROXY_CIPHERS", "INPUT_PROXY_CIPHERS"},
+			EnvVars: []string{"PLUGIN_PROXY_CIPHERS", "PROXY_SSH_CIPHERS", "INPUT_PROXY_CIPHERS"},
 		},
 		&cli.BoolFlag{
 			Name:    "proxy.useInsecureCipher",
 			Usage:   "include more ciphers with use_insecure_cipher",
-			EnvVars: []string{"PLUGIN_PROXY_USE_INSECURE_CIPHER", "SSH_PROXY_USE_INSECURE_CIPHER", "PROXY_USE_INSECURE_CIPHER", "INPUT_PROXY_USE_INSECURE_CIPHER"},
+			EnvVars: []string{"PLUGIN_PROXY_USE_INSECURE_CIPHER", "SSH_PROXY_USE_INSECURE_CIPHER", "INPUT_PROXY_USE_INSECURE_CIPHER"},
 		},
 		&cli.StringFlag{
 			Name:    "proxy.fingerprint",
 			Usage:   "fingerprint SHA256 of the host public key, default is to skip verification",
-			EnvVars: []string{"PLUGIN_PROXY_FINGERPRINT", "SSH_PROXY_FINGERPRINT", "PROXY_FINGERPRINT", "INPUT_PROXY_FINGERPRINT"},
+			EnvVars: []string{"PLUGIN_PROXY_FINGERPRINT", "SSH_PROXY_FINGERPRINT", "INPUT_PROXY_FINGERPRINT"},
 		},
 		&cli.StringFlag{
 			Name:    "proxy.port",
 			Usage:   "connect to port of proxy",
-			EnvVars: []string{"PLUGIN_PROXY_PORT", "PROXY_SSH_PORT", "PROXY_PORT", "INPUT_PROXY_PORT"},
+			EnvVars: []string{"PLUGIN_PROXY_PORT", "PROXY_SSH_PORT", "INPUT_PROXY_PORT"},
 			Value:   "22",
 		},
 		&cli.DurationFlag{
@@ -241,33 +188,33 @@ func main() {
 		&cli.StringFlag{
 			Name:    "tar.exec",
 			Usage:   "Alternative `tar` executable to on the dest host",
-			EnvVars: []string{"PLUGIN_TAR_EXEC", "SCP_TAR_EXEC", "INPUT_TAR_EXEC"},
+			EnvVars: []string{"PLUGIN_TAR_EXEC", "SSH_TAR_EXEC", "INPUT_TAR_EXEC"},
 			Value:   "tar",
 		},
 		&cli.StringFlag{
 			Name:    "tar.tmp-path",
 			Usage:   "Temporary path for tar file on the dest host",
-			EnvVars: []string{"PLUGIN_TAR_TMP_PATH", "SCP_TAR_TMP_PATH"},
+			EnvVars: []string{"PLUGIN_TAR_TMP_PATH", "SSH_TAR_TMP_PATH", "INPUT_TAR_TMP_PATH"},
 		},
 		&cli.BoolFlag{
 			Name:    "debug",
 			Usage:   "remove target folder before upload data",
-			EnvVars: []string{"PLUGIN_DEBUG", "DEBUG", "INPUT_DEBUG"},
+			EnvVars: []string{"PLUGIN_DEBUG", "INPUT_DEBUG"},
 		},
 		&cli.BoolFlag{
 			Name:    "overwrite",
 			Usage:   "use --overwrite flag with tar",
-			EnvVars: []string{"PLUGIN_OVERWRITE", "SCP_OVERWRITE", "INPUT_OVERWRITE"},
+			EnvVars: []string{"PLUGIN_OVERWRITE", "INPUT_OVERWRITE"},
 		},
 		&cli.BoolFlag{
 			Name:    "unlink.first",
 			Usage:   "use --unlink-first flag with tar",
-			EnvVars: []string{"PLUGIN_UNLINK_FIRST", "SCP_UNLINK_FIRST", "INPUT_UNLINK_FIRST"},
+			EnvVars: []string{"PLUGIN_UNLINK_FIRST", "INPUT_UNLINK_FIRST"},
 		},
 		&cli.BoolFlag{
 			Name:    "tar.dereference",
 			Usage:   "use --dereference flag with tar",
-			EnvVars: []string{"PLUGIN_TAR_DEREFERENCE", "SCP_TAR_DEREFERENCE", "INPUT_TAR_DEREFERENCE"},
+			EnvVars: []string{"PLUGIN_TAR_DEREFERENCE", "INPUT_TAR_DEREFERENCE"},
 		},
 	}
 
@@ -311,20 +258,6 @@ REPOSITORY:
 
 func run(c *cli.Context) error {
 	plugin := Plugin{
-		Repo: Repo{
-			Owner: c.String("repo.owner"),
-			Name:  c.String("repo.name"),
-		},
-		Build: Build{
-			Number:  c.Int("build.number"),
-			Event:   c.String("build.event"),
-			Status:  c.String("build.status"),
-			Commit:  c.String("commit.sha"),
-			Branch:  c.String("commit.branch"),
-			Author:  c.String("commit.author"),
-			Message: c.String("commit.message"),
-			Link:    c.String("build.link"),
-		},
 		Config: Config{
 			Host:              c.StringSlice("host"),
 			Port:              c.String("port"),
