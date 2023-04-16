@@ -236,6 +236,8 @@ func (p *Plugin) Exec() error {
 	dir := os.TempDir()
 	src := filepath.Join(dir, p.DestFile)
 
+	// show current version
+	fmt.Println("drone-scp version: " + Version)
 	// run archive command
 	fmt.Println("tar all files into " + src)
 	args := p.buildTarArgs(src)
