@@ -254,14 +254,15 @@ func (p *Plugin) Exec() error {
 	errChannel := make(chan error)
 	finished := make(chan struct{})
 	for _, host := range hosts {
-		go func(host string) {
+		go func(h string) {
 			defer wg.Done()
+			host, port := p.hostPort(h)
 			// Create MakeConfig instance with remote username, server address and path to private key.
 			ssh := &easyssh.MakeConfig{
 				Server:            host,
 				User:              p.Config.Username,
 				Password:          p.Config.Password,
-				Port:              p.Config.Port,
+				Port:              port,
 				Key:               p.Config.Key,
 				KeyPath:           p.Config.KeyPath,
 				Passphrase:        p.Config.Passphrase,
@@ -383,6 +384,22 @@ func (p *Plugin) Exec() error {
 	fmt.Println("===================================================")
 
 	return nil
+}
+
+// This function takes a Plugin struct and a host string and returns the host and port as separate strings.
+func (p Plugin) hostPort(host string) (string, string) {
+	// Split the host string by colon (":") to get the host and port
+	hosts := strings.Split(host, ":")
+	// Get the default port from the Plugin's Config field
+	port := p.Config.Port
+	// If the host string contains a port (i.e. it has more than one element after splitting), set the port to that value
+	if len(hosts) > 1 {
+		host = hosts[0]
+		port = hosts[1]
+	}
+
+	// Return the host and port as separate strings
+	return host, port
 }
 
 func trimValues(keys []string) []string {

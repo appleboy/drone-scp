@@ -804,3 +804,69 @@ func TestTargetFolderWithSpaces(t *testing.T) {
 		t.Fatalf("SCP-error: %v", err)
 	}
 }
+
+func TestHostPortString(t *testing.T) {
+	if os.Getenv("SSH_AUTH_SOCK") != "" {
+		if err := exec.Command("eval", "`ssh-agent -k`").Run(); err != nil {
+			t.Fatalf("exec: %v", err)
+		}
+	}
+
+	u, err := user.Lookup("drone-scp")
+	if err != nil {
+		t.Fatalf("Lookup: %v", err)
+	}
+
+	plugin := Plugin{
+		Config: Config{
+			Host:            []string{"localhost:22", "localhost:22"},
+			Username:        "drone-scp",
+			Port:            "8080",
+			KeyPath:         "tests/.ssh/id_rsa",
+			Source:          []string{"tests/global/*"},
+			StripComponents: 2,
+			Target:          []string{filepath.Join(u.HomeDir, "1234")},
+			CommandTimeout:  60 * time.Second,
+			TarExec:         "tar",
+		},
+	}
+
+	err = plugin.Exec()
+	assert.Nil(t, err)
+
+	// check file exist
+	if _, err := os.Stat(filepath.Join(u.HomeDir, "1234", "c.txt")); os.IsNotExist(err) {
+		t.Fatalf("SCP-error: %v", err)
+	}
+
+	if _, err := os.Stat(filepath.Join(u.HomeDir, "1234", "d.txt")); os.IsNotExist(err) {
+		t.Fatalf("SCP-error: %v", err)
+	}
+}
+
+// Unit test for hostPort
+func TestHostPort(t *testing.T) {
+	p := Plugin{
+		Config: Config{
+			Port: "8080",
+		},
+	}
+
+	// Test case 1: host string with port
+	host1 := "example.com:1234"
+	expectedHost1 := "example.com"
+	expectedPort1 := "1234"
+	actualHost1, actualPort1 := p.hostPort(host1)
+	if actualHost1 != expectedHost1 || actualPort1 != expectedPort1 {
+		t.Errorf("hostPort(%s) = (%s, %s); expected (%s, %s)", host1, actualHost1, actualPort1, expectedHost1, expectedPort1)
+	}
+
+	// Test case 2: host string without port
+	host2 := "example.com"
+	expectedHost2 := "example.com"
+	expectedPort2 := "8080" // default port
+	actualHost2, actualPort2 := p.hostPort(host2)
+	if actualHost2 != expectedHost2 || actualPort2 != expectedPort2 {
+		t.Errorf("hostPort(%s) = (%s, %s); expected (%s, %s)", host2, actualHost2, actualPort2, expectedHost2, expectedPort2)
+	}
+}
