@@ -209,7 +209,7 @@ func (p *Plugin) buildUnTarArgs(target string) []string {
 
 	args = append(args,
 		"-C",
-		"'"+target+"'",
+		target,
 	)
 
 	return args
@@ -304,6 +304,7 @@ func (p *Plugin) Exec() error {
 			}
 
 			for _, target := range p.Config.Target {
+				target = strings.Replace(target, " ", "\\ ", -1)
 				// remove target folder before upload data
 				if p.Config.Remove {
 					p.log(host, "Remove target folder:", target)
