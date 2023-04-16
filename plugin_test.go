@@ -615,7 +615,7 @@ func TestPlugin_buildUnTarArgs(t *testing.T) {
 			args: args{
 				target: "foo",
 			},
-			want: []string{"tar", "-zxf", "foo.tar.gz", "-C", "'foo'"},
+			want: []string{"tar", "-zxf", "foo.tar.gz", "-C", "foo"},
 		},
 		{
 			name: "strip components",
@@ -631,7 +631,7 @@ func TestPlugin_buildUnTarArgs(t *testing.T) {
 			args: args{
 				target: "foo",
 			},
-			want: []string{"tar", "-zxf", "foo.tar.gz", "--strip-components", "2", "-C", "'foo'"},
+			want: []string{"tar", "-zxf", "foo.tar.gz", "--strip-components", "2", "-C", "foo"},
 		},
 		{
 			name: "overwrite",
@@ -647,7 +647,7 @@ func TestPlugin_buildUnTarArgs(t *testing.T) {
 			args: args{
 				target: "foo",
 			},
-			want: []string{"tar", "-zxf", "foo.tar.gz", "--strip-components", "2", "--overwrite", "-C", "'foo'"},
+			want: []string{"tar", "-zxf", "foo.tar.gz", "--strip-components", "2", "--overwrite", "-C", "foo"},
 		},
 		{
 			name: "unlink first",
@@ -663,7 +663,7 @@ func TestPlugin_buildUnTarArgs(t *testing.T) {
 			args: args{
 				target: "foo",
 			},
-			want: []string{"tar", "-zxf", "foo.tar.gz", "--strip-components", "2", "--overwrite", "--unlink-first", "-C", "'foo'"},
+			want: []string{"tar", "-zxf", "foo.tar.gz", "--strip-components", "2", "--overwrite", "--unlink-first", "-C", "foo"},
 		},
 		{
 			name: "output folder path with space",
@@ -677,9 +677,9 @@ func TestPlugin_buildUnTarArgs(t *testing.T) {
 				DestFile: "foo.tar.gz",
 			},
 			args: args{
-				target: "foo bar",
+				target: "foo\\ bar",
 			},
-			want: []string{"tar", "-zxf", "foo.tar.gz", "--strip-components", "2", "--overwrite", "--unlink-first", "-C", "'foo bar'"},
+			want: []string{"tar", "-zxf", "foo.tar.gz", "--strip-components", "2", "--overwrite", "--unlink-first", "-C", "foo\\ bar"},
 		},
 	}
 	for _, tt := range tests {
