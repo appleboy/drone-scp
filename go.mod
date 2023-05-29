@@ -8,7 +8,7 @@ require (
 	github.com/fatih/color v1.15.0
 	github.com/joho/godotenv v1.5.1
 	github.com/stretchr/testify v1.8.2
-	github.com/urfave/cli/v2 v2.25.3
+	github.com/urfave/cli/v2 v2.25.5
 	golang.org/x/crypto v0.8.0
 )
 
