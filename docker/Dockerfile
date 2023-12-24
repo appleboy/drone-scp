@@ -1,19 +1,33 @@
-FROM alpine:3.17
+FROM alpine:3.19
 
 ARG TARGETOS
 ARG TARGETARCH
 
-LABEL maintainer="Bo-Yi Wu <appleboy.tw@gmail.com>" \
-  org.label-schema.name="SCP Plugin" \
-  org.label-schema.vendor="Bo-Yi Wu" \
-  org.label-schema.schema-version="1.0"
+LABEL maintainer="Bo-Yi Wu <appleboy.tw@gmail.com>"
 
 LABEL org.opencontainers.image.source=https://github.com/appleboy/drone-scp
 LABEL org.opencontainers.image.description="Copy files and artifacts via SSH"
 LABEL org.opencontainers.image.licenses=MIT
 
-RUN apk add --no-cache ca-certificates=20220614-r4 && \
+RUN apk add --no-cache ca-certificates && \
   rm -rf /var/cache/apk/*
+
+RUN addgroup \
+  -S -g 1000 \
+  deploy && \
+  adduser \
+  -S -H -D \
+  -h /home/deploy \
+  -s /bin/sh \
+  -u 1000 \
+  -G deploy \
+  deploy
+
+RUN mkdir -p /home/deploy
+RUN chown deploy:deploy /home/deploy
+
+# deploy:deploy
+USER 1000:1000
 
 COPY release/${TARGETOS}/${TARGETARCH}/drone-scp /bin/
 
