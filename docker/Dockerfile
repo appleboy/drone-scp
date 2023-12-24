@@ -23,8 +23,8 @@ RUN addgroup \
   -G deploy \
   deploy
 
-RUN mkdir -p /home/deploy
-RUN chown deploy:deploy /home/deploy
+RUN mkdir -p /home/deploy && \
+  chown deploy:deploy /home/deploy
 
 # deploy:deploy
 USER 1000:1000
