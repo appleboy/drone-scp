@@ -51,6 +51,12 @@ func main() {
 			Value:   22,
 		},
 		&cli.StringFlag{
+			Name:    "protocol",
+			Usage:   "The IP protocol to use. Valid values are \"tcp\". \"tcp4\" or \"tcp6\". Default to tcp.",
+			EnvVars: []string{"PLUGIN_PROTOCOL", "SSH_PROTOCOL", "INPUT_PROTOCOL"},
+			Value:   "tcp",
+		},
+		&cli.StringFlag{
 			Name:    "username",
 			Aliases: []string{"user", "u"},
 			Usage:   "connect as user",
@@ -134,6 +140,12 @@ func main() {
 			Usage:   "connect to port of proxy",
 			EnvVars: []string{"PLUGIN_PROXY_PORT", "PROXY_SSH_PORT", "INPUT_PROXY_PORT"},
 			Value:   "22",
+		},
+		&cli.StringFlag{
+			Name:    "proxy.protocol",
+			Usage:   "The IP protocol to use for the proxy. Valid values are \"tcp\". \"tcp4\" or \"tcp6\". Default to tcp.",
+			EnvVars: []string{"PLUGIN_PROXY_PROTOCOL", "SSH_PROXY_PROTOCOL", "INPUT_PROXY_PROTOCOL"},
+			Value:   "tcp",
 		},
 		&cli.StringFlag{
 			Name:    "proxy.username",
@@ -261,7 +273,7 @@ func run(c *cli.Context) error {
 	plugin := Plugin{
 		Config: Config{
 			Host:              c.StringSlice("host"),
-			Port:              c.String("port"),
+			Port:              c.Int("port"),
 			Username:          c.String("username"),
 			Password:          c.String("password"),
 			Passphrase:        c.String("ssh-passphrase"),

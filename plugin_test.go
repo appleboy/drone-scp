@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io"
 	"log"
 	"os"
 	"os/exec"
@@ -41,7 +42,7 @@ func TestMissingSourceConfig(t *testing.T) {
 		Config: Config{
 			Host:     []string{"example.com"},
 			Username: "ubuntu",
-			Port:     "443",
+			Port:     443,
 			Password: "1234",
 		},
 	}
@@ -81,7 +82,7 @@ func TestSCPFileFromPublicKey(t *testing.T) {
 		Config: Config{
 			Host:           []string{"localhost"},
 			Username:       "drone-scp",
-			Port:           "22",
+			Port:           22,
 			KeyPath:        "tests/.ssh/id_rsa",
 			Source:         []string{"tests/a.txt", "tests/b.txt"},
 			Target:         []string{filepath.Join(u.HomeDir, "/test")},
@@ -131,7 +132,7 @@ func TestSCPFileFromPublicKeyWithPassphrase(t *testing.T) {
 		Config: Config{
 			Host:           []string{"localhost"},
 			Username:       "drone-scp",
-			Port:           "22",
+			Port:           22,
 			KeyPath:        "tests/.ssh/test",
 			Passphrase:     "1234",
 			Source:         []string{"tests/a.txt", "tests/b.txt"},
@@ -164,7 +165,7 @@ func TestWrongFingerprint(t *testing.T) {
 		Config: Config{
 			Host:           []string{"localhost"},
 			Username:       "drone-scp",
-			Port:           "22",
+			Port:           22,
 			KeyPath:        "./tests/.ssh/id_rsa",
 			Source:         []string{"tests/a.txt", "tests/b.txt"},
 			Target:         []string{filepath.Join(u.HomeDir, "/test2")},
@@ -188,7 +189,6 @@ func getHostPublicKeyFile(keypath string) (ssh.PublicKey, error) {
 	}
 
 	pubkey, _, _, _, err = ssh.ParseAuthorizedKey(buf)
-
 	if err != nil {
 		return nil, err
 	}
@@ -215,7 +215,7 @@ func TestSCPFileFromPublicKeyWithFingerprint(t *testing.T) {
 		Config: Config{
 			Host:           []string{"localhost"},
 			Username:       "drone-scp",
-			Port:           "22",
+			Port:           22,
 			KeyPath:        "./tests/.ssh/id_rsa",
 			Fingerprint:    ssh.FingerprintSHA256(hostKey),
 			Source:         []string{"tests/a.txt", "tests/b.txt"},
@@ -254,7 +254,7 @@ func TestSCPWildcardFileList(t *testing.T) {
 		Config: Config{
 			Host:           []string{"localhost"},
 			Username:       "drone-scp",
-			Port:           "22",
+			Port:           22,
 			KeyPath:        "tests/.ssh/id_rsa",
 			Source:         []string{"tests/global/*"},
 			Target:         []string{filepath.Join(u.HomeDir, "abc")},
@@ -286,7 +286,7 @@ func TestSCPFromProxySetting(t *testing.T) {
 		Config: Config{
 			Host:           []string{"localhost"},
 			Username:       "drone-scp",
-			Port:           "22",
+			Port:           22,
 			KeyPath:        "tests/.ssh/id_rsa",
 			Source:         []string{"tests/global/*"},
 			Target:         []string{filepath.Join(u.HomeDir, "def")},
@@ -330,7 +330,7 @@ func TestStripComponentsFlag(t *testing.T) {
 		Config: Config{
 			Host:            []string{"localhost"},
 			Username:        "drone-scp",
-			Port:            "22",
+			Port:            22,
 			KeyPath:         "tests/.ssh/id_rsa",
 			Source:          []string{"tests/global/*"},
 			StripComponents: 2,
@@ -363,7 +363,7 @@ func TestUseInsecureCipherFlag(t *testing.T) {
 		Config: Config{
 			Host:              []string{"localhost"},
 			Username:          "drone-scp",
-			Port:              "22",
+			Port:              22,
 			KeyPath:           "tests/.ssh/id_rsa",
 			Source:            []string{"tests/global/*"},
 			StripComponents:   2,
@@ -403,7 +403,7 @@ func TestIgnoreList(t *testing.T) {
 		Config: Config{
 			Host:            []string{"localhost"},
 			Username:        "drone-scp",
-			Port:            "22",
+			Port:            22,
 			KeyPath:         "tests/.ssh/id_rsa",
 			Source:          []string{"tests/global/*", "!tests/global/c.txt", "!tests/global/e.txt"},
 			StripComponents: 2,
@@ -483,7 +483,7 @@ func TestIncorrectPassword(t *testing.T) {
 		Config: Config{
 			Host:           []string{"localhost"},
 			Username:       "drone-scp",
-			Port:           "22",
+			Port:           22,
 			Password:       "123456",
 			Source:         []string{"tests/a.txt", "tests/b.txt"},
 			Target:         []string{"/home"},
@@ -506,7 +506,7 @@ func TestNoPermissionCreateFolder(t *testing.T) {
 		Config: Config{
 			Host:           []string{"localhost"},
 			Username:       "drone-scp",
-			Port:           "22",
+			Port:           22,
 			KeyPath:        "tests/.ssh/id_rsa",
 			Source:         []string{"tests/a.txt", "tests/b.txt"},
 			Target:         []string{"/etc/test"},
@@ -782,7 +782,7 @@ func TestTargetFolderWithSpaces(t *testing.T) {
 		Config: Config{
 			Host:            []string{"localhost"},
 			Username:        "drone-scp",
-			Port:            "22",
+			Port:            22,
 			KeyPath:         "tests/.ssh/id_rsa",
 			Source:          []string{"tests/global/*"},
 			StripComponents: 2,
@@ -821,7 +821,7 @@ func TestHostPortString(t *testing.T) {
 		Config: Config{
 			Host:            []string{"localhost:22", "localhost:22"},
 			Username:        "drone-scp",
-			Port:            "8080",
+			Port:            8080,
 			KeyPath:         "tests/.ssh/id_rsa",
 			Source:          []string{"tests/global/*"},
 			StripComponents: 2,
@@ -848,7 +848,7 @@ func TestHostPortString(t *testing.T) {
 func TestHostPort(t *testing.T) {
 	p := Plugin{
 		Config: Config{
-			Port: "8080",
+			Port: 8080,
 		},
 	}
 
@@ -868,5 +868,78 @@ func TestHostPort(t *testing.T) {
 	actualHost2, actualPort2 := p.hostPort(host2)
 	if actualHost2 != expectedHost2 || actualPort2 != expectedPort2 {
 		t.Errorf("hostPort(%s) = (%s, %s); expected (%s, %s)", host2, actualHost2, actualPort2, expectedHost2, expectedPort2)
+	}
+}
+
+func TestPlugin_hostPort(t *testing.T) {
+	type fields struct {
+		Config Config
+		Writer io.Writer
+	}
+	type args struct {
+		h string
+	}
+	tests := []struct {
+		name     string
+		fields   fields
+		args     args
+		wantHost string
+		wantPort string
+	}{
+		{
+			name: "default host and port",
+			fields: fields{
+				Config: Config{
+					Port: 22,
+				},
+			},
+			args: args{
+				h: "localhost",
+			},
+			wantHost: "localhost",
+			wantPort: "22",
+		},
+		{
+			name: "different port",
+			fields: fields{
+				Config: Config{
+					Port:     22,
+					Protocol: easyssh.PROTOCOL_TCP4,
+				},
+			},
+			args: args{
+				h: "localhost:443",
+			},
+			wantHost: "localhost",
+			wantPort: "443",
+		},
+		{
+			name: "ipv6",
+			fields: fields{
+				Config: Config{
+					Port:     22,
+					Protocol: easyssh.PROTOCOL_TCP6,
+				},
+			},
+			args: args{
+				h: "::1",
+			},
+			wantHost: "::1",
+			wantPort: "22",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			p := Plugin{
+				Config: tt.fields.Config,
+			}
+			gotHost, gotPort := p.hostPort(tt.args.h)
+			if gotHost != tt.wantHost {
+				t.Errorf("Plugin.hostPort() gotHost = %v, want %v", gotHost, tt.wantHost)
+			}
+			if gotPort != tt.wantPort {
+				t.Errorf("Plugin.hostPort() gotPort = %v, want %v", gotPort, tt.wantPort)
+			}
+		})
 	}
 }

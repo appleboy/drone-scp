@@ -26,7 +26,8 @@ type (
 	// Config for the plugin.
 	Config struct {
 		Host              []string
-		Port              string
+		Port              int
+		Protocol          easyssh.Protocol
 		Username          string
 		Password          string
 		Key               string
@@ -115,12 +116,13 @@ func (p *Plugin) removeDestFile(os string, ssh *easyssh.MakeConfig) error {
 }
 
 func (p *Plugin) removeAllDestFile() error {
-	for _, host := range trimValues(p.Config.Host) {
+	for _, h := range trimValues(p.Config.Host) {
+		host, port := p.hostPort(h)
 		ssh := &easyssh.MakeConfig{
 			Server:            host,
 			User:              p.Config.Username,
 			Password:          p.Config.Password,
-			Port:              p.Config.Port,
+			Port:              port,
 			Key:               p.Config.Key,
 			KeyPath:           p.Config.KeyPath,
 			Passphrase:        p.Config.Passphrase,
@@ -389,19 +391,16 @@ func (p *Plugin) Exec() error {
 	return nil
 }
 
-// This function takes a Plugin struct and a host string and returns the host and port as separate strings.
 func (p Plugin) hostPort(host string) (string, string) {
-	// Split the host string by colon (":") to get the host and port
 	hosts := strings.Split(host, ":")
-	// Get the default port from the Plugin's Config field
-	port := p.Config.Port
-	// If the host string contains a port (i.e. it has more than one element after splitting), set the port to that value
-	if len(hosts) > 1 {
+	port := strconv.Itoa(p.Config.Port)
+	if len(hosts) > 1 &&
+		(p.Config.Protocol == easyssh.PROTOCOL_TCP ||
+			p.Config.Protocol == easyssh.PROTOCOL_TCP4) {
 		host = hosts[0]
 		port = hosts[1]
 	}
 
-	// Return the host and port as separate strings
 	return host, port
 }
 
