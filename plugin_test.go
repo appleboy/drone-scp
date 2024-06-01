@@ -821,6 +821,7 @@ func TestHostPortString(t *testing.T) {
 		Config: Config{
 			Host:            []string{"localhost:22", "localhost:22"},
 			Username:        "drone-scp",
+			Protocol:        easyssh.PROTOCOL_TCP4,
 			Port:            8080,
 			KeyPath:         "tests/.ssh/id_rsa",
 			Source:          []string{"tests/global/*"},
