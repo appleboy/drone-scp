@@ -945,3 +945,42 @@ func TestPlugin_hostPort(t *testing.T) {
 		})
 	}
 }
+
+func TestIgnoreFolder(t *testing.T) {
+	if os.Getenv("SSH_AUTH_SOCK") != "" {
+		if err := exec.Command("eval", "`ssh-agent -k`").Run(); err != nil {
+			t.Fatalf("exec: %v", err)
+		}
+	}
+
+	u, err := user.Lookup("drone-scp")
+	if err != nil {
+		t.Fatalf("Lookup: %v", err)
+	}
+
+	plugin := Plugin{
+		Config: Config{
+			Host:           []string{"localhost"},
+			Username:       "drone-scp",
+			Protocol:       easyssh.PROTOCOL_TCP4,
+			Port:           22,
+			KeyPath:        "tests/.ssh/id_rsa",
+			Source:         []string{"tests/*", "!tests/global"},
+			Target:         []string{filepath.Join(u.HomeDir, "test_ignore")},
+			CommandTimeout: 60 * time.Second,
+			TarExec:        "tar",
+		},
+	}
+
+	err = plugin.Exec()
+	assert.Nil(t, err)
+
+	// check file exist
+	if _, err := os.Stat(filepath.Join(u.HomeDir, "test_ignore", "global", "c.txt")); !os.IsNotExist(err) {
+		t.Fatalf("SCP-error: %v", err)
+	}
+
+	if _, err := os.Stat(filepath.Join(u.HomeDir, "test_ignore", "global", "d.txt")); !os.IsNotExist(err) {
+		t.Fatalf("SCP-error: %v", err)
+	}
+}
