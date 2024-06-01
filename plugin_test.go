@@ -849,7 +849,8 @@ func TestHostPortString(t *testing.T) {
 func TestHostPort(t *testing.T) {
 	p := Plugin{
 		Config: Config{
-			Port: 8080,
+			Port:     8080,
+			Protocol: easyssh.PROTOCOL_TCP4,
 		},
 	}
 
