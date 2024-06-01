@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -261,6 +262,7 @@ func (p *Plugin) Exec() error {
 		go func(h string) {
 			defer wg.Done()
 			host, port := p.hostPort(h)
+			log.Println(host, port)
 			// Create MakeConfig instance with remote username, server address and path to private key.
 			ssh := &easyssh.MakeConfig{
 				Server:            host,
