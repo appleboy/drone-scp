@@ -294,6 +294,7 @@ func run(c *cli.Context) error {
 			Ciphers:           c.StringSlice("ciphers"),
 			UseInsecureCipher: c.Bool("useInsecureCipher"),
 			TarDereference:    c.Bool("tar.dereference"),
+			Protocol:          easyssh.Protocol(c.String("protocol")),
 			Proxy: easyssh.DefaultConfig{
 				Key:               c.String("proxy.ssh-key"),
 				Passphrase:        c.String("proxy.ssh-passphrase"),
