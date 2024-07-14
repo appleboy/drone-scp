@@ -22,6 +22,10 @@ func main() {
 		_ = godotenv.Load(filename)
 	}
 
+	if _, err := os.Stat("/run/drone/env"); err == nil {
+		_ = godotenv.Overload("/run/drone/env")
+	}
+
 	app := cli.NewApp()
 	app.Name = "Drone SCP"
 	app.Usage = "Copy files and artifacts via SSH."
