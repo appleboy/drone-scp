@@ -278,6 +278,7 @@ func run(c *cli.Context) error {
 		Config: Config{
 			Host:              c.StringSlice("host"),
 			Port:              c.Int("port"),
+			Protocol:          easyssh.Protocol(c.String("protocol")),
 			Username:          c.String("username"),
 			Password:          c.String("password"),
 			Passphrase:        c.String("ssh-passphrase"),
@@ -298,7 +299,6 @@ func run(c *cli.Context) error {
 			Ciphers:           c.StringSlice("ciphers"),
 			UseInsecureCipher: c.Bool("useInsecureCipher"),
 			TarDereference:    c.Bool("tar.dereference"),
-			Protocol:          easyssh.Protocol(c.String("protocol")),
 			Proxy: easyssh.DefaultConfig{
 				Key:               c.String("proxy.ssh-key"),
 				Passphrase:        c.String("proxy.ssh-passphrase"),
@@ -308,6 +308,7 @@ func run(c *cli.Context) error {
 				Password:          c.String("proxy.password"),
 				Server:            c.String("proxy.host"),
 				Port:              c.String("proxy.port"),
+				Protocol:          easyssh.Protocol(c.String("proxy.protocol")),
 				Timeout:           c.Duration("proxy.timeout"),
 				Ciphers:           c.StringSlice("proxy.ciphers"),
 				UseInsecureCipher: c.Bool("proxy.useInsecureCipher"),
