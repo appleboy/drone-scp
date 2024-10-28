@@ -330,7 +330,7 @@ func (p *Plugin) Exec() error {
 				}
 
 				if len(errStr) != 0 {
-					errChannel <- fmt.Errorf(errStr)
+					errChannel <- fmt.Errorf("%s", errStr)
 					return
 				}
 
