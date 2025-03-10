@@ -8,16 +8,16 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/drone-scp)](https://goreportcard.com/report/github.com/appleboy/drone-scp)
 [![Docker Pulls](https://img.shields.io/docker/pulls/appleboy/drone-scp.svg)](https://hub.docker.com/r/appleboy/drone-scp/)
 
-Copy files and artifacts via SSH using a binary, docker or [Drone CI](http://docs.drone.io/).
+Securely transfer files and artifacts via SSH using a standalone binary, Docker container, or [Drone CI](http://docs.drone.io/) integration.
 
-## Feature
+## Features
 
-* [x] Support routines.
-* [x] Support wildcard pattern on source list.
-* [x] Support send files to multiple host.
-* [x] Support send files to multiple target folder on host.
-* [x] Support load ssh key from absolute path or raw body.
-* [x] Support SSH ProxyCommand.
+- [x] Parallel file transfer with multiple routines
+- [x] Support for wildcard patterns in source file selection
+- [x] Ability to transfer files to multiple destination hosts
+- [x] Support for multiple target directories on each host
+- [x] Flexible SSH key authentication via file path or raw content
+- [x] Advanced networking with SSH ProxyCommand support
 
 ```sh
 +--------+       +----------+      +-----------+
@@ -58,9 +58,9 @@ Copy files and artifacts via SSH using a binary, docker or [Drone CI](http://doc
 
 The pre-compiled binaries can be downloaded from [release page](https://github.com/appleboy/drone-scp/releases). Support the following OS type.
 
-* Windows amd64/386
-* Linux arm/amd64/386
-* Darwin amd64/386
+- Windows amd64/386
+- Linux arm/amd64/386
+- Darwin amd64/386
 
 With `Go` installed
 
@@ -94,9 +94,9 @@ make docker
 
 There are three ways to send notification.
 
-* [usage from binary](#usage-from-binary)
-* [usage from docker](#usage-from-docker)
-* [usage from drone ci](#usage-from-drone-ci)
+- [usage from binary](#usage-from-binary)
+- [usage from docker](#usage-from-docker)
+- [usage from drone ci](#usage-from-drone-ci)
 
 ### Usage from binary
 
