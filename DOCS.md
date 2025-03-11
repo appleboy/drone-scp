@@ -1,11 +1,16 @@
 ---
 date: 2017-01-06T00:00:00+00:00
 title: SCP
+name: SCP
+description: Deploy artifacts using SSH/SCP
 author: appleboy
 tags: [ publish, ssh, scp ]
 logo: term.svg
 repo: appleboy/drone-scp
 image: appleboy/drone-scp
+containerImage: appleboy/drone-scp
+containerImageUrl: https://hub.docker.com/r/appleboy/drone-scp
+url: https://github.com/appleboy/drone-scp
 ---
 
 The SCP plugin copy files and artifacts to target host machine via SSH. The below pipeline configuration demonstrates simple usage:
