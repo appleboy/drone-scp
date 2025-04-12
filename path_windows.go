@@ -8,5 +8,5 @@ import (
 )
 
 func getRealPath(path string) string {
-	return "/" + strings.Replace(strings.Replace(path, ":", "", -1), "\\", "/", -1)
+	return "/" + strings.ReplaceAll(strings.ReplaceAll(path, ":", ""), "\\", "/")
 }
