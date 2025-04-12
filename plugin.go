@@ -234,7 +234,7 @@ func (p *Plugin) Exec() error {
 		return errMissingHost
 	}
 
-	p.DestFile = fmt.Sprintf("%s.tar.gz", random.String(10))
+	p.DestFile = random.String(10) + ".tar.gz"
 
 	// create a temporary file for the archive
 	dir := os.TempDir()
@@ -310,7 +310,7 @@ func (p *Plugin) Exec() error {
 			}
 
 			for _, target := range p.Config.Target {
-				target = strings.Replace(target, " ", "\\ ", -1)
+				target = strings.ReplaceAll(target, " ", "\\ ")
 				// remove target folder before upload data
 				if p.Config.Remove {
 					p.log(host, "Remove target folder:", target)
@@ -376,7 +376,8 @@ func (p *Plugin) Exec() error {
 		if err != nil {
 			c := color.New(color.FgRed)
 			c.Println("drone-scp error: ", err)
-			if _, ok := err.(copyError); !ok {
+			var cerr copyError
+			if !errors.As(err, &cerr) {
 				fmt.Println("drone-scp rollback: remove all target tmp file")
 				if err := p.removeAllDestFile(); err != nil {
 					return err

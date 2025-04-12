@@ -1,0 +1,54 @@
+version: "2"
+linters:
+  enable:
+    - asciicheck
+    - durationcheck
+    - errorlint
+    - gosec
+    - misspell
+    - nakedret
+    - nilerr
+    - nolintlint
+    - perfsprint
+    - revive
+    - usestdlibvars
+    - wastedassign
+  settings:
+    gosec:
+      includes:
+        - G102
+        - G106
+        - G108
+        - G109
+        - G111
+        - G112
+        - G201
+        - G203
+    perfsprint:
+      int-conversion: true
+      err-error: true
+      errorf: true
+      sprintf1: true
+      strconcat: true
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  enable:
+    - gci
+    - gofmt
+    - goimports
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
