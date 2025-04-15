@@ -38,6 +38,8 @@ endif
 TAGS ?=
 LDFLAGS ?= -X 'main.Version=$(VERSION)'
 
+all: build
+
 .PHONY: help
 help: ## Print this help message.
 	@echo "Usage: make [target]"
