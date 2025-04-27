@@ -3,7 +3,7 @@
 [簡體中文](README.zh-cn.md) | [English](README.md)
 
 [![GoDoc](https://godoc.org/github.com/appleboy/drone-scp?status.svg)](https://godoc.org/github.com/appleboy/drone-scp)
-[![Lint and Testing](https://github.com/appleboy/drone-scp/actions/workflows/lint.yml/badge.svg)](https://github.com/appleboy/drone-scp/actions/workflows/lint.yml)
+[![Lint and Testing](https://github.com/appleboy/drone-scp/actions/workflows/testing.yml/badge.svg)](https://github.com/appleboy/drone-scp/actions/workflows/testing.yml)
 [![codecov](https://codecov.io/gh/appleboy/drone-scp/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/drone-scp)
 [![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/drone-scp)](https://goreportcard.com/report/github.com/appleboy/drone-scp)
 [![Docker Pulls](https://img.shields.io/docker/pulls/appleboy/drone-scp.svg)](https://hub.docker.com/r/appleboy/drone-scp/)
@@ -14,12 +14,12 @@
 
 ## 功能
 
-* [x] 支援例程。
-* [x] 支援來源列表中的萬用字元模式。
-* [x] 支援將檔案發送到多個主機。
-* [x] 支援將檔案發送到主機上的多個目標資料夾。
-* [x] 支援從絕對路徑或原始主體載入 ssh 金鑰。
-* [x] 支援 SSH ProxyCommand。
+- [x] 支援例程。
+- [x] 支援來源列表中的萬用字元模式。
+- [x] 支援將檔案發送到多個主機。
+- [x] 支援將檔案發送到主機上的多個目標資料夾。
+- [x] 支援從絕對路徑或原始主體載入 ssh 金鑰。
+- [x] 支援 SSH ProxyCommand。
 
 ```sh
 +--------+       +----------+      +-----------+
@@ -60,9 +60,9 @@
 
 The pre-compiled binaries can be downloaded from [release page](https://github.com/appleboy/drone-scp/releases). Support the following OS type.
 
-* Windows amd64/386
-* Linux arm/amd64/386
-* Darwin amd64/386
+- Windows amd64/386
+- Linux arm/amd64/386
+- Darwin amd64/386
 
 With `Go` installed
 
@@ -96,9 +96,9 @@ make docker
 
 There are three ways to send notification.
 
-* [usage from binary](#usage-from-binary)
-* [usage from docker](#usage-from-docker)
-* [usage from drone ci](#usage-from-drone-ci)
+- [usage from binary](#usage-from-binary)
+- [usage from docker](#usage-from-docker)
+- [usage from drone ci](#usage-from-drone-ci)
 
 ### Usage from binary
 
