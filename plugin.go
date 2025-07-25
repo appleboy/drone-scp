@@ -184,7 +184,7 @@ func (p *Plugin) buildTarArgs(src string) []string {
 
 	args = append(args, "-zcf")
 	args = append(args, getRealPath(src))
-/*
+
 	// For precise operation, adding an additional on/off option needed.
 	// e.g. SCP_ACTION_WILDCARD_COMPATIBLE
 	hasCommonFolder := true
@@ -227,9 +227,7 @@ func (p *Plugin) buildTarArgs(src string) []string {
 		args = append(args, relativePaths...) // modified argument appending
 	} else {
 		args = append(args, files.Source...) // original argument appending
-	} */
-	
-	args = append(args, files.Source...)
+	}
 	return args
 }
 
