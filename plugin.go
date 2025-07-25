@@ -188,19 +188,23 @@ func (p *Plugin) buildTarArgs(src string) []string {
 	// For precise operation, adding an additional on/off option needed.
 	// e.g. SCP_ACTION_WILDCARD_COMPATIBLE
 	hasCommonFolder := true
-	basePrefix := filepath.Dir(files.Source[0])
-	if basePrefix == "." {
-		hasCommonFolder = false
-	}
-	for i := 1; i < len(files.Source) && hasCommonFolder; i++ {
-		for !strings.HasPrefix(files.Source[i], basePrefix) {
-			lastSlashIdx := strings.LastIndex(basePrefix, string(os.PathSeparator))
-			if lastSlashIdx == -1 {
-				hasCommonFolder = false // if Source[i] doesn't have same prefix
-				break
-			}
-			basePrefix = basePrefix[:lastSlashIdx] // shrink prefix range
+	if len(files.Source) > 0 {
+		basePrefix := filepath.Dir(files.Source[0])
+		if basePrefix == "." {
+			hasCommonFolder = false
 		}
+		for i := 1; i < len(files.Source) && hasCommonFolder; i++ {
+			for !strings.HasPrefix(files.Source[i], basePrefix) {
+				lastSlashIdx := strings.LastIndex(basePrefix, string(os.PathSeparator))
+				if lastSlashIdx == -1 {
+					hasCommonFolder = false // if Source[i] doesn't have same prefix
+					break
+				}
+				basePrefix = basePrefix[:lastSlashIdx] // shrink prefix range
+			}
+		}
+	} else {
+		hasCommonFolder = false
 	}
 	if hasCommonFolder { // if all files are in basePrefix folder
 		args = append(args, "-C", basePrefix) // change execution position
