@@ -196,13 +196,13 @@ func (p *Plugin) buildTarArgs(src string) []string {
 			if strings.HasPrefix(files.Source[i], "!") {
 				comparePath = comparePath[1:]
 			}
-			for !strings.HasPrefix(comparePath, basePrefix) {
-				lastSlashIdx := strings.LastIndex(basePrefix, string(os.PathSeparator))
-				if lastSlashIdx == -1 {
+			basePrefixWithSlash := basePrefix + string(os.PathSeparator)
+			for !strings.HasPrefix(comparePath, basePrefixWithSlash) {
+				basePrefix = filepath.Dir(basePrefix)
+				if basePrefix == "." {
 					hasCommonFolder = false // if Source[i] doesn't have same prefix
 					break
 				}
-				basePrefix = basePrefix[:lastSlashIdx] // shrink prefix range
 			}
 		}
 	} else {
