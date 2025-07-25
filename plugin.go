@@ -184,19 +184,13 @@ func (p *Plugin) buildTarArgs(src string) []string {
 
 	args = append(args, "-zcf")
 	args = append(args, getRealPath(src))
-
+/*
 	// For precise operation, adding an additional on/off option needed.
 	// e.g. SCP_ACTION_WILDCARD_COMPATIBLE
 	hasCommonFolder := true
 	var basePrefix string
 	if len(files.Source) > 0 {
-		basePrefix = filepath.Dir(files.Source[0])
-		if strings.HasPrefix(basePrefix, "!") {
-			basePrefix = basePrefix[1:]
-		}
-		if basePrefix == "." {
-			hasCommonFolder = false
-		}
+		basePrefix = strings.TrimPrefix(filepath.Dir(files.Source[0]), "!")
 		for i := 1; i < len(files.Source) && hasCommonFolder; i++ {
 			comparePath := files.Source[i]
 			if strings.HasPrefix(files.Source[i], "!") {
@@ -233,8 +227,9 @@ func (p *Plugin) buildTarArgs(src string) []string {
 		args = append(args, relativePaths...) // modified argument appending
 	} else {
 		args = append(args, files.Source...) // original argument appending
-	}
-
+	} */
+	
+	args = append(args, files.Source...)
 	return args
 }
 
