@@ -218,15 +218,17 @@ func (p *Plugin) buildTarArgs(src string) []string {
 		args = append(args, "-C", basePrefix)
 		var relativePaths []string
 		for _, path := range files.Source {
+			ignorePrefix := ""
 			if strings.HasPrefix(path, "!") {
 				path = path[1:]
+				ignorePrefix = "!"
 			}
 			rel, err := filepath.Rel(basePrefix, path)
 			if err != nil {
 				fmt.Printf("Error while processing relative paths")
 				continue
 			}
-			relativePaths = append(relativePaths, rel)
+			relativePaths = append(relativePaths, ignorePrefix + rel)
 		}
 		args = append(args, relativePaths...) // modified argument appending
 	} else {
