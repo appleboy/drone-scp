@@ -214,8 +214,7 @@ func (p *Plugin) buildTarArgs(src string) []string {
 			relativePaths = append(relativePaths, rel)
 		}
 		args = append(args, relativePaths...) // modified argument appending
-	}
-	else {
+	} else {
 		args = append(args, files.Source...) // original argument appending
 	}
 
