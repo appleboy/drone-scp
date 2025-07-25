@@ -191,11 +191,18 @@ func (p *Plugin) buildTarArgs(src string) []string {
 	var basePrefix string
 	if len(files.Source) > 0 {
 		basePrefix = filepath.Dir(files.Source[0])
+		if strings.HasPrefix(basePrefix, "!") {
+			basePrefix = basePrefix[1:]
+		}
 		if basePrefix == "." {
 			hasCommonFolder = false
 		}
 		for i := 1; i < len(files.Source) && hasCommonFolder; i++ {
-			for !strings.HasPrefix(files.Source[i], basePrefix) {
+			comparePath := files.Source[i]
+			if strings.HasPrefix(files.Source[i], "!") {
+				comparePath = comparePath[1:]
+			}
+			for !strings.HasPrefix(comparePath, basePrefix) {
 				lastSlashIdx := strings.LastIndex(basePrefix, string(os.PathSeparator))
 				if lastSlashIdx == -1 {
 					hasCommonFolder = false // if Source[i] doesn't have same prefix
@@ -204,18 +211,20 @@ func (p *Plugin) buildTarArgs(src string) []string {
 				basePrefix = basePrefix[:lastSlashIdx] // shrink prefix range
 			}
 		}
-		
 	} else {
 		hasCommonFolder = false
 	}
-	if hasCommonFolder { // if all files are in basePrefix folder
-		args = append(args, "-C", basePrefix) // change execution position
+	if hasCommonFolder { // if all files are in basePrefix folder, change execution position
+		args = append(args, "-C", basePrefix)
 		var relativePaths []string
 		for _, path := range files.Source {
+			if strings.HasPrefix(path, "!") {
+				path = path[1:]
+			}
 			rel, err := filepath.Rel(basePrefix, path)
 			if err != nil {
 				fmt.Printf("Error while processing relative paths")
-				continue // exclude this and keep going
+				continue
 			}
 			relativePaths = append(relativePaths, rel)
 		}
