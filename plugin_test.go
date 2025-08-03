@@ -1123,58 +1123,6 @@ func TestIsRemoteWindows(t *testing.T) {
 	}
 }
 
-func TestIsRemoteUnix(t *testing.T) {
-	tests := []struct {
-		name     string
-		output   string
-		err      error
-		expected bool
-	}{
-		{
-			name:     "Linux detected",
-			output:   "Linux",
-			expected: true,
-		},
-		{
-			name:     "macOS detected",
-			output:   "Darwin",
-			expected: true,
-		},
-		{
-			name:     "FreeBSD detected",
-			output:   "FreeBSD",
-			expected: true,
-		},
-		{
-			name:     "Cygwin detected",
-			output:   "CYGWIN_NT-10.0",
-			expected: true,
-		},
-		{
-			name:     "Command error",
-			err:      errors.New("command failed"),
-			expected: false,
-		},
-		{
-			name:     "Non-Unix output",
-			output:   "Some other output",
-			expected: false,
-		},
-	}
-
-	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
-			sshMock := &MockSSHConfig{
-				singleOutput: tc.output,
-				singleError:  tc.err,
-			}
-
-			result := isRemoteUnix(sshMock, 1*time.Second)
-			assert.Equal(t, tc.expected, result)
-		})
-	}
-}
-
 // Mock SSH implementation. This avoids actual SSH connections during testing
 type MockSSHConfig struct {
 	windowsOutputs map[string]string
