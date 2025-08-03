@@ -336,11 +336,11 @@ func (p *Plugin) Exec() error {
 
 				// untar file
 				p.log(host, "untar file", p.DestFile)
-				commamd := strings.Join(p.buildUnTarArgs(target), " ")
+				command := strings.Join(p.buildUnTarArgs(target), " ")
 				if p.Config.Debug {
-					fmt.Println("$", commamd)
+					fmt.Println("$", command)
 				}
-				outStr, errStr, _, err := ssh.Run(commamd, p.Config.CommandTimeout)
+				outStr, errStr, _, err := ssh.Run(command, p.Config.CommandTimeout)
 
 				if outStr != "" {
 					p.log(host, "output: ", outStr)
