@@ -61,6 +61,10 @@ type (
 		host    string
 		message string
 	}
+
+	SSHRunner interface {
+		Run(command string, timeout ...time.Duration) (outStr string, errStr string, isTimeout bool, err error)
+	}
 )
 
 func (e copyError) Error() string {
@@ -147,14 +151,10 @@ func (p *Plugin) removeAllDestFile() error {
 			},
 		}
 
-		_, _, _, err := ssh.Run("ver", p.Config.CommandTimeout)
-		systemType := "unix"
-		if err == nil {
-			systemType = "windows"
-		}
+		systemType := determineRemoteOSType(ssh, p.Config.CommandTimeout)
 
 		// remove tar file
-		err = p.removeDestFile(systemType, ssh)
+		err := p.removeDestFile(systemType, ssh)
 		if err != nil {
 			return err
 		}
@@ -291,11 +291,7 @@ func (p *Plugin) Exec() error {
 				},
 			}
 
-			systemType := "unix"
-			_, _, _, err := ssh.Run("ver", p.Config.CommandTimeout)
-			if err == nil {
-				systemType = "windows"
-			}
+			systemType := determineRemoteOSType(ssh, p.Config.CommandTimeout)
 
 			// upload file to the tmp path
 			p.DestFile = fmt.Sprintf("%s%s", p.Config.TarTmpPath, p.DestFile)
@@ -303,7 +299,7 @@ func (p *Plugin) Exec() error {
 			p.log(host, "remote server os type is "+systemType)
 			// Call Scp method with file you want to upload to remote server.
 			p.log(host, "scp file to server.")
-			err = ssh.Scp(src, p.DestFile)
+			err := ssh.Scp(src, p.DestFile)
 			if err != nil {
 				errChannel <- copyError{host, err.Error()}
 				return
@@ -420,4 +416,63 @@ func trimValues(keys []string) []string {
 	}
 
 	return newKeys
+}
+
+func determineRemoteOSType(ssh SSHRunner, timeout time.Duration) string {
+	isWindows := isRemoteWindows(ssh, "$env:OS", timeout)
+	if isWindows {
+		return "windows"
+	}
+
+	isWindows = isRemoteWindows(ssh, "echo %OS%", timeout)
+	if isWindows {
+		return "windows"
+	}
+
+	isWindows = isRemoteWindows(ssh, "echo $OS", timeout)
+	if isWindows {
+		return "windows"
+	}
+
+	isWindows = isRemoteWindows(ssh, "ver", timeout)
+	if isWindows {
+		return "windows"
+	}
+
+	isUnix := isRemoteUnix(ssh, timeout)
+	if isUnix {
+		return "unix"
+	}
+
+	return "unix"
+}
+
+func isRemoteWindows(ssh SSHRunner, command string, timeout time.Duration) bool {
+	output, _, _, err := ssh.Run(command, timeout)
+
+	if err != nil {
+		return false
+	}
+
+	outputLower := strings.ToLower(strings.TrimSpace(output))
+
+	return strings.Contains(outputLower, "windows") // "Windows_NT" from env vars and "Microsoft Windows" from ver
+}
+
+func isRemoteUnix(ssh SSHRunner, timeout time.Duration) bool {
+	output, _, _, err := ssh.Run("uname", timeout)
+
+	if err != nil {
+		return false
+	}
+
+	outputLower := strings.ToLower(strings.TrimSpace(output))
+
+	return strings.Contains(outputLower, "linux") || // "Linux" from uname
+		strings.Contains(outputLower, "darwin") || // "Darwin" from macOS uname
+		strings.Contains(outputLower, "freebsd") || // "FreeBSD" from uname
+		strings.Contains(outputLower, "cygwin") || // "CYGWIN_NT" - Unix-like environment
+		strings.Contains(outputLower, "mingw") || // "MINGW64_NT" - Unix-like shell environment
+		strings.Contains(outputLower, "msys") || // "MSYS_NT" - Unix-like system layer
+		strings.Contains(outputLower, "unix") // Generic "Unix" identifier
 }

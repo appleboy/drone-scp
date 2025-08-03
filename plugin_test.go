@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"io"
 	"log"
 	"os"
@@ -983,4 +984,226 @@ func TestIgnoreFolder(t *testing.T) {
 	if _, err := os.Stat(filepath.Join(u.HomeDir, "test_ignore", "global", "d.txt")); !os.IsNotExist(err) {
 		t.Fatalf("SCP-error: %v", err)
 	}
+}
+
+func TestDetermineRemoteOSType(t *testing.T) {
+	// Create a mock SSH config that returns predefined responses
+	tests := []struct {
+		name           string
+		windowsOutputs map[string]string // command -> output
+		unixOutput     string
+		windowsErrors  map[string]error // command -> error
+		unixError      error
+		expected       string
+	}{
+		{
+			name: "Windows detection via $env:OS",
+			windowsOutputs: map[string]string{
+				"$env:OS": "Windows_NT",
+			},
+			expected: "windows",
+		},
+		{
+			name: "Windows detection via %OS%",
+			windowsOutputs: map[string]string{
+				"echo %OS%": "Windows_NT",
+			},
+			windowsErrors: map[string]error{
+				"$env:OS": errors.New("command failed"),
+			},
+			expected: "windows",
+		},
+		{
+			name: "Windows detection via $OS",
+			windowsOutputs: map[string]string{
+				"echo $OS": "Windows_NT",
+			},
+			windowsErrors: map[string]error{
+				"$env:OS":   errors.New("command failed"),
+				"echo %OS%": errors.New("command failed"),
+			},
+			expected: "windows",
+		},
+		{
+			name: "Unix detection",
+			windowsErrors: map[string]error{
+				"$env:OS":   errors.New("command failed"),
+				"echo %OS%": errors.New("command failed"),
+				"echo $OS":  errors.New("command failed"),
+				"ver":       errors.New("command failed"),
+			},
+			unixOutput: "Linux",
+			expected:   "unix",
+		},
+		{
+			name: "Default to Unix when all detections fail",
+			windowsErrors: map[string]error{
+				"$env:OS":   errors.New("command failed"),
+				"echo %OS%": errors.New("command failed"),
+				"echo $OS":  errors.New("command failed"),
+				"ver":       errors.New("command failed"),
+			},
+			unixError: errors.New("command failed"),
+			expected:  "unix",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			// Create a mock SSH implementation that returns the predefined outputs
+			ssh := &MockSSHConfig{
+				windowsOutputs: tc.windowsOutputs,
+				unixOutput:     tc.unixOutput,
+				windowsErrors:  tc.windowsErrors,
+				unixError:      tc.unixError,
+			}
+
+			result := determineRemoteOSType(ssh, 1*time.Second)
+			assert.Equal(t, tc.expected, result)
+		})
+	}
+}
+
+func TestIsRemoteWindows(t *testing.T) {
+	tests := []struct {
+		name     string
+		command  string
+		output   string
+		err      error
+		expected bool
+	}{
+		{
+			name:     "Windows detected",
+			command:  "ver",
+			output:   "Microsoft Windows [Version 10.0.19042.1110]",
+			expected: true,
+		},
+		{
+			name:     "Windows detected from environment variable $env:OS",
+			command:  "$env:OS",
+			output:   "Windows_NT",
+			expected: true,
+		},
+		{
+			name:     "Windows detected from environment variable %OS%",
+			command:  "echo %OS%",
+			output:   "Windows_NT",
+			expected: true,
+		},
+		{
+			name:     "Windows detected from environment variable $OS",
+			command:  "echo $OS",
+			output:   "Windows_NT",
+			expected: true,
+		},
+		{
+			name:     "Command error",
+			command:  "ver",
+			err:      errors.New("command failed"),
+			expected: false,
+		},
+		{
+			name:     "Non-Windows output",
+			command:  "ver",
+			output:   "Some other output",
+			expected: false,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			sshMock := &MockSSHConfig{
+				singleOutput: tc.output,
+				singleError:  tc.err,
+			}
+
+			result := isRemoteWindows(sshMock, tc.command, 1*time.Second)
+			assert.Equal(t, tc.expected, result)
+		})
+	}
+}
+
+func TestIsRemoteUnix(t *testing.T) {
+	tests := []struct {
+		name     string
+		output   string
+		err      error
+		expected bool
+	}{
+		{
+			name:     "Linux detected",
+			output:   "Linux",
+			expected: true,
+		},
+		{
+			name:     "macOS detected",
+			output:   "Darwin",
+			expected: true,
+		},
+		{
+			name:     "FreeBSD detected",
+			output:   "FreeBSD",
+			expected: true,
+		},
+		{
+			name:     "Cygwin detected",
+			output:   "CYGWIN_NT-10.0",
+			expected: true,
+		},
+		{
+			name:     "Command error",
+			err:      errors.New("command failed"),
+			expected: false,
+		},
+		{
+			name:     "Non-Unix output",
+			output:   "Some other output",
+			expected: false,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			sshMock := &MockSSHConfig{
+				singleOutput: tc.output,
+				singleError:  tc.err,
+			}
+
+			result := isRemoteUnix(sshMock, 1*time.Second)
+			assert.Equal(t, tc.expected, result)
+		})
+	}
+}
+
+// Mock SSH implementation. This avoids actual SSH connections during testing
+type MockSSHConfig struct {
+	windowsOutputs map[string]string
+	unixOutput     string
+	windowsErrors  map[string]error
+	unixError      error
+	singleOutput   string
+	singleError    error
+}
+
+func (m *MockSSHConfig) Run(command string, timeout ...time.Duration) (string, string, bool, error) {
+	// For the single command tests
+	if m.singleOutput != "" || m.singleError != nil {
+		return m.singleOutput, "", false, m.singleError
+	}
+
+	// For determineRemoteOSType tests
+	if command == "uname" {
+		return m.unixOutput, "", false, m.unixError
+	}
+
+	// For Windows commands
+	if output, ok := m.windowsOutputs[command]; ok {
+		return output, "", false, nil
+	}
+
+	if err, ok := m.windowsErrors[command]; ok {
+		return "", "", false, err
+	}
+
+	return "", "", false, errors.New("unexpected command")
 }
