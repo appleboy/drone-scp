@@ -15,7 +15,7 @@ func TestGetRealPath(t *testing.T) {
 	}{
 		{
 			"Test Windows Path",
-			"C:\\Users\\appleboy\\test.txt",
+			args{path: "C:\\Users\\appleboy\\test.txt"},
 			"/C/Users/appleboy/test.txt",
 		},
 	}
