@@ -989,135 +989,42 @@ func TestIgnoreFolder(t *testing.T) {
 func TestDetermineRemoteOSType(t *testing.T) {
 	// Create a mock SSH config that returns predefined responses
 	tests := []struct {
-		name           string
-		windowsOutputs map[string]string // command -> output
-		unixOutput     string
-		windowsErrors  map[string]error // command -> error
-		unixError      error
-		expected       string
-	}{
-		{
-			name: "Windows detection via $env:OS",
-			windowsOutputs: map[string]string{
-				"$env:OS": "Windows_NT",
-			},
-			expected: "windows",
-		},
-		{
-			name: "Windows detection via %OS%",
-			windowsOutputs: map[string]string{
-				"echo %OS%": "Windows_NT",
-			},
-			windowsErrors: map[string]error{
-				"$env:OS": errors.New("command failed"),
-			},
-			expected: "windows",
-		},
-		{
-			name: "Windows detection via $OS",
-			windowsOutputs: map[string]string{
-				"echo $OS": "Windows_NT",
-			},
-			windowsErrors: map[string]error{
-				"$env:OS":   errors.New("command failed"),
-				"echo %OS%": errors.New("command failed"),
-			},
-			expected: "windows",
-		},
-		{
-			name: "Unix detection",
-			windowsErrors: map[string]error{
-				"$env:OS":   errors.New("command failed"),
-				"echo %OS%": errors.New("command failed"),
-				"echo $OS":  errors.New("command failed"),
-				"ver":       errors.New("command failed"),
-			},
-			unixOutput: "Linux",
-			expected:   "unix",
-		},
-		{
-			name: "Default to Unix when all detections fail",
-			windowsErrors: map[string]error{
-				"$env:OS":   errors.New("command failed"),
-				"echo %OS%": errors.New("command failed"),
-				"echo $OS":  errors.New("command failed"),
-				"ver":       errors.New("command failed"),
-			},
-			unixError: errors.New("command failed"),
-			expected:  "unix",
-		},
-	}
-
-	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
-			// Create a mock SSH implementation that returns the predefined outputs
-			ssh := &MockSSHConfig{
-				windowsOutputs: tc.windowsOutputs,
-				unixOutput:     tc.unixOutput,
-				windowsErrors:  tc.windowsErrors,
-				unixError:      tc.unixError,
-			}
-
-			result := determineRemoteOSType(ssh, 1*time.Second)
-			assert.Equal(t, tc.expected, result)
-		})
-	}
-}
-
-func TestIsRemoteWindows(t *testing.T) {
-	tests := []struct {
 		name     string
-		command  string
 		output   string
 		err      error
-		expected bool
+		expected string
 	}{
 		{
-			name:     "Windows detected",
-			command:  "ver",
-			output:   "Microsoft Windows [Version 10.0.19042.1110]",
-			expected: true,
+			name:     "Windows detection via PowerShell",
+			output:   "Windows_NT: The term 'Windows_NT' is not recognized as a name of a cmdlet, function, script file, or executable program.\nCheck the spelling of the name, or if a path was included, verify that the path is correct and try again.\nver: The term 'ver' is not recognized as a name of a cmdlet, function, script file, or executable program.\nCheck the spelling of the name, or if a path was included, verify that the path is correct and try again.",
+			expected: "windows",
 		},
 		{
-			name:     "Windows detected from environment variable $env:OS",
-			command:  "$env:OS",
-			output:   "Windows_NT",
-			expected: true,
+			name:     "Windows detection via CMD/ver",
+			output:   "'Windows_NT' is not recognized as an internal or external command,\noperable program or batch file.\n\nMicrosoft Windows [Version 10.0.22621.4317]",
+			expected: "windows",
 		},
 		{
-			name:     "Windows detected from environment variable %OS%",
-			command:  "echo %OS%",
-			output:   "Windows_NT",
-			expected: true,
+			name:     "Unix detection (command returns non-Windows output)",
+			output:   "Linux",
+			expected: "unix",
 		},
 		{
-			name:     "Windows detected from environment variable $OS",
-			command:  "echo $OS",
-			output:   "Windows_NT",
-			expected: true,
-		},
-		{
-			name:     "Command error",
-			command:  "ver",
+			name:     "Default to Unix when command fails",
 			err:      errors.New("command failed"),
-			expected: false,
-		},
-		{
-			name:     "Non-Windows output",
-			command:  "ver",
-			output:   "Some other output",
-			expected: false,
+			expected: "unix",
 		},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			sshMock := &MockSSHConfig{
+			// Create a mock SSH implementation that returns the predefined output
+			ssh := &MockSSHConfig{
 				singleOutput: tc.output,
 				singleError:  tc.err,
 			}
 
-			result := isRemoteWindows(sshMock, tc.command, 1*time.Second)
+			result := determineRemoteOSType(ssh, 1*time.Second)
 			assert.Equal(t, tc.expected, result)
 		})
 	}

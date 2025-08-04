@@ -419,30 +419,16 @@ func trimValues(keys []string) []string {
 }
 
 func determineRemoteOSType(ssh SSHRunner, timeout time.Duration) string {
-	windowsCommands := []string{
-		"$env:OS",   // PowerShell
-		"echo %OS%", // CMD
-		"echo $OS",  // Bash on Windows
-		"ver",       // Legacy
-	}
+	command := "$env:OS||ver" // PowerShell, CMD/Legacy
 
-	for _, cmd := range windowsCommands {
-		if isRemoteWindows(ssh, cmd, timeout) {
+	output, _, _, err := ssh.Run(command, timeout)
+
+	if err == nil {
+		outputLower := strings.ToLower(strings.TrimSpace(output))
+		if strings.Contains(outputLower, "windows") {
 			return "windows"
 		}
 	}
 
 	return "unix"
-}
-
-func isRemoteWindows(ssh SSHRunner, command string, timeout time.Duration) bool {
-	output, _, _, err := ssh.Run(command, timeout)
-
-	if err != nil {
-		return false
-	}
-
-	outputLower := strings.ToLower(strings.TrimSpace(output))
-
-	return strings.Contains(outputLower, "windows") // "Windows_NT" from env vars and "Microsoft Windows" from ver
 }
