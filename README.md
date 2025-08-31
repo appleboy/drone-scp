@@ -1,6 +1,6 @@
 # drone-scp
 
-[繁體中文](README.zh-tw.md) | [简体中文](README.zh-cn.md)
+[繁體中文](README.zh-tw.md) | [簡體中文](README.zh-cn.md)
 
 [![GoDoc](https://godoc.org/github.com/appleboy/drone-scp?status.svg)](https://godoc.org/github.com/appleboy/drone-scp)
 [![Lint and Testing](https://github.com/appleboy/drone-scp/actions/workflows/testing.yml/badge.svg)](https://github.com/appleboy/drone-scp/actions/workflows/testing.yml)

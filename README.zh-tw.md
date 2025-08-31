@@ -1,6 +1,6 @@
 # drone-scp
 
-[簡體中文](README.zh-cn.md) | [English](README.md)
+[English](README.md) | [簡體中文](README.zh-cn.md)
 
 [![GoDoc](https://godoc.org/github.com/appleboy/drone-scp?status.svg)](https://godoc.org/github.com/appleboy/drone-scp)
 [![Lint and Testing](https://github.com/appleboy/drone-scp/actions/workflows/testing.yml/badge.svg)](https://github.com/appleboy/drone-scp/actions/workflows/testing.yml)
@@ -10,7 +10,7 @@
 
 複製檔案和工件通過 SSH 使用二進制檔案、docker 或 [Drone CI](http://docs.drone.io/)。
 
-[English](README.md) | [简体中文](README.zh-cn.md)
+[English](README.md) | [簡體中文](README.zh-cn.md)
 
 ## 功能
 
