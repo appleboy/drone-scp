@@ -54,7 +54,7 @@ jobs:
 
       - name: Build binary
         run: |
-          make build_linux_amd64
+          make build_docker
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
