@@ -4,6 +4,7 @@
 
 [![GoDoc](https://godoc.org/github.com/appleboy/drone-scp?status.svg)](https://godoc.org/github.com/appleboy/drone-scp)
 [![Lint and Testing](https://github.com/appleboy/drone-scp/actions/workflows/testing.yml/badge.svg)](https://github.com/appleboy/drone-scp/actions/workflows/testing.yml)
+[![Trivy Security Scan](https://github.com/appleboy/drone-scp/actions/workflows/trivy.yml/badge.svg?branch=master)](https://github.com/appleboy/drone-scp/actions/workflows/trivy.yml)
 [![codecov](https://codecov.io/gh/appleboy/drone-scp/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/drone-scp)
 [![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/drone-scp)](https://goreportcard.com/report/github.com/appleboy/drone-scp)
 [![Docker Pulls](https://img.shields.io/docker/pulls/appleboy/drone-scp.svg)](https://hub.docker.com/r/appleboy/drone-scp/)
