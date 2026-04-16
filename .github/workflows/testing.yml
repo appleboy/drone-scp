@@ -50,7 +50,7 @@ jobs:
 
       - name: setup sshd server
         run: |
-          apk add git make curl perl bash build-base zlib-dev ucl-dev
+          apk add git make curl perl bash build-base zlib-dev ucl-dev gpg
           make ssh-server
 
       - name: testing
