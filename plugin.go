@@ -147,7 +147,7 @@ func (p *Plugin) removeAllDestFile() error {
 			},
 		}
 
-		_, _, _, err := ssh.Run("ver", p.Config.CommandTimeout)
+		_, _, _, err := ssh.Run("cmd /c ver 2>$null", p.Config.CommandTimeout)
 		systemType := "unix"
 		if err == nil {
 			systemType = "windows"
@@ -292,7 +292,7 @@ func (p *Plugin) Exec() error {
 			}
 
 			systemType := "unix"
-			_, _, _, err := ssh.Run("ver", p.Config.CommandTimeout)
+			_, _, _, err := ssh.Run("cmd /c ver 2>$null", p.Config.CommandTimeout)
 			if err == nil {
 				systemType = "windows"
 			}
