@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup go
         uses: actions/setup-go@v6
@@ -46,7 +46,7 @@ jobs:
       image: golang:${{ matrix.go-version }}-alpine
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: setup sshd server
         run: |
