@@ -2,13 +2,13 @@
 
 [繁體中文](README.zh-tw.md) | [簡體中文](README.zh-cn.md)
 
-[![GoDoc](https://godoc.org/github.com/appleboy/drone-scp?status.svg)](https://godoc.org/github.com/appleboy/drone-scp)
+[![GoDoc](https://pkg.go.dev/badge/github.com/appleboy/drone-scp.svg)](https://pkg.go.dev/github.com/appleboy/drone-scp)
 [![Lint and Testing](https://github.com/appleboy/drone-scp/actions/workflows/testing.yml/badge.svg)](https://github.com/appleboy/drone-scp/actions/workflows/testing.yml)
 [![Trivy Security Scan](https://github.com/appleboy/drone-scp/actions/workflows/trivy.yml/badge.svg?branch=master)](https://github.com/appleboy/drone-scp/actions/workflows/trivy.yml)
 [![codecov](https://codecov.io/gh/appleboy/drone-scp/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/drone-scp)
 [![Docker Pulls](https://img.shields.io/docker/pulls/appleboy/drone-scp.svg)](https://hub.docker.com/r/appleboy/drone-scp/)
 
-Securely transfer files and artifacts via SSH using a standalone binary, Docker container, or [Drone CI](http://docs.drone.io/) integration.
+Securely transfer files and artifacts via SSH using a standalone binary, Docker container, or [Drone CI](https://docs.drone.io/) integration.
 
 ## Features
 
@@ -252,7 +252,7 @@ docker run --rm \
   appleboy/drone-scp
 ```
 
-You can get more [information](http://plugins.drone.io/appleboy/drone-scp/) about how to use scp in drone.
+You can get more [information](https://plugins.drone.io/plugins/scp) about how to use scp in drone.
 
 ## Testing
 
