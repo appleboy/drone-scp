@@ -184,8 +184,50 @@ func (p *Plugin) buildTarArgs(src string) []string {
 
 	args = append(args, "-zcf")
 	args = append(args, getRealPath(src))
-	args = append(args, files.Source...)
 
+	// For precise operation, adding an additional on/off option needed.
+	// e.g. SCP_ACTION_WILDCARD_COMPATIBLE
+	hasCommonFolder := true
+	var basePrefix string
+	if len(files.Source) > 0 {
+		basePrefix = strings.TrimPrefix(filepath.Dir(files.Source[0]), "!")
+		for i := 1; i < len(files.Source) && hasCommonFolder; i++ {
+			comparePath := files.Source[i]
+			if strings.HasPrefix(files.Source[i], "!") {
+				comparePath = comparePath[1:]
+			}
+			basePrefixWithSlash := basePrefix + string(os.PathSeparator)
+			for !strings.HasPrefix(comparePath, basePrefixWithSlash) {
+				basePrefix = filepath.Dir(basePrefix)
+				if basePrefix == "." {
+					hasCommonFolder = false // if Source[i] doesn't have same prefix
+					break
+				}
+			}
+		}
+	} else {
+		hasCommonFolder = false
+	}
+	if hasCommonFolder { // if all files are in basePrefix folder, change execution position
+		args = append(args, "-C", basePrefix)
+		var relativePaths []string
+		for _, path := range files.Source {
+			ignorePrefix := ""
+			if strings.HasPrefix(path, "!") {
+				path = path[1:]
+				ignorePrefix = "!"
+			}
+			rel, err := filepath.Rel(basePrefix, path)
+			if err != nil {
+				fmt.Printf("Error while processing relative paths")
+				continue
+			}
+			relativePaths = append(relativePaths, ignorePrefix + rel)
+		}
+		args = append(args, relativePaths...) // modified argument appending
+	} else {
+		args = append(args, files.Source...) // original argument appending
+	}
 	return args
 }
 
