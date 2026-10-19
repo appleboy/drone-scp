@@ -571,7 +571,7 @@ func TestRemoveDestFile(t *testing.T) {
 		DestFile: "/etc/resolv.conf",
 	}
 
-	_, _, _, err := ssh.Run("ver", plugin.Config.CommandTimeout)
+	_, _, _, err := ssh.Run("cmd /c ver 2>$null", plugin.Config.CommandTimeout)
 	systemType := "unix"
 	if err == nil {
 		systemType = "windows"
