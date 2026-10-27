@@ -73,7 +73,10 @@ func globList(paths []string) fileList {
 	for _, pattern := range paths {
 		ignore := false
 		pattern = strings.TrimSpace(pattern)
-		if string(pattern[0]) == "!" {
+		if pattern == "" {
+			continue
+		}
+		if pattern[0] == '!' {
 			pattern = pattern[1:]
 			ignore = true
 		}
@@ -102,8 +105,9 @@ func (p Plugin) log(host string, message ...interface{}) {
 }
 
 func (p *Plugin) removeDestFile(os string, ssh *easyssh.MakeConfig) error {
-	p.log(ssh.Server, "remove file", p.DestFile)
-	_, errStr, _, err := ssh.Run(rmcmd(os, p.DestFile), p.Config.CommandTimeout)
+	destFile := remoteTarPath(p.Config.TarTmpPath, p.DestFile)
+	p.log(ssh.Server, "remove file", destFile)
+	_, errStr, _, err := ssh.Run(rmcmd(os, destFile), p.Config.CommandTimeout)
 	if err != nil {
 		return err
 	}
@@ -168,6 +172,10 @@ type fileList struct {
 	Source []string
 }
 
+func remoteTarPath(tmpPath, archiveName string) string {
+	return fmt.Sprintf("%s%s", tmpPath, archiveName)
+}
+
 func (p *Plugin) buildTarArgs(src string) []string {
 	files := globList(trimValues(p.Config.Source))
 	args := []string{}
@@ -195,7 +203,7 @@ func (p *Plugin) buildUnTarArgs(target string) []string {
 	args = append(args,
 		p.Config.TarExec,
 		"-zxf",
-		p.DestFile,
+		remoteTarPath(p.Config.TarTmpPath, p.DestFile),
 	)
 
 	if p.Config.StripComponents > 0 {
@@ -255,8 +263,10 @@ func (p *Plugin) Exec() error {
 		return err
 	}
 
+	remoteDestFile := remoteTarPath(p.Config.TarTmpPath, p.DestFile)
+
 	wg := sync.WaitGroup{}
-	wg.Add(len(p.Config.Host))
+	wg.Add(len(hosts))
 	errChannel := make(chan error)
 	finished := make(chan struct{})
 	for _, host := range hosts {
@@ -298,12 +308,10 @@ func (p *Plugin) Exec() error {
 			}
 
 			// upload file to the tmp path
-			p.DestFile = fmt.Sprintf("%s%s", p.Config.TarTmpPath, p.DestFile)
-
 			p.log(host, "remote server os type is "+systemType)
 			// Call Scp method with file you want to upload to remote server.
 			p.log(host, "scp file to server.")
-			err = ssh.Scp(src, p.DestFile)
+			err = ssh.Scp(src, remoteDestFile)
 			if err != nil {
 				errChannel <- copyError{host, err.Error()}
 				return
@@ -335,7 +343,7 @@ func (p *Plugin) Exec() error {
 				}
 
 				// untar file
-				p.log(host, "untar file", p.DestFile)
+				p.log(host, "untar file", remoteDestFile)
 				commamd := strings.Join(p.buildUnTarArgs(target), " ")
 				if p.Config.Debug {
 					fmt.Println("$", commamd)

@@ -66,6 +66,16 @@ func TestTrimElement(t *testing.T) {
 	assert.Equal(t, result, trimValues(input))
 }
 
+func TestRemoteTarPathIsStableAcrossHosts(t *testing.T) {
+	archiveName := "abc123.tar.gz"
+	for _, host := range []string{"host-one", "host-two"} {
+		t.Run(host, func(t *testing.T) {
+			assert.Equal(t, "/tmp/"+archiveName, remoteTarPath("/tmp/", archiveName))
+		})
+	}
+	assert.Equal(t, "abc123.tar.gz", archiveName)
+}
+
 func TestSCPFileFromPublicKey(t *testing.T) {
 	if os.Getenv("SSH_AUTH_SOCK") != "" {
 		if err := exec.Command("eval", "`ssh-agent -k`").Run(); err != nil {
@@ -524,6 +534,10 @@ func TestNoPermissionCreateFolder(t *testing.T) {
 	}
 }
 
+func TestGlobListIgnoresBlankPatterns(t *testing.T) {
+	assert.Equal(t, []string{"tests/a.txt"}, globList([]string{"", "  ", "tests/a.txt"}).Source)
+}
+
 func TestGlobList(t *testing.T) {
 	// wrong patern
 	paterns := []string{"[]a]", "tests/?.txt"}
@@ -616,6 +630,20 @@ func TestPlugin_buildUnTarArgs(t *testing.T) {
 				target: "foo",
 			},
 			want: []string{"tar", "-zxf", "foo.tar.gz", "-C", "foo"},
+		},
+		{
+			name: "remote tar temp path",
+			fields: fields{
+				Config: Config{
+					TarExec:    "tar",
+					TarTmpPath: "/tmp/",
+				},
+				DestFile: "foo.tar.gz",
+			},
+			args: args{
+				target: "foo",
+			},
+			want: []string{"tar", "-zxf", "/tmp/foo.tar.gz", "-C", "foo"},
 		},
 		{
 			name: "strip components",
