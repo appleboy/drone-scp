@@ -13,6 +13,7 @@ import (
 
 	"github.com/appleboy/easyssh-proxy"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/ssh"
 )
 
@@ -21,7 +22,7 @@ func TestMissingAllConfig(t *testing.T) {
 
 	err := plugin.Exec()
 
-	assert.NotNil(t, err)
+	require.Error(t, err)
 }
 
 func TestMissingSSHConfig(t *testing.T) {
@@ -34,7 +35,7 @@ func TestMissingSSHConfig(t *testing.T) {
 
 	err := plugin.Exec()
 
-	assert.NotNil(t, err)
+	require.Error(t, err)
 }
 
 func TestMissingSourceConfig(t *testing.T) {
@@ -49,7 +50,7 @@ func TestMissingSourceConfig(t *testing.T) {
 
 	err := plugin.Exec()
 
-	assert.NotNil(t, err)
+	require.Error(t, err)
 }
 
 func TestTrimElement(t *testing.T) {
@@ -92,7 +93,7 @@ func TestSCPFileFromPublicKey(t *testing.T) {
 	}
 
 	err = plugin.Exec()
-	assert.Nil(t, err)
+	require.NoError(t, err)
 
 	// check file exist
 	if _, err := os.Stat(filepath.Join(u.HomeDir, "/test/tests/a.txt")); os.IsNotExist(err) {
@@ -108,7 +109,7 @@ func TestSCPFileFromPublicKey(t *testing.T) {
 	plugin.Config.Remove = true
 
 	err = plugin.Exec()
-	assert.Nil(t, err)
+	require.NoError(t, err)
 
 	// check file exist
 	if _, err := os.Stat(filepath.Join(u.HomeDir, "/test/tests/b.txt")); os.IsExist(err) {
@@ -143,7 +144,7 @@ func TestSCPFileFromPublicKeyWithPassphrase(t *testing.T) {
 	}
 
 	err = plugin.Exec()
-	assert.Nil(t, err)
+	require.NoError(t, err)
 
 	// check file exist
 	if _, err := os.Stat(filepath.Join(u.HomeDir, "/test2/tests/a.txt")); os.IsNotExist(err) {
@@ -177,7 +178,7 @@ func TestWrongFingerprint(t *testing.T) {
 
 	err = plugin.Exec()
 	log.Println(err)
-	assert.NotNil(t, err)
+	require.Error(t, err)
 }
 
 func getHostPublicKeyFile(keypath string) (ssh.PublicKey, error) {
@@ -209,7 +210,7 @@ func TestSCPFileFromPublicKeyWithFingerprint(t *testing.T) {
 	}
 
 	hostKey, err := getHostPublicKeyFile("/etc/ssh/ssh_host_rsa_key.pub")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	plugin := Plugin{
 		Config: Config{
@@ -226,7 +227,7 @@ func TestSCPFileFromPublicKeyWithFingerprint(t *testing.T) {
 	}
 
 	err = plugin.Exec()
-	assert.Nil(t, err)
+	require.NoError(t, err)
 
 	// check file exist
 	if _, err := os.Stat(filepath.Join(u.HomeDir, "/test2/tests/a.txt")); os.IsNotExist(err) {
@@ -264,7 +265,7 @@ func TestSCPWildcardFileList(t *testing.T) {
 	}
 
 	err = plugin.Exec()
-	assert.Nil(t, err)
+	require.NoError(t, err)
 
 	// check file exist
 	if _, err := os.Stat(filepath.Join(u.HomeDir, "abc/tests/global/c.txt")); os.IsNotExist(err) {
@@ -302,7 +303,7 @@ func TestSCPFromProxySetting(t *testing.T) {
 	}
 
 	err = plugin.Exec()
-	assert.Nil(t, err)
+	require.NoError(t, err)
 
 	// check file exist
 	if _, err := os.Stat(filepath.Join(u.HomeDir, "def/tests/global/c.txt")); os.IsNotExist(err) {
@@ -341,7 +342,7 @@ func TestStripComponentsFlag(t *testing.T) {
 	}
 
 	err = plugin.Exec()
-	assert.Nil(t, err)
+	require.NoError(t, err)
 
 	// check file exist
 	if _, err := os.Stat(filepath.Join(u.HomeDir, "123/c.txt")); os.IsNotExist(err) {
@@ -375,7 +376,7 @@ func TestUseInsecureCipherFlag(t *testing.T) {
 	}
 
 	err = plugin.Exec()
-	assert.Nil(t, err)
+	require.NoError(t, err)
 
 	// check file exist
 	if _, err := os.Stat(filepath.Join(u.HomeDir, "123/c.txt")); os.IsNotExist(err) {
@@ -401,11 +402,15 @@ func TestIgnoreList(t *testing.T) {
 
 	plugin := Plugin{
 		Config: Config{
-			Host:            []string{"localhost"},
-			Username:        "drone-scp",
-			Port:            22,
-			KeyPath:         "tests/.ssh/id_rsa",
-			Source:          []string{"tests/global/*", "!tests/global/c.txt", "!tests/global/e.txt"},
+			Host:     []string{"localhost"},
+			Username: "drone-scp",
+			Port:     22,
+			KeyPath:  "tests/.ssh/id_rsa",
+			Source: []string{
+				"tests/global/*",
+				"!tests/global/c.txt",
+				"!tests/global/e.txt",
+			},
 			StripComponents: 2,
 			Target:          []string{filepath.Join(u.HomeDir, "ignore")},
 			CommandTimeout:  60 * time.Second,
@@ -415,7 +420,7 @@ func TestIgnoreList(t *testing.T) {
 	}
 
 	err = plugin.Exec()
-	assert.Nil(t, err)
+	require.NoError(t, err)
 
 	// check file exist
 	if _, err := os.Stat(filepath.Join(u.HomeDir, "ignore/c.txt")); !os.IsNotExist(err) {
@@ -493,7 +498,7 @@ func TestIncorrectPassword(t *testing.T) {
 	}
 
 	err := plugin.Exec()
-	assert.NotNil(t, err)
+	require.Error(t, err)
 }
 
 func TestNoPermissionCreateFolder(t *testing.T) {
@@ -516,7 +521,7 @@ func TestNoPermissionCreateFolder(t *testing.T) {
 	}
 
 	err = plugin.Exec()
-	assert.NotNil(t, err)
+	require.Error(t, err)
 
 	// check tmp file exist
 	if _, err = os.Stat(filepath.Join(u.HomeDir, plugin.DestFile)); os.IsExist(err) {
@@ -531,7 +536,14 @@ func TestGlobList(t *testing.T) {
 	assert.Equal(t, expects, globList(paterns).Source)
 
 	paterns = []string{"tests/*.txt", "tests/.ssh/*", "abc*"}
-	expects = []string{"tests/a.txt", "tests/b.txt", "tests/.ssh/id_rsa", "tests/.ssh/id_rsa.pub", "tests/.ssh/test", "tests/.ssh/test.pub"}
+	expects = []string{
+		"tests/a.txt",
+		"tests/b.txt",
+		"tests/.ssh/id_rsa",
+		"tests/.ssh/id_rsa.pub",
+		"tests/.ssh/test",
+		"tests/.ssh/test.pub",
+	}
 	assert.Equal(t, expects, globList(paterns).Source)
 
 	paterns = []string{"tests/?.txt"}
@@ -579,13 +591,13 @@ func TestRemoveDestFile(t *testing.T) {
 
 	// ssh io timeout
 	err = plugin.removeDestFile(systemType, ssh)
-	assert.Error(t, err)
+	require.Error(t, err)
 
 	ssh.Timeout = 0
 
 	// permission denied
 	err = plugin.removeDestFile(systemType, ssh)
-	assert.Error(t, err)
+	require.Error(t, err)
 }
 
 func TestPlugin_buildUnTarArgs(t *testing.T) {
@@ -647,7 +659,16 @@ func TestPlugin_buildUnTarArgs(t *testing.T) {
 			args: args{
 				target: "foo",
 			},
-			want: []string{"tar", "-zxf", "foo.tar.gz", "--strip-components", "2", "--overwrite", "-C", "foo"},
+			want: []string{
+				"tar",
+				"-zxf",
+				"foo.tar.gz",
+				"--strip-components",
+				"2",
+				"--overwrite",
+				"-C",
+				"foo",
+			},
 		},
 		{
 			name: "unlink first",
@@ -663,7 +684,17 @@ func TestPlugin_buildUnTarArgs(t *testing.T) {
 			args: args{
 				target: "foo",
 			},
-			want: []string{"tar", "-zxf", "foo.tar.gz", "--strip-components", "2", "--overwrite", "--unlink-first", "-C", "foo"},
+			want: []string{
+				"tar",
+				"-zxf",
+				"foo.tar.gz",
+				"--strip-components",
+				"2",
+				"--overwrite",
+				"--unlink-first",
+				"-C",
+				"foo",
+			},
 		},
 		{
 			name: "output folder path with space",
@@ -679,7 +710,17 @@ func TestPlugin_buildUnTarArgs(t *testing.T) {
 			args: args{
 				target: "foo\\ bar",
 			},
-			want: []string{"tar", "-zxf", "foo.tar.gz", "--strip-components", "2", "--overwrite", "--unlink-first", "-C", "foo\\ bar"},
+			want: []string{
+				"tar",
+				"-zxf",
+				"foo.tar.gz",
+				"--strip-components",
+				"2",
+				"--overwrite",
+				"--unlink-first",
+				"-C",
+				"foo\\ bar",
+			},
 		},
 	}
 	for _, tt := range tests {
@@ -734,7 +775,14 @@ func TestPlugin_buildTarArgs(t *testing.T) {
 			args: args{
 				src: "foo.tar.gz",
 			},
-			want: []string{"--exclude", "tests/a.txt", "-zcf", "foo.tar.gz", "tests/a.txt", "tests/b.txt"},
+			want: []string{
+				"--exclude",
+				"tests/a.txt",
+				"-zcf",
+				"foo.tar.gz",
+				"tests/a.txt",
+				"tests/b.txt",
+			},
 		},
 		{
 			name: "dereference flag",
@@ -751,7 +799,15 @@ func TestPlugin_buildTarArgs(t *testing.T) {
 			args: args{
 				src: "foo.tar.gz",
 			},
-			want: []string{"--exclude", "tests/a.txt", "--dereference", "-zcf", "foo.tar.gz", "tests/a.txt", "tests/b.txt"},
+			want: []string{
+				"--exclude",
+				"tests/a.txt",
+				"--dereference",
+				"-zcf",
+				"foo.tar.gz",
+				"tests/a.txt",
+				"tests/b.txt",
+			},
 		},
 	}
 	for _, tt := range tests {
@@ -793,7 +849,7 @@ func TestTargetFolderWithSpaces(t *testing.T) {
 	}
 
 	err = plugin.Exec()
-	assert.Nil(t, err)
+	require.NoError(t, err)
 
 	// check file exist
 	if _, err := os.Stat(filepath.Join(u.HomeDir, "123 456 789", "c.txt")); os.IsNotExist(err) {
@@ -833,7 +889,7 @@ func TestHostPortString(t *testing.T) {
 	}
 
 	err = plugin.Exec()
-	assert.Nil(t, err)
+	require.NoError(t, err)
 
 	// check file exist
 	if _, err := os.Stat(filepath.Join(u.HomeDir, "1234", "c.txt")); os.IsNotExist(err) {
@@ -860,7 +916,14 @@ func TestHostPort(t *testing.T) {
 	expectedPort1 := "1234"
 	actualHost1, actualPort1 := p.hostPort(host1)
 	if actualHost1 != expectedHost1 || actualPort1 != expectedPort1 {
-		t.Errorf("hostPort(%s) = (%s, %s); expected (%s, %s)", host1, actualHost1, actualPort1, expectedHost1, expectedPort1)
+		t.Errorf(
+			"hostPort(%s) = (%s, %s); expected (%s, %s)",
+			host1,
+			actualHost1,
+			actualPort1,
+			expectedHost1,
+			expectedPort1,
+		)
 	}
 
 	// Test case 2: host string without port
@@ -869,7 +932,14 @@ func TestHostPort(t *testing.T) {
 	expectedPort2 := "8080" // default port
 	actualHost2, actualPort2 := p.hostPort(host2)
 	if actualHost2 != expectedHost2 || actualPort2 != expectedPort2 {
-		t.Errorf("hostPort(%s) = (%s, %s); expected (%s, %s)", host2, actualHost2, actualPort2, expectedHost2, expectedPort2)
+		t.Errorf(
+			"hostPort(%s) = (%s, %s); expected (%s, %s)",
+			host2,
+			actualHost2,
+			actualPort2,
+			expectedHost2,
+			expectedPort2,
+		)
 	}
 }
 
@@ -973,14 +1043,22 @@ func TestIgnoreFolder(t *testing.T) {
 	}
 
 	err = plugin.Exec()
-	assert.Nil(t, err)
+	require.NoError(t, err)
 
 	// check file exist
-	if _, err := os.Stat(filepath.Join(u.HomeDir, "test_ignore", "global", "c.txt")); !os.IsNotExist(err) {
+	if _, err := os.Stat(
+		filepath.Join(u.HomeDir, "test_ignore", "global", "c.txt"),
+	); !os.IsNotExist(
+		err,
+	) {
 		t.Fatalf("SCP-error: %v", err)
 	}
 
-	if _, err := os.Stat(filepath.Join(u.HomeDir, "test_ignore", "global", "d.txt")); !os.IsNotExist(err) {
+	if _, err := os.Stat(
+		filepath.Join(u.HomeDir, "test_ignore", "global", "d.txt"),
+	); !os.IsNotExist(
+		err,
+	) {
 		t.Fatalf("SCP-error: %v", err)
 	}
 }

@@ -1,6 +1,6 @@
 EXECUTABLE := drone-scp
-GOFMT ?= gofumpt -l -s -w
 GO ?= go
+TOOLS_MOD := -modfile=go.tools.mod
 GOFILES := $(shell find . -name "*.go" -type f)
 HAS_GO = $(shell hash $(GO) > /dev/null 2>&1 && echo "GO" || echo "NOGO" )
 
@@ -49,25 +49,14 @@ help: ## Print this help message.
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 fmt: ## Format the code
-	@hash gofumpt > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
-		$(GO) install mvdan.cc/gofumpt@latest; \
-	fi
-	$(GOFMT) -w $(GOFILES)
+	$(GO) tool $(TOOLS_MOD) golangci-lint fmt
 
 vet: ## Run go vet
 	$(GO) vet ./...
 
 .PHONY: fmt-check
 fmt-check: ## Check if the code is formatted
-	@hash gofumpt > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
-		$(GO) install mvdan.cc/gofumpt; \
-	fi
-	@diff=$$($(GOFMT) -d $(GOFILES)); \
-	if [ -n "$$diff" ]; then \
-		echo "Please run 'make fmt' and commit the result:"; \
-		echo "$${diff}"; \
-		exit 1; \
-	fi;
+	$(GO) tool $(TOOLS_MOD) golangci-lint fmt --diff --diff-colored=false
 
 test: ## Run tests
 	@$(GO) test -v -cover -coverprofile coverage.txt ./... && echo "\n==>\033[32m Ok\033[m\n" || exit 1
@@ -104,3 +93,11 @@ ssh-server: ## Run ssh server
 clean: ## Clean the build
 	$(GO) clean -x -i ./...
 	rm -rf coverage.txt $(EXECUTABLE)
+
+lint:
+	$(GO) tool $(TOOLS_MOD) golangci-lint run
+
+install-tools:
+	$(GO) mod download $(TOOLS_MOD)
+
+.PHONY: fmt fmt-check lint install-tools
