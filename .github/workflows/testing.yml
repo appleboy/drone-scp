@@ -16,12 +16,15 @@ jobs:
         with:
           go-version-file: go.mod
           check-latest: true
+          cache-dependency-path: |
+            go.sum
+            go.tools.sum
 
-      - name: Setup golangci-lint
-        uses: golangci/golangci-lint-action@v9
-        with:
-          version: v2.12
-          args: --verbose
+      - name: Run golangci-lint
+        run: make lint
+
+      - name: Check Go formatting
+        run: make fmt-check
 
       - uses: hadolint/hadolint-action@v3.4.0
         name: hadolint for Dockerfile

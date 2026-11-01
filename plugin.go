@@ -17,8 +17,10 @@ import (
 )
 
 var (
-	errMissingHost           = errors.New("Error: missing server host")
-	errMissingPasswordOrKey  = errors.New("Error: can't connect without a private SSH key or password")
+	errMissingHost          = errors.New("Error: missing server host")
+	errMissingPasswordOrKey = errors.New(
+		"Error: can't connect without a private SSH key or password",
+	)
 	errMissingSourceOrTarget = errors.New("missing source or target config")
 )
 
@@ -79,7 +81,12 @@ func globList(paths []string) fileList {
 		}
 		matches, err := filepath.Glob(pattern)
 		if err != nil {
-			fmt.Printf("Glob error for %q: %s\n", pattern, err)
+			//nolint:forbidigo // Preserve the plugin CLI output format on stdout.
+			fmt.Printf(
+				"Glob error for %q: %s\n",
+				pattern,
+				err,
+			)
 			continue
 		}
 
@@ -93,11 +100,20 @@ func globList(paths []string) fileList {
 	return list
 }
 
-func (p Plugin) log(host string, message ...interface{}) {
+func (p Plugin) log(host string, message ...any) {
 	if count := len(p.Config.Host); count == 1 {
-		fmt.Printf("%s", fmt.Sprintln(message...))
+		//nolint:forbidigo // Preserve the plugin CLI output format on stdout.
+		fmt.Printf(
+			"%s",
+			fmt.Sprintln(message...),
+		)
 	} else {
-		fmt.Printf("%s: %s", host, fmt.Sprintln(message...))
+		//nolint:forbidigo // Preserve the plugin CLI output format on stdout.
+		fmt.Printf(
+			"%s: %s",
+			host,
+			fmt.Sprintln(message...),
+		)
 	}
 }
 
@@ -241,13 +257,23 @@ func (p *Plugin) Exec() error {
 	src := filepath.Join(dir, p.DestFile)
 
 	// show current version
-	fmt.Println("drone-scp version: " + Version)
+	//nolint:forbidigo // Preserve the plugin CLI output format on stdout.
+	fmt.Println(
+		"drone-scp version: " + Version,
+	)
 	// run archive command
-	fmt.Println("tar all files into " + src)
+	//nolint:forbidigo // Preserve the plugin CLI output format on stdout.
+	fmt.Println(
+		"tar all files into " + src,
+	)
 	args := p.buildTarArgs(src)
 	cmd := exec.Command(p.Config.TarExec, args...)
 	if p.Config.Debug {
-		fmt.Println("$", strings.Join(cmd.Args, " "))
+		//nolint:forbidigo // Preserve the plugin CLI output format on stdout.
+		fmt.Println(
+			"$",
+			strings.Join(cmd.Args, " "),
+		)
 	}
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -338,7 +364,11 @@ func (p *Plugin) Exec() error {
 				p.log(host, "untar file", p.DestFile)
 				commamd := strings.Join(p.buildUnTarArgs(target), " ")
 				if p.Config.Debug {
-					fmt.Println("$", commamd)
+					//nolint:forbidigo // Preserve the plugin CLI output format on stdout.
+					fmt.Println(
+						"$",
+						commamd,
+					)
 				}
 				outStr, errStr, _, err := ssh.Run(commamd, p.Config.CommandTimeout)
 
@@ -376,8 +406,8 @@ func (p *Plugin) Exec() error {
 		if err != nil {
 			c := color.New(color.FgRed)
 			c.Println("drone-scp error: ", err)
-			var cerr copyError
-			if !errors.As(err, &cerr) {
+			if _, ok := errors.AsType[copyError](err); !ok {
+				//nolint:forbidigo // Preserve the plugin CLI output format on stdout.
 				fmt.Println("drone-scp rollback: remove all target tmp file")
 				if err := p.removeAllDestFile(); err != nil {
 					return err
@@ -387,9 +417,16 @@ func (p *Plugin) Exec() error {
 		}
 	}
 
+	//nolint:forbidigo // Preserve the plugin CLI output format on stdout.
 	fmt.Println("===================================================")
-	fmt.Println("✅ Successfully executed transfer data to all host")
-	fmt.Println("===================================================")
+	//nolint:forbidigo // Preserve the plugin CLI output format on stdout.
+	fmt.Println(
+		"✅ Successfully executed transfer data to all host",
+	)
+	//nolint:forbidigo // Preserve the plugin CLI output format on stdout.
+	fmt.Println(
+		"===================================================",
+	)
 
 	return nil
 }
