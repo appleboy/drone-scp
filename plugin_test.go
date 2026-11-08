@@ -876,6 +876,7 @@ func TestHostPortString(t *testing.T) {
 	plugin := Plugin{
 		Config: Config{
 			Host:            []string{"localhost:22", "localhost:22"},
+			TarTmpPath:      u.HomeDir + "/",
 			Username:        "drone-scp",
 			Protocol:        easyssh.PROTOCOL_TCP4,
 			Port:            8080,
