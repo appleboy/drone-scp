@@ -281,6 +281,9 @@ func (p *Plugin) Exec() error {
 		return err
 	}
 
+	// Resolve the remote archive path once before sharing it with host workers.
+	p.DestFile = fmt.Sprintf("%s%s", p.Config.TarTmpPath, p.DestFile)
+
 	wg := sync.WaitGroup{}
 	wg.Add(len(p.Config.Host))
 	errChannel := make(chan error)
@@ -322,9 +325,6 @@ func (p *Plugin) Exec() error {
 			if err == nil {
 				systemType = "windows"
 			}
-
-			// upload file to the tmp path
-			p.DestFile = fmt.Sprintf("%s%s", p.Config.TarTmpPath, p.DestFile)
 
 			p.log(host, "remote server os type is "+systemType)
 			// Call Scp method with file you want to upload to remote server.
