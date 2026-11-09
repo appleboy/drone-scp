@@ -68,11 +68,7 @@ func TestTrimElement(t *testing.T) {
 }
 
 func TestSCPFileFromPublicKey(t *testing.T) {
-	if os.Getenv("SSH_AUTH_SOCK") != "" {
-		if err := exec.Command("eval", "`ssh-agent -k`").Run(); err != nil {
-			t.Fatalf("exec: %v", err)
-		}
-	}
+	ignoreSSHAgent(t)
 
 	u, err := user.Lookup("drone-scp")
 	if err != nil {
@@ -118,11 +114,7 @@ func TestSCPFileFromPublicKey(t *testing.T) {
 }
 
 func TestSCPFileFromPublicKeyWithPassphrase(t *testing.T) {
-	if os.Getenv("SSH_AUTH_SOCK") != "" {
-		if err := exec.Command("eval", "`ssh-agent -k`").Run(); err != nil {
-			t.Fatalf("exec: %v", err)
-		}
-	}
+	ignoreSSHAgent(t)
 
 	u, err := user.Lookup("drone-scp")
 	if err != nil {
@@ -198,11 +190,7 @@ func getHostPublicKeyFile(keypath string) (ssh.PublicKey, error) {
 }
 
 func TestSCPFileFromPublicKeyWithFingerprint(t *testing.T) {
-	if os.Getenv("SSH_AUTH_SOCK") != "" {
-		if err := exec.Command("eval", "`ssh-agent -k`").Run(); err != nil {
-			t.Fatalf("exec: %v", err)
-		}
-	}
+	ignoreSSHAgent(t)
 
 	u, err := user.Lookup("drone-scp")
 	if err != nil {
@@ -240,11 +228,7 @@ func TestSCPFileFromPublicKeyWithFingerprint(t *testing.T) {
 }
 
 func TestSCPWildcardFileList(t *testing.T) {
-	if os.Getenv("SSH_AUTH_SOCK") != "" {
-		if err := exec.Command("eval", "`ssh-agent -k`").Run(); err != nil {
-			t.Fatalf("exec: %v", err)
-		}
-	}
+	ignoreSSHAgent(t)
 
 	u, err := user.Lookup("drone-scp")
 	if err != nil {
@@ -316,11 +300,7 @@ func TestSCPFromProxySetting(t *testing.T) {
 }
 
 func TestStripComponentsFlag(t *testing.T) {
-	if os.Getenv("SSH_AUTH_SOCK") != "" {
-		if err := exec.Command("eval", "`ssh-agent -k`").Run(); err != nil {
-			t.Fatalf("exec: %v", err)
-		}
-	}
+	ignoreSSHAgent(t)
 
 	u, err := user.Lookup("drone-scp")
 	if err != nil {
@@ -389,11 +369,7 @@ func TestUseInsecureCipherFlag(t *testing.T) {
 }
 
 func TestIgnoreList(t *testing.T) {
-	if os.Getenv("SSH_AUTH_SOCK") != "" {
-		if err := exec.Command("eval", "`ssh-agent -k`").Run(); err != nil {
-			t.Fatalf("exec: %v", err)
-		}
-	}
+	ignoreSSHAgent(t)
 
 	u, err := user.Lookup("drone-scp")
 	if err != nil {
@@ -823,11 +799,7 @@ func TestPlugin_buildTarArgs(t *testing.T) {
 }
 
 func TestTargetFolderWithSpaces(t *testing.T) {
-	if os.Getenv("SSH_AUTH_SOCK") != "" {
-		if err := exec.Command("eval", "`ssh-agent -k`").Run(); err != nil {
-			t.Fatalf("exec: %v", err)
-		}
-	}
+	ignoreSSHAgent(t)
 
 	u, err := user.Lookup("drone-scp")
 	if err != nil {
@@ -862,11 +834,7 @@ func TestTargetFolderWithSpaces(t *testing.T) {
 }
 
 func TestHostPortString(t *testing.T) {
-	if os.Getenv("SSH_AUTH_SOCK") != "" {
-		if err := exec.Command("eval", "`ssh-agent -k`").Run(); err != nil {
-			t.Fatalf("exec: %v", err)
-		}
-	}
+	ignoreSSHAgent(t)
 
 	u, err := user.Lookup("drone-scp")
 	if err != nil {
@@ -875,7 +843,7 @@ func TestHostPortString(t *testing.T) {
 
 	plugin := Plugin{
 		Config: Config{
-			Host:            []string{"localhost:22", "localhost:22"},
+			Host:            []string{"localhost:22"},
 			TarTmpPath:      u.HomeDir + "/",
 			Username:        "drone-scp",
 			Protocol:        easyssh.PROTOCOL_TCP4,
@@ -1018,11 +986,7 @@ func TestPlugin_hostPort(t *testing.T) {
 }
 
 func TestIgnoreFolder(t *testing.T) {
-	if os.Getenv("SSH_AUTH_SOCK") != "" {
-		if err := exec.Command("eval", "`ssh-agent -k`").Run(); err != nil {
-			t.Fatalf("exec: %v", err)
-		}
-	}
+	ignoreSSHAgent(t)
 
 	u, err := user.Lookup("drone-scp")
 	if err != nil {
